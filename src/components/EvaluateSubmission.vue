@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="margin-top: 20px; margin-left: 10px; display: flex; justify-items: flex-end;">
-      <el-select v-model="classSelection" filterable clearable placeholder="Select a class" @change="onChangeClass">
+      <el-select v-model="classSelection" filterable placeholder="Select a class" @change="onChangeClass">
         <el-option
             v-for="item in classData"
             :key="item.classId"
@@ -10,7 +10,7 @@
         </el-option>
       </el-select>
 
-      <el-select v-model="deliverableSelection" filterable clearable placeholder="Select a deliverable" @change="onChangeDeliverable">
+      <el-select v-model="deliverableSelection" filterable placeholder="Select a deliverable" @change="onChangeDeliverable">
         <el-option
             v-for="item in deliverableData"
             :key="item.deliverableId"
@@ -18,7 +18,8 @@
             :value="item.deliverableId">
         </el-option>
       </el-select>
-      <el-select v-model="submissionSelection" filterable clearable placeholder="Select a submission" @change="onChangeSubmission">
+
+      <el-select v-model="submissionSelection" filterable placeholder="Select a submission" @change="onChangeSubmission">
         <el-option
             v-for="item in submissionData"
             :key="item.submissionId"
@@ -59,6 +60,10 @@
 
     <el-form hide-required-asterisk label-width="100px" :model="submissionForm" :rules="rules" ref="submissionForm" class="submissionForm" label-position="left">
 
+      <el-form-item label="Submit Time" prop="submitTime">
+        <el-input v-model="submissionForm.submitTime" placeholder="N/A" disabled></el-input>
+      </el-form-item>
+
       <el-form-item label="Student ID" prop="studentId">
         <el-input v-model="submissionForm.studentId" placeholder="N/A" disabled></el-input>
       </el-form-item>
@@ -96,13 +101,40 @@ export default {
     const _this = this;
     axios.get('http://localhost:8080/getAllClass/2000006').then(function (resp) {
       _this.classData = resp.data;
-    })
+    });
+
+    const query = this.$route.query;
+    console.log(query);
+    if (Object.keys(query).length !== 0 && this.classSelection === '') {
+
+      this.classSelection = query.classId;
+      axios.get('http://localhost:8080/getAllDeliverables/' + query.classId).then(function (resp) {
+        _this.deliverableData = resp.data;
+      })
+      this.deliverableSelection = query.deliverableId;
+      this.deliverableForm.deliverableDesc = query.deliverableDesc;
+      this.deliverableForm.deadLine = query.deadLine;
+      this.deliverableForm.percent = query.percent;
+      console.log(this.deliverableForm);
+
+
+      this.submissionSelection = query.submissionId;
+      axios.get('http://localhost:8080/getAllSubmission/' + query.deliverableId).then(function (resp) {
+        _this.submissionData = resp.data;
+      })
+      this.submissionForm.grade = query.grade;
+      this.submissionForm.studentId = query.studentId;
+      this.submissionForm.fileName = query.fileName;
+      this.submissionForm.submissionDesc = query.submissionDesc;
+      this.submissionForm.submitTime = query.submitTime;
+      console.log(this.submissionForm);
+
+
+    }
   },
   data() {
     var validateGrade = (rule, value, callback) => {
-      if (!value || value === '') {
-        callback(new Error('Please enter a grade'));
-      } else if (value > 1 || value < 0) {
+      if (value && value !== '' && (value > 1 || value < 0)) {
         callback(new Error('Please enter a grade between 0 and 1'));
       } else {
         callback();
@@ -144,9 +176,6 @@ export default {
   methods: {
     onChangeClass(classId) {
       this.resetForm('deliverableForm');
-      this.resetForm('submissionForm');
-      this.submissionSelection = '';
-      this.deliverableSelection = '';
       if (classId && classId !== '') {
         const _this = this;
         this.deliverableSelection = '';
@@ -157,7 +186,6 @@ export default {
       }
     },
     onChangeDeliverable(deliverableId) {
-      this.submissionSelection = '';
       this.resetForm('submissionForm');
       if (deliverableId && deliverableId !== '') {
         const _this = this;
@@ -167,8 +195,6 @@ export default {
           this.deliverableForm.deadLine = curDeli.deadLine
           this.deliverableForm.percent = curDeli.percent
           this.curDeadline = curDeli.deadLine;
-        } else {
-          this.resetForm('deliverableForm');
         }
         axios.get('http://localhost:8080/getAllSubmission/' + deliverableId).then(function (resp) {
           _this.submissionData = resp.data;
@@ -194,7 +220,8 @@ export default {
       const _this = this
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          const msg = ('You are going to update the grade for submission # ' + this.submissionForm.submissionId + '.')
+          this.submissionForm.grade = (!this.submissionForm.grade || this.submissionForm.grade === '') ? 0 : this.submissionForm.grade;
+          const msg = ('You are going to update the grade for submission # ' + this.submissionForm.submissionId + ' to ' + this.submissionForm.grade)
           this.$confirm(msg, 'Warning', {
             confirmButtonText: 'Confirm',
             cancelButtonText: 'Cancel',
@@ -227,11 +254,22 @@ export default {
     },
     resetForm(formName) {
       this.$nextTick(()=> {
-        if (this.$refs[formName] !== undefined) {
-          this.$refs[formName].resetFields();
-          this.fileLink = '';
-          this.lateSubmission = false;
+        if (formName === 'deliverableForm') {
+          this.deliverableSelection = '';
+          this.deliverableForm.deliverableDesc = '';
+          this.deliverableForm.deadLine = '';
+          this.deliverableForm.percent = '';
         }
+
+        this.submissionForm.grade = '';
+        this.submissionForm.studentId = '';
+        this.submissionForm.fileName = '';
+        this.submissionForm.submissionDesc = '';
+        this.submissionForm.submitTime = '';
+        this.submissionSelection = '';
+        this.fileLink = '';
+        this.lateSubmission = false;
+
       })
     }
   }

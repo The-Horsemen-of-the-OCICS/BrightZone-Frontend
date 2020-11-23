@@ -58,7 +58,7 @@
       </el-table-column>
 
       <el-table-column
-          label="Description ID"
+          label="Description"
           prop="submissionDesc"
       >
       </el-table-column>
@@ -192,9 +192,28 @@ export default {
       return (!this.search || value.studentId.toString().toLowerCase().includes(this.search.toLowerCase()));
     },
     handleEvaluateSubmission(index, row) {
+      console.log(index, row);
+      const _this = this;
+      const thisDeliverable = this.deliverableData.find(element => element.deliverableId === row.deliverableId);
+      const thisSubmission = this.submissionData.find(element => element.submissionId === row.submissionId);
+      this.$router.push({
+        path: '/evaluateSubmission',
+        query: {
+          classId: _this.classSelection,
+          deliverableId: row.deliverableId,
+          deliverableDesc: thisDeliverable.deliverableDesc,
+          deadLine: thisDeliverable.deadLine,
+          percent: thisDeliverable.percent,
 
-    }
-
+          submissionId: row.submissionId,
+          grade: row.grade,
+          studentId: row.studentId,
+          fileName: thisSubmission.fileName,
+          submissionDesc: row.submissionDesc,
+          submitTime: row.submitTime,
+        }
+      })
+    },
   }
 }
 </script>
