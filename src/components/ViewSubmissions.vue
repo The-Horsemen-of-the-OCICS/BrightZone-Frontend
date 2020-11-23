@@ -19,7 +19,7 @@
       </el-select>
       <div style="margin-left: 20px">
         <el-radio-group v-model="newest">
-          <el-radio-button label="0" border>Newest Submission </el-radio-button>
+          <el-radio-button label="0" border>Only newest Submission </el-radio-button>
           <el-radio-button label="1" border>All submissions</el-radio-button>
         </el-radio-group>
       </div>
@@ -118,10 +118,11 @@ export default {
   },
   data() {
     return {
-      newest: '',
-      valid: '',
+      newest: "1",
+      valid: "1",
       classSelection: '',
       deliverableSelection: '',
+      curDeadline: '',
       studentSelection: '',
       classData: [
       ],
@@ -129,6 +130,7 @@ export default {
       ],
       submissionData:[
       ],
+      submissionMap: new Map(),
       search: ''
     }
   },
@@ -136,6 +138,8 @@ export default {
     onChangeClass(classId) {
       if (classId && classId !== '') {
         const _this = this;
+        this.deliverableSelection = '';
+        this.deliverableData = [];
         axios.get('http://localhost:8080/getAllDeliverables/' + classId).then(function (resp) {
           _this.deliverableData = resp.data;
         })
@@ -144,26 +148,51 @@ export default {
     onChangeDeliverable(deliverableId) {
       if (deliverableId && deliverableId !== '') {
         const _this = this;
+        const curDeli = this.deliverableData.find(element => element.deliverableId === deliverableId)
+        this.curDeadline = curDeli.deadLine;
+        this.submissionMap = new Map();
         axios.get('http://localhost:8080/getAllSubmission/' + deliverableId).then(function (resp) {
           _this.submissionData = resp.data;
-        })
+          resp.data.forEach(row => {
+            //map content [newest after deadline, submission_id, newest before daedline, submission_id]
+            const val = _this.submissionMap.get(row.studentId);
+            if(val) {
+              if (val[0] < row.submitTime) {
+                _this.submissionMap[row.studentId][0] = row.submitTime;
+                _this.submissionMap[row.studentId][1] = row.submissionId;
+              }
+              if (val[2] < row.submitTime && row.submitTime < _this.curDeadline) {
+                _this.submissionMap[row.studentId][2] = row.submitTime;
+                _this.submissionMap[row.studentId][3] = row.submissionId;
+              }
+            } else {
+              _this.submissionMap.set(row.studentId, [row.submitTime, row.submissionId, row.submitTime, (row.submitTime<_this.curDeadline?row.submissionId:'')]);
+            }
+          });
+        });
       }
     },
     tableFilter(value) {
-      console.log(value)
-      return (this.searchFilter(value) && this.newestFilter(value) && this.validFilter(value))
+      return this.newestFilter(value) && this.searchFilter(value) && this.validFilter(value);
     },
     newestFilter(value) {
-      console.log(this.newest);
       if (this.newest === '1') return true;
-      retub
+      const val = this.submissionMap.get(value.studentId);
+      if (this.valid === '1') {
+        return val[3] === value.submissionId;
+      } else {
+        return val[1] === value.submissionId;
+      }
     },
     validFilter(value) {
-      console.log(this.valid);
-      return true;
+      if (this.valid === '1') return true;
+      return value.submitTime < this.curDeadline;
     },
     searchFilter(value) {
       return (!this.search || value.studentId.toString().toLowerCase().includes(this.search.toLowerCase()));
+    },
+    handleEvaluateSubmission(index, row) {
+
     }
 
   }

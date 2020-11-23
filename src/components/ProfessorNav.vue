@@ -37,6 +37,10 @@
         <i class="el-icon-document-copy"></i>
         <span>View Submissions</span>
       </el-menu-item>
+      <el-menu-item index="evaluateSubmission">
+        <i class="el-icon-finished"></i>
+        <span>Evaluate Submission</span>
+      </el-menu-item>
     </el-submenu>
   </el-menu>
 </template>
