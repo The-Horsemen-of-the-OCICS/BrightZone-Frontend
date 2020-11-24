@@ -7,11 +7,12 @@ import locale from 'element-ui/lib/locale/lang/en'
 import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import './assets/css/icon.css';
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
 
-Vue.use(ElementUI, { locale })
+Vue.use(ElementUI, { locale, size: 'small'})
 
 new Vue({
   router,

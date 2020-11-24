@@ -1,116 +1,66 @@
 <template>
-  <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
-
-      <div class="title-container">
-        <h3 class="title">CMS Login</h3>
-      </div>
-
-      <el-form-item prop="email">
-        <span class="svg-container">
-          <i class="el-icon-user"></i>
-        </span>
-        <el-input
-            ref="email"
-            v-model="loginForm.email"
-            placeholder="Email"
-            name="email"
-            type="text"
-            tabindex="1"
-            autocomplete="on"
-        />
-      </el-form-item>
-
-      <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
-        <el-form-item prop="password">
-          <span class="svg-container">
-            <i class="el-icon-lock"></i>
-          </span>
-          <el-input
-              :key="passwordType"
-              ref="password"
-              v-model="loginForm.password"
-              :type="passwordType"
-              placeholder="Password"
-              name="password"
-              tabindex="2"
-              autocomplete="on"
-              @keyup.native="checkCapslock"
-              @blur="capsTooltip = false"
-              @keyup.enter.native="handleLogin"
-          />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-          </span>
+  <div class="login-wrap">
+    <div class="ms-login">
+      <div class="ms-title">Course Management System</div>
+      <el-form :model="loginForm" :rules="rules" ref="login" label-width="0px" class="ms-content">
+        <el-form-item prop="email">
+          <el-input v-model="loginForm.email" placeholder="email">
+            <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
+          </el-input>
         </el-form-item>
-      </el-tooltip>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
-    </el-form>
+        <el-form-item prop="password">
+          <el-input
+              type="password"
+              placeholder="password"
+              v-model="loginForm.password"
+              @keyup.enter.native="login()"
+          >
+            <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
+          </el-input>
+        </el-form-item>
+        <div class="login-btn">
+          <el-button type="primary" @click="login()">Login</el-button>
+        </div>
+      </el-form>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import qs from 'qs'
+
 export default {
-  name: 'Login',
-  data() {
+  data: function () {
     return {
       loginForm: {
         email: '',
         password: '',
-      },
-      loginRules: {
-        email: [
-          { required: true, message: 'Please input email', trigger: 'blur' },
-          { type: 'email', message: 'Please input correct email', trigger: ['blur', 'change'] }
-        ],
-        password: [
-          { required: true, message: 'Please input password', trigger: 'blur' },
-        ],
       },
       loginResult: {
         success: '',
         errMsg: '',
         account: '',
       },
-      passwordType: 'password',
-      capsTooltip: false,
-      loading: false,
-      showDialog: false,
-      redirect: undefined,
-      otherQuery: {}
-    }
-  },
-  created() {
-    console.log('just entering login page, this.redirect=' + this.redirect)
+      rules: {
+        email: [
+          {required: true, message: 'Please input email', trigger: 'blur'},
+          {type: 'email', message: 'Please input correct email', trigger: ['blur', 'change']}
+        ],
+        password: [
+          {required: true, message: 'Please input password', trigger: 'blur'},
+        ],
+      },
+    };
   },
   methods: {
-    checkCapslock(e) {
-      const { key } = e
-      this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
-    },
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
-    },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+    login() {
+      this.$refs.login.validate(valid => {
         if (valid) {
-          this.loading = true
           axios.post('http://localhost:8080/api/account/login', qs.stringify(this.loginForm),
               {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
               .then(resp => {
                 console.log(resp)
-                this.loading = false
                 if (resp.data.success) {  // login success
                   this.$message({
                     showClose: true,
@@ -151,15 +101,8 @@ export default {
                     type: 'error'
                   });
                 }
-              }).catch(err => {})
-          // this.$store.dispatch('user/login', this.loginForm)
-          //   .then(() => {
-          //     this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-          //     this.loading = false
-          //   })
-          //   .catch(() => {
-          //     this.loading = false
-          //   })
+              }).catch(err => {
+          })
         } else {
           this.$message({
             showClose: true,
@@ -168,136 +111,65 @@ export default {
           });
           return false
         }
-      })
+      });
     },
-  }
-}
+  },
+};
 </script>
 
-<style lang="scss">
-@import "src/styles/index";
-@import "~normalize.css";
+<style scoped>
+@import "../../assets/css/main.css";
+@import "../../assets/css/color-dark.css";
 
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-
-$bg:#283443;
-$light_gray:#fff;
-$cursor: #fff;
-
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
-    color: $cursor;
-  }
+.el-form >>> .el-form-item__error {
+  color: black;
 }
 
-/* reset element-ui css */
-.login-container {
-  .el-input {
-    display: inline-block;
-    height: 47px;
-    width: 85%;
-
-    input {
-      background: transparent;
-      border: 0px;
-      -webkit-appearance: none;
-      border-radius: 0px;
-      padding: 12px 5px 12px 15px;
-      color: $light_gray;
-      height: 47px;
-      caret-color: $cursor;
-
-      &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
-      }
-    }
-  }
-
-  .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    color: #454545;
-  }
-}
-</style>
-
-<style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
-
-.login-container {
-  min-height: 100%;
+.login-wrap {
+  position: relative;
   width: 100%;
-  background-color: $bg;
+  height: 100%;
+  background-image: url(../../assets/img/login-bg.jpg);
+  background-size: 100%;
+}
+
+.ms-title {
+  width: 100%;
+  line-height: 50px;
+  text-align: center;
+  font-size: 20px;
+  color: black;
+  border-bottom: 1px solid #ddd;
+}
+
+.ms-login {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 350px;
+  margin: -190px 0 0 -175px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.3);
   overflow: hidden;
-  text-align: left;
+}
 
-  .login-form {
-    position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
-    overflow: hidden;
-  }
+.ms-content {
+  padding: 30px 30px;
+}
 
-  .tips {
-    font-size: 14px;
-    color: #fff;
-    margin-bottom: 10px;
+.login-btn {
+  text-align: center;
+}
 
-    span {
-      &:first-of-type {
-        margin-right: 16px;
-        //float: left;
-      }
-    }
-  }
+.login-btn button {
+  width: 100%;
+  height: 36px;
+  margin-bottom: 10px;
+}
 
-  .svg-container {
-    padding: 6px 5px 6px 15px;
-    color: $dark_gray;
-    vertical-align: middle;
-    width: 30px;
-    display: inline-block;
-  }
-
-  .title-container {
-    position: relative;
-
-    .title {
-      font-size: 26px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
-      text-align: center;
-      font-weight: bold;
-    }
-  }
-
-  .show-pwd {
-    position: absolute;
-    right: 10px;
-    top: 7px;
-    font-size: 16px;
-    color: $dark_gray;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .thirdparty-button {
-    position: absolute;
-    right: 0;
-    bottom: 6px;
-  }
-
-  @media only screen and (max-width: 470px) {
-    .thirdparty-button {
-      display: none;
-    }
-  }
+.login-tips {
+  font-size: 12px;
+  line-height: 30px;
+  color: #fff;
 }
 </style>
