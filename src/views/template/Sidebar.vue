@@ -179,6 +179,7 @@ export default {
   top: 70px;
   bottom: 0;
   overflow-y: scroll;
+  text-align: left;
 }
 
 .sidebar::-webkit-scrollbar {
