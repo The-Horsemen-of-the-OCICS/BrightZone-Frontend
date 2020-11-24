@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades"></i> Account
+          <i class="el-icon-lx-cascades"></i> Courses
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -14,14 +14,14 @@
             icon="el-icon-delete"
             class="handle-del mr10"
             @click="delAllSelection"
-        >批量删除
+        >Batch Delete
         </el-button>
         <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
           <el-option key="1" label="广东省" value="广东省"></el-option>
           <el-option key="2" label="湖南省" value="湖南省"></el-option>
         </el-select>
         <el-input v-model="query.name" placeholder="username" class="handle-input mr10"></el-input>
-        <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="handleSearch">Search</el-button>
       </div>
       <el-table
           :data="tableData"
@@ -32,25 +32,13 @@
           @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <el-table-column prop="userId" label="ID" width="120"></el-table-column>
-        <el-table-column prop="name" label="Username" width="160"></el-table-column>
-        <el-table-column prop="type" label="Role" width="150"></el-table-column>
-        <!--        <el-table-column label="账户余额">-->
-        <!--          <template slot-scope="scope">￥{{ scope.row.money }}</template>-->
-        <!--        </el-table-column>-->
-        <el-table-column prop="facultyId" label="Faculty" width="150"></el-table-column>
-        <el-table-column prop="program" label="Program" width="220"></el-table-column>
-        <el-table-column prop="email" label="Email" width="220"></el-table-column>
-        <el-table-column label="Status" align="center" width="100">
-          <template slot-scope="scope">
-            <el-tag
-                :type="scope.row.accountStatus==='current'?'success':scope.row.accountStatus==='unauthorized'?'primary':scope.row.accountStatus==='expelled'?'danger':scope.row.accountStatus==='sabbatical'?'info':scope.row.accountStatus==='alumni'?'default':''"
-            >{{ scope.row.accountStatus }}
-            </el-tag>
-          </template>
-        </el-table-column>
+        <el-table-column prop="courseId" label="ID" width="120"></el-table-column>
+        <el-table-column prop="courseSubject" label="Subject" width="160"></el-table-column>
+        <el-table-column prop="courseNumber" label="Number" width="150"></el-table-column>
+        <el-table-column prop="courseName" label="Name" width="300"></el-table-column>
+        <el-table-column prop="courseDesc" label="Description" width="540"></el-table-column>
+        <el-table-column prop="credit" label="Credit" width="80" align="center"></el-table-column>
 
-        <el-table-column prop="lastLogin" label="Last login" width="230"></el-table-column>
         <el-table-column label="Operator" width="180" align="center">
           <template slot-scope="scope">
             <el-button
@@ -100,11 +88,11 @@
 </template>
 
 <script>
-import {fetchData} from "@/api";
 import axios from "axios";
+import {fetchData} from "@/api";
 
 export default {
-  name: "AccountManager",
+  name: "CourseManager",
   data() {
     return {
       query: {
@@ -128,7 +116,7 @@ export default {
   },
   created() {
     //this.getData();
-    axios.get('http://localhost:8080/admin/account/getAll/0/9').then(resp => {
+    axios.get('http://localhost:8080/admin/course/getAll/0/9').then(resp => {
       this.tableData = resp.data.content
       this.pageSize = resp.data.size
       this.pageTotal = resp.data.totalElements
@@ -189,7 +177,7 @@ export default {
     },
     // 分页导航
     handlePageChange(currentPage) {
-      axios.get('http://localhost:8080/admin/account/getAll/' + (currentPage - 1) + '/6').then(resp => {
+      axios.get('http://localhost:8080/admin/course/getAll/' + (currentPage - 1) + '/9').then(resp => {
         console.log(resp)
         this.tableData = resp.data.content
         this.pageSize = resp.data.size

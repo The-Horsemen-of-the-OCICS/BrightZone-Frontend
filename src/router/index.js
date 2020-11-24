@@ -68,13 +68,25 @@ const routes = [
         path: '/admin',
         component: () => import(/* webpackChunkName: "home" */ '@/views/admin/AdminHome.vue'),
         redirect: '/admin/adminIndex',
-        meta: {title: '自述文件'},
+        meta: {title: 'Admin Page'},
         children: [
             {
                 path: 'adminIndex',
                 component: () => import(/* webpackChunkName: "dashboard" */ '@/views/admin/AdminIndex'),
-                meta: {title: '系统首页'},
+                meta: {title: 'adminIndex'},
                 name: 'AdminIndex'
+            },
+            {
+                path: 'accounts',
+                component: () => import(/* webpackChunkName: "dashboard" */ '@/views/admin/AccountManager'),
+                meta: {title: 'Accounts'},
+                name: 'accounts'
+            },
+            {
+                path: 'courses',
+                component: () => import(/* webpackChunkName: "dashboard" */ '@/views/admin/CourseManager'),
+                meta: {title: 'Courses'},
+                name: 'courses'
             },
         ]
     },
