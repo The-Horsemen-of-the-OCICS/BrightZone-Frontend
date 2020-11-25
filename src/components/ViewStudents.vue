@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div style="margin-top: 20px; margin-left: 10px; display: flex; justify-items: flex-end;">
+    <el-card>
+    <div style="margin-bottom: 10px; display: flex; justify-items: flex-end;">
       <el-select v-model="classSelection" filterable placeholder="Select a class" @change="onChangeClass">
         <el-option
             v-for="item in classData"
@@ -71,7 +72,7 @@
           type="danger"
       > Update Final Grades For Selected Students</el-button>
     </div>
-
+    </el-card>
   </div>
 </template>
 

@@ -1,22 +1,37 @@
 <template>
   <div>
-    <h1 style="font-family: 'Adobe Devanagari'; font-size: 50px;">Welcome Back, Professor {{this.userData.name}} !</h1>
-    <div style="width: 800px; margin:0 auto;">
-      <el-row :gutter="20" class="el-row">
-        <el-col :span="12" v-for="c in this.courseData" :key="c.courseId"  style="margin-bottom: 20px">
-          <el-card class="box-card" shadow="hover" @click.native="openClass(classData.find(element => element.courseId === c.courseId).classId)">
-            <div slot="header" class="clearfix" style="margin: -20px">
-              <img src="https://lh3.googleusercontent.com/proxy/bzTPgJ9V5opCL0eQyat6cNjDtoTfA4f5tE2wFZPzILfxjlve6HqanLQHaRwTxQiRNkmJGMGWmpOQJltDoNGEpZm8jecejQtRqNBrZw9baNvUD3xYUkXJJ-bWObbHwPE7RTkrvdoYDT5pH8wk_s_kQ0zPjGjUxvSbK11XtyF_XtoNZlmempDSBp4Is1aTkT-0vZAt7FsSXg" class="image">
+    <el-row :gutter="20">
+      <el-col :span="10">
+        <el-card shadow="hover" class="mgb20" style="height:200px;">
+          <div class="user-info">
+            <img src="https://github.com/WenjiuWang/WenjiuWang.github.io/blob/master/assets/img/profile.jpg?raw=true" class="user-avator" alt />
+            <div class="user-info-cont">
+              <div>Welcome Back, {{this.userData.name}} !</div>
+              <div>Professor | {{this.userData.program}}</div>
             </div>
-            <div style="margin-top: -20px; margin-bottom: -30px;">
-              <h3 style="display: flex; text-align: left;">{{ '[' + c.courseSubject + c.courseNumber + '] ' + c.courseName }}</h3>
-              <h4 style="display: flex; text-align: left; margin-top: -10px">Class  {{ classData.find(element => element.courseId === c.courseId).classId }} | Section {{ classData.find(element => element.courseId === c.courseId).section }}</h4>
-            </div>
-          </el-card>
-        </el-col>
-
-      </el-row>
-    </div>
+          </div>
+          <div class="user-info-list">
+            Last Login：
+            <span>{{this.userData.lastLogin}}</span>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :span="14">
+        <el-row :gutter="20" class="el-row">
+          <el-col :span="12" v-for="c in this.courseData" :key="c.courseId"  style="margin-bottom: 20px">
+            <el-card class="box-card" shadow="hover" @click.native="openClass(classData.find(element => element.courseId === c.courseId).classId)">
+              <div slot="header" class="clearfix" style="margin: -20px">
+                <img src="http://www.scri8e.com/stars/bgs/1J1/sunsetpalmsbanner.jpg" class="image">
+              </div>
+              <div>
+                <h3 style="display: flex; text-align: left;">{{ '[' + c.courseSubject + c.courseNumber + '] ' + c.courseName }}</h3>
+                <h4 style="display: flex; text-align: left; margin-top: 5px">Class  {{ classData.find(element => element.courseId === c.courseId).classId }} - Section {{ classData.find(element => element.courseId === c.courseId).section }}</h4>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </el-col>
+    </el-row>
 
   </div>
 </template>
@@ -87,4 +102,46 @@ export default {
 .clearfix:after {
   clear: both
 }
+
+.user-info {
+  display: flex;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.user-avator {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+}
+
+.user-info-cont {
+  padding-left: 50px;
+  flex: 1;
+  font-size: 30px;
+  color: #222;
+}
+
+.user-info-cont div:last-child {
+  margin-top: 5px;
+  font-size: 20px;
+  color: #999;
+}
+
+.user-info-list {
+  font-size: 14px;
+  color: #999;
+  line-height: 25px;
+}
+
+.user-info-list span {
+  margin-left: 70px;
+}
+
+.mgb20 {
+  margin-bottom: 20px;
+}
+
 </style>

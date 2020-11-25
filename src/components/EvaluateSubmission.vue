@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div style="margin-top: 20px; margin-left: 10px; display: flex; justify-items: flex-end;">
+    <el-card>
+    <div style="margin-bottom: 10px; display: flex; justify-items: flex-end;">
       <el-select v-model="classSelection" filterable placeholder="Select a class" @change="onChangeClass">
         <el-option
             v-for="item in classData"
@@ -89,6 +90,7 @@
         </div>
       </el-form-item>
     </el-form>
+    </el-card>
   </div>
 </template>
 

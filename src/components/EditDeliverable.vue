@@ -1,5 +1,6 @@
 <template>
-    <div style="margin-top: 20px; margin-left: 10px; width: 500px">
+  <el-card>
+  <div style="width: 500px">
       <el-form hide-required-asterisk	label-width="100px" :model="deliverableForm" :rules="rules" ref="deliverableForm" class="deliverableForm" label-position="left">
 
         <el-form-item label="Class ID" prop="classId" >
@@ -57,6 +58,7 @@
         </el-form-item>
       </el-form>
     </div>
+  </el-card>
 </template>
 
 <script>
