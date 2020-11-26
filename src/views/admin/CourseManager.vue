@@ -30,18 +30,19 @@
           border
           class="table"
           ref="multipleTable"
+          style="width: 100%"
           header-cell-class-name="table-header"
           @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <el-table-column prop="courseId" label="ID" width="120"></el-table-column>
-        <el-table-column prop="courseSubject" label="Subject" width="160"></el-table-column>
-        <el-table-column prop="courseNumber" label="Number" width="150"></el-table-column>
-        <el-table-column prop="courseName" label="Name" width="300"></el-table-column>
-        <el-table-column prop="courseDesc" label="Description" width="540"></el-table-column>
-        <el-table-column prop="credit" label="Credit" width="65" align="center"></el-table-column>
+        <el-table-column type="selection" align="center" min-width="5"></el-table-column>
+        <el-table-column prop="courseId" label="ID" min-width="5"></el-table-column>
+        <el-table-column prop="courseSubject" label="Subject" min-width="5"></el-table-column>
+        <el-table-column prop="courseNumber" label="Number" min-width="5"></el-table-column>
+        <el-table-column prop="courseName" label="Name" min-width="20"></el-table-column>
+        <el-table-column prop="courseDesc" label="Description" min-width="34"></el-table-column>
+        <el-table-column prop="credit" label="Credit" align="center" min-width="5"></el-table-column>
 
-        <el-table-column label="Operator" width="186" align="center">
+        <el-table-column label="Operator" align="center" min-width="15">
           <template slot-scope="scope">
             <el-button
                 type="text"
@@ -146,14 +147,14 @@ export default {
       })
           .then(() => {
             axios.delete('http://localhost:8080/admin/course/delete/' + row.courseId).then(resp => {
-              if(resp.data === "success"){
+              if (resp.data === "success") {
                 this.$notify({
                   title: 'Success',
                   message: 'Delete successfully!',
                   type: 'success'
                 });
                 this.tableData.splice(index, 1);
-              }else{
+              } else {
                 this.$notify.error({
                   title: 'Error',
                   message: 'Ops,Something goes wrong!',

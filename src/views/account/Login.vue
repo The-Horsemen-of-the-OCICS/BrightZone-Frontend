@@ -74,7 +74,7 @@ export default {
                   this.$store.commit('login', {'userId':this.loginResult.userId, 'type': this.loginResult.accountType})
                   switch (this.loginResult.accountType) {
                     case 'administrator':
-                      this.$router.push('/mock/index');
+                      this.$router.push('/admin/adminIndex');
                       break;
                     case 'professor':
                       this.$router.push('/mock/index');
