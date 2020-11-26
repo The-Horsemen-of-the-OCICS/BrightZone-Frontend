@@ -15,15 +15,17 @@ import './components/common/directives';
 import 'babel-polyfill';
 
 Vue.config.productionTip = false
+
 Vue.use(VueI18n);
 Vue.use(VueAxios, axios)
 
 Vue.use(ElementUI, {
-    size: 'small'
+    size: 'small',
+    locale
 })
 
 const i18n = new VueI18n({
-    locale: 'zh',
+    locale: 'en',
     messages
 });
 

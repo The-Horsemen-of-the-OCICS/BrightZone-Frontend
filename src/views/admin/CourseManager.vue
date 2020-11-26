@@ -16,9 +16,11 @@
             @click="delAllSelection"
         >Batch Delete
         </el-button>
-        <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-          <el-option key="1" label="广东省" value="广东省"></el-option>
-          <el-option key="2" label="湖南省" value="湖南省"></el-option>
+        <el-select v-model="query.address" placeholder="User Role" class="handle-select mr10">
+          <el-option key="1" label="Administrator" value="administrator"></el-option>
+          <el-option key="2" label="Professor" value="professor"></el-option>
+          <el-option key="3" label="Student" value="student"></el-option>
+          <el-option key="4" label="Teaching Assistant" value="teaching_assistant"></el-option>
         </el-select>
         <el-input v-model="query.name" placeholder="username" class="handle-input mr10"></el-input>
         <el-button type="primary" icon="el-icon-search" @click="handleSearch">Search</el-button>
@@ -37,9 +39,9 @@
         <el-table-column prop="courseNumber" label="Number" width="150"></el-table-column>
         <el-table-column prop="courseName" label="Name" width="300"></el-table-column>
         <el-table-column prop="courseDesc" label="Description" width="540"></el-table-column>
-        <el-table-column prop="credit" label="Credit" width="80" align="center"></el-table-column>
+        <el-table-column prop="credit" label="Credit" width="65" align="center"></el-table-column>
 
-        <el-table-column label="Operator" width="180" align="center">
+        <el-table-column label="Operator" width="186" align="center">
           <template slot-scope="scope">
             <el-button
                 type="text"
@@ -116,7 +118,7 @@ export default {
   },
   created() {
     //this.getData();
-    axios.get('http://localhost:8080/admin/course/getAll/0/9').then(resp => {
+    axios.get('http://localhost:8080/admin/course/getAll/0/10').then(resp => {
       this.tableData = resp.data.content
       this.pageSize = resp.data.size
       this.pageTotal = resp.data.totalElements
@@ -138,13 +140,29 @@ export default {
     },
     // 删除操作
     handleDelete(index, row) {
-      // 二次确认删除
-      this.$confirm('确定要删除吗？', '提示', {
+      // Double check
+      this.$confirm('Are you sure you want to delete this course : "' + row.courseSubject + row.courseNumber + "  " + row.courseName + '" ?', 'Check', {
         type: 'warning'
       })
           .then(() => {
-            this.$message.success('删除成功');
-            this.tableData.splice(index, 1);
+            axios.delete('http://localhost:8080/admin/course/delete/' + row.courseId).then(resp => {
+              if(resp.data === "success"){
+                this.$notify({
+                  title: 'Success',
+                  message: 'Delete successfully!',
+                  type: 'success'
+                });
+                this.tableData.splice(index, 1);
+              }else{
+                this.$notify.error({
+                  title: 'Error',
+                  message: 'Ops,Something goes wrong!',
+                });
+                window.location.reload()
+              }
+              console.log(resp);
+            })
+
           })
           .catch(() => {
           });
@@ -177,7 +195,7 @@ export default {
     },
     // 分页导航
     handlePageChange(currentPage) {
-      axios.get('http://localhost:8080/admin/course/getAll/' + (currentPage - 1) + '/9').then(resp => {
+      axios.get('http://localhost:8080/admin/course/getAll/' + (currentPage - 1) + '/10').then(resp => {
         console.log(resp)
         this.tableData = resp.data.content
         this.pageSize = resp.data.size
