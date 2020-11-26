@@ -21,7 +21,7 @@
           <el-col :span="12" v-for="c in this.courseData" :key="c.courseId"  style="margin-bottom: 20px">
             <el-card class="box-card" shadow="hover" @click.native="openClass(classData.find(element => element.courseId === c.courseId).classId)">
               <div slot="header" class="clearfix" style="margin: -20px">
-                <img src="http://www.scri8e.com/stars/bgs/1J1/sunsetpalmsbanner.jpg" class="image">
+                <img src="@/assets/img/test_banner.png" class="image">
               </div>
               <div>
                 <h3 style="display: flex; text-align: left;">{{ '[' + c.courseSubject + c.courseNumber + '] ' + c.courseName }}</h3>
@@ -44,11 +44,11 @@ export default {
   name: "MyCampus",
   created() {
     const _this = this;
-    axios.get('http://localhost:8080/admin/account/getAccount/' + this.user_id).then(function (resp) {
+    axios.get('http://localhost:8080/admin/account/getAccount/' + this.$parent.$data.userId).then(function (resp) {
       _this.userData = resp.data;
     });
 
-    axios.get('http://localhost:8080/getAllClass/' + this.user_id).then(function (resp) {
+    axios.get('http://localhost:8080/getAllClass/' + this.$parent.$data.userId).then(function (resp) {
       _this.classData = resp.data;
       _this.courseData = [];
       _this.classData.forEach(c => {
@@ -60,7 +60,6 @@ export default {
   },
   data() {
     return {
-      user_id: 2000006,
       userData: '',
       classData: [
       ],

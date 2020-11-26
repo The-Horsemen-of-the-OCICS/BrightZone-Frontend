@@ -77,7 +77,7 @@ export default {
                       this.$router.push('/admin/adminIndex');
                       break;
                     case 'professor':
-                      this.$router.push('/mock/index');
+                      this.$router.push('/Campus');
                       break;
                     case 'student':
                       this.$router.push('/mock/index');

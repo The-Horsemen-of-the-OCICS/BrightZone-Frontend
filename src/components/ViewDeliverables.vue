@@ -86,7 +86,7 @@ export default {
   name: "ViewDeliverables",
   created() {
     const _this = this;
-    axios.get('http://localhost:8080/getAllClass/2000006').then(function (resp) {
+    axios.get('http://localhost:8080/getAllClass/' + this.$parent.$data.userId).then(function (resp) {
       _this.classData = resp.data;
     })
   },
