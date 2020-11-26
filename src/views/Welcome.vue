@@ -6,6 +6,8 @@
     <a href="http://localhost:8181/admin/adminIndex">Go to dashboard page</a>
     <br>
     <a href="http://localhost:8181/myCampus">Go to myCampus page</a>
+    <br>
+    <a href="http://localhost:8181/login">Go to login page</a>
   </div>
 </template>
 

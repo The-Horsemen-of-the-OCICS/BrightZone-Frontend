@@ -65,6 +65,11 @@ const routes = [
         component: () => import('@/views/Welcome')
     },
     {
+        path: '/mock/index',  // this page is only for development
+        name: 'MockIndex',
+        component: () => import('@/views/account/MockIndex')
+    },
+    {
         path: '/admin',
         component: () => import(/* webpackChunkName: "home" */ '@/views/admin/AdminHome.vue'),
         redirect: '/admin/adminIndex',

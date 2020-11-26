@@ -5,6 +5,38 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: 'App',
+  created () {
+
+    /**
+     * retrieve "userMsg" from sessionStorage when a page is loaded, and assign "userMsg" in sessionStorage to this.$store.state
+     *
+     * Considering there is no "userMsg" in session Storage when the project is loaded for
+     * the first time, so an assertion sessionStorage.getItem("userMsg") is not null is essential
+     */
+    // sessionStorage.getItem("userMsg") && this.$store.replaceState(Object.assign(this.$store.state,JSON.parse(sessionStorage.getItem("userMsg"))));
+
+    /**
+     * inject data in "this.$store.state" to sessionStorage before loading a new page
+     */
+    // window.addEventListener("beforeunload",()=>{
+    //   sessionStorage.setItem("userMsg",JSON.stringify(this.$store.state))
+    // })
+
+    //在页面加载时读取localStorage里的状态信息
+    sessionStorage.getItem("userMsg") && this.$store.replaceState(Object.assign({}, this.$store.state,JSON.parse(sessionStorage.getItem("userMsg"))));
+
+    //在页面刷新时将vuex里的信息保存到localStorage里
+    window.addEventListener("beforeunload",()=>{
+      sessionStorage.setItem("userMsg",JSON.stringify(this.$store.state))
+    })
+
+  }
+}
+</script>
+
 <style>
 @import './assets/css/main.css';
 @import "./assets/css/color-dark.css";

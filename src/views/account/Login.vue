@@ -40,7 +40,8 @@ export default {
       loginResult: {
         success: '',
         errMsg: '',
-        account: '',
+        userId: '',  // consistent with field <userId> in database
+        accountType: '',
       },
       rules: {
         email: [
@@ -62,42 +63,36 @@ export default {
               .then(resp => {
                 console.log(resp)
                 if (resp.data.success) {  // login success
+                  this.loginResult.success = true;
+                  this.loginResult.userId = resp.data.userId;
+                  this.loginResult.accountType = resp.data.accountType;
                   this.$message({
                     showClose: true,
                     message: 'Login Success!',
                     type: 'success'
                   });
-                  switch (resp.data.account.type) {
+                  this.$store.commit('login', {'userId':this.loginResult.userId, 'type': this.loginResult.accountType})
+                  switch (this.loginResult.accountType) {
                     case 'administrator':
-                      // TODO: add url of admin index page
-                      this.$alert('Please add url of admin index page in Login.vue', 'Login Success', {
-                        confirmButtonText: 'Confirm',
-                      });
+                      this.$router.push('/mock/index');
                       break;
                     case 'professor':
-                      // TODO: add url of professor index page
-                      this.$alert('Please add url of professor index page in Login.vue', 'Login Success', {
-                        confirmButtonText: 'Confirm',
-                      });
+                      this.$router.push('/mock/index');
                       break;
                     case 'student':
-                      // TODO: add url of student index page
-                      this.$alert('Please add url of student index page in Login.vue', 'Login Success', {
-                        confirmButtonText: 'Confirm',
-                      });
+                      this.$router.push('/mock/index');
                       break;
                     case 'teaching_assistant':
-                      // TODO: add url of teaching_assistant index page
-                      this.$alert('Please add url of teaching_assistant index page in Login.vue', 'Login Success', {
-                        confirmButtonText: 'Confirm',
-                      });
+                      this.$router.push('/mock/index');
                       break;
                     default:
                   }
                 } else {  // login fail
+                  this.loginResult.success = false;
+                  this.loginResult.errMsg = resp.data.errMsg;
                   this.$message({
                     showClose: true,
-                    message: 'Error: ' + resp.data.errMsg,
+                    message: 'Error: ' + this.loginResult.errMsg,
                     type: 'error'
                   });
                 }

@@ -121,6 +121,8 @@ export default {
       delList: [],
       editVisible: false,
 
+      faculties: [],
+
       form: {},
       idx: -1,
       id: -1
@@ -132,7 +134,10 @@ export default {
       this.tableData = resp.data.content
       this.pageSize = resp.data.size
       this.pageTotal = resp.data.totalElements
-    })
+    });
+    axios.get('http://localhost:8080/api/admin/findAllFaculties').then(resp => {
+      this.faculties = resp.data
+    });
   },
   methods: {
     // 获取 easy-mock 的模拟数据
