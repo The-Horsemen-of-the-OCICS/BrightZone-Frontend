@@ -73,7 +73,7 @@ export default {
         type: 'warning'
       }).then(() => {
         axios.get('http://localhost:8080/registerCourse/' + this.classSelection + '/' + row.clazzId).then(function (resp) {
-          if (resp.data === 'SUCCEED') {
+          if (resp.data === true) {
             _this.$message({
               type: 'success',
               message: 'Drop Success!'

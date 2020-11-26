@@ -90,7 +90,7 @@ export default {
       formData.append("file", this.file.raw);
       formData.append("deliverableId", row.deliverableId);
       this.axios.post("http://localhost:8080/submitDeliverable", formData).then(function(resp){
-        if (resp.data === 'true') {
+        if (resp.data === true) {
            _this.$message({
               type: 'success',
               message: 'Upload Success!'
@@ -99,7 +99,7 @@ export default {
         }else {
             _this.$message.error('Upload Failed!');
         }
-       
+        _this.fileList=[];
       
       }).catch(() => {
         this.$message({

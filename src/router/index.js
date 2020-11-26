@@ -127,13 +127,13 @@ const routes = [
         redirect: "/studentCourse/index",
         children: [
             {
-                path: 'index',
+                path: 'index/:classId',
                 component: () => import('@/views/student/StudentCourseIndex'),
                 meta: {title: 'studentCourseIndex'},
                 name: 'StudentCourseIndex'
             },
             {
-                path: 'viewCourseDeliverable',
+                path: 'viewCourseDeliverable/:classId',
                 component: () => import('@/views/student/ViewCourseDeliverable'),
                 meta: {title: 'viewCourseDeliverable'},
                 name: 'ViewCourseDeliverable'
