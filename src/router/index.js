@@ -8,6 +8,7 @@ import MyCampus from "@/components/MyCampus";
 import EditDeliverables from "@/components/EditDeliverable";
 import EvaluateSubmission from "@/components/EvaluateSubmission";
 
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -96,6 +97,50 @@ const routes = [
         ]
     },
     {
+        path: '/student',
+        component: () => import(/* webpackChunkName: "home" */ '@/views/student/StudentHome.vue'),
+        redirect: "/student/index",
+        children: [
+            {
+                path: 'index',
+                component: () => import('@/views/student/StudentIndex'),
+                meta: {title: 'studentIndex'},
+                name: 'StudentIndex'
+            },
+            {
+                path: 'viewOpenedCourse',
+                component: () => import('@/views/student/ViewOpenedCourse'),
+                meta: {title: 'viewOpenedCourse'},
+                name: 'ViewOpenedCourse'
+            },
+            {
+                path: 'viewRegisteredCourse',
+                component: () => import('@/views/student/ViewRegisteredCourse'),
+                meta: {title: 'viewRegisteredCourse'},
+                name: 'ViewRegisteredCourse'
+            },
+        ]
+    },
+    {
+        path: '/studentCourse',
+        component: () => import(/* webpackChunkName: "home" */ '@/views/student/StudentCourseHome.vue'),
+        redirect: "/studentCourse/index",
+        children: [
+            {
+                path: 'index',
+                component: () => import('@/views/student/StudentCourseIndex'),
+                meta: {title: 'studentCourseIndex'},
+                name: 'StudentCourseIndex'
+            },
+            {
+                path: 'viewCourseDeliverable',
+                component: () => import('@/views/student/ViewCourseDeliverable'),
+                meta: {title: 'viewCourseDeliverable'},
+                name: 'ViewCourseDeliverable'
+            },
+        ]
+    },
+    {
         path: '/404',
         name: 'Page404',
         component: () => import('@/views/error-page/404')
@@ -105,6 +150,7 @@ const routes = [
         path: '*',
         redirect: '/404',
     }
+
 ]
 
 const router = new VueRouter({

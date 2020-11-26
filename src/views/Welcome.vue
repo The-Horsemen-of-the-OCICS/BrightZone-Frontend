@@ -8,6 +8,10 @@
     <a href="http://localhost:8181/myCampus">Go to myCampus page</a>
     <br>
     <a href="http://localhost:8181/login">Go to login page</a>
+
+      <br>
+    <a href="http://localhost:8181/student">Go to student page</a>
+
   </div>
 </template>
 
