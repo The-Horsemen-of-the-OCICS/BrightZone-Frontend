@@ -90,8 +90,16 @@ const routes = [
             },
         ]
     },
-
-
+    {
+        path: '/404',
+        name: 'Page404',
+        component: () => import('@/views/error-page/404')
+    },
+    // 404 page must be placed at the end !!!
+    {
+        path: '*',
+        redirect: '/404',
+    }
 ]
 
 const router = new VueRouter({
