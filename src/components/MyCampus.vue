@@ -73,6 +73,13 @@ export default {
   methods:{
     openClass(value) {
       console.log(value);
+      const _this = this;
+      this.$router.push({
+        path: '/classHome',
+        query: {
+          classData: _this.classData.find(element => element.classId === value)
+        }
+      })
     },
   }
 }

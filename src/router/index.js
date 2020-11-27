@@ -7,6 +7,7 @@ import ViewStudents from "@/components/ViewStudents";
 import MyCampus from "@/components/MyCampus";
 import EditDeliverables from "@/components/EditDeliverable";
 import EvaluateSubmission from "@/components/EvaluateSubmission";
+import ClassHome from "@/components/ClassHome";
 
 
 Vue.use(VueRouter)
@@ -47,6 +48,11 @@ const routes = [
                 path: "/evaluateSubmission",
                 name: "Evaluate Submission",
                 component: EvaluateSubmission
+            },
+            {
+                path: "/classHome",
+                name: "Class Home",
+                component: ClassHome
             },
 
         ]
