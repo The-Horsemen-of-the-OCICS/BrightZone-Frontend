@@ -6,8 +6,8 @@
                     <div class="user-info">
                         <img src="@/assets/img/img.jpg" class="user-avator" alt />
                         <div class="user-info-cont">
-                            <div class="user-info-name">{{name}}</div>
-                            <div>{{role}}</div>
+                            <div class="user-info-name">{{$store.state.account.name}}</div>
+                            <div>{{$store.state.account.type}}</div>
                         </div>
                     </div>
                     <div class="user-info-list">
@@ -259,7 +259,11 @@ export default {
         //     this.$refs.bar.renderChart();
         //     this.$refs.line.renderChart();
         // }
-    }
+    },
+  created() {
+    console.log(this.$store.state.account.name)
+  }
+
 };
 </script>
 

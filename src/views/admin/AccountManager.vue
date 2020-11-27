@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades"></i> Account
+          <i class="el-icon-lx-people"></i> Account
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>

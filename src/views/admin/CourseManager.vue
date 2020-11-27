@@ -3,7 +3,7 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="el-icon-lx-cascades"></i> Courses
+          <i class="el-icon-lx-sort"></i> Courses
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -47,8 +47,8 @@
             <el-button
                 type="text"
                 icon="el-icon-edit"
-                @click="handleEdit(scope.$index, scope.row)"
-            >Modify
+                @click="handleDetails(scope.$index, scope.row)"
+            >Details
             </el-button>
             <el-button
                 type="text"
@@ -118,7 +118,6 @@ export default {
     };
   },
   created() {
-    //this.getData();
     axios.get('http://localhost:8080/admin/course/getAll/0/10').then(resp => {
       this.tableData = resp.data.content
       this.pageSize = resp.data.size
@@ -126,14 +125,6 @@ export default {
     })
   },
   methods: {
-    // 获取 easy-mock 的模拟数据
-    getData() {
-      fetchData(this.query).then(res => {
-        console.log(res);
-        this.tableData = res.list;
-        this.pageTotal = res.pageTotal || 50;
-      });
-    },
     // 触发搜索按钮
     handleSearch() {
       this.$set(this.query, 'pageIndex', 1);
@@ -183,10 +174,17 @@ export default {
       this.multipleSelection = [];
     },
     // 编辑操作
-    handleEdit(index, row) {
-      this.idx = index;
-      this.form = row;
-      this.editVisible = true;
+    handleDetails(index, row) {
+      this.$router.push({
+        path: '/admin/courseDetails',
+        query: {
+          id: row.id,
+          row: row
+        }
+      })
+      // this.idx = index;
+      // this.form = row;
+      // this.editVisible = true;
     },
     // 保存编辑
     saveEdit() {

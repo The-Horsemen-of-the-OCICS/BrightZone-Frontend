@@ -65,12 +65,12 @@ export default {
           title: 'adminIndex'
         },
         {
-          icon: 'el-icon-lx-cascades',
+          icon: 'el-icon-lx-people',
           index: 'accounts',
           title: 'Accounts'
         },
         {
-          icon: 'el-icon-lx-cascades',
+          icon: 'el-icon-lx-sort',
           index: 'courses',
           title: 'Courses'
         },
