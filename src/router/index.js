@@ -63,6 +63,11 @@ const routes = [
         component: () => import('@/views/account/Login')
     },
     {
+        path: '/passwordRecovery',
+        name: 'PasswordRecovery',
+        component: () => import('@/views/account/PasswordRecovery')
+    },
+    {
         path: '/',
         redirect: '/welcome'
     },
