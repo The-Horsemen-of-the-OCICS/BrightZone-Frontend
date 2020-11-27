@@ -80,7 +80,7 @@ export default {
         newPassword: '',
         confirmPassword: '',
       },
-      responseResultForm: {
+      responseResult: {
         success: '',
         errMsg: '',
       },
@@ -110,7 +110,7 @@ export default {
               {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
               .then((resp) => {
                 console.log(resp)
-                this.responseResultForm.success = resp.data.success
+                this.responseResult.success = resp.data.success
                 if (resp.data.success) {  // verification code sent success
                   this.$message({
                     showClose: true,
@@ -119,10 +119,10 @@ export default {
                     duration: 6000,
                   });
                 } else {  // verification code sent fail
-                  this.responseResultForm.errMsg = resp.data.errMsg
+                  this.responseResult.errMsg = resp.data.errMsg
                   this.$message({
                     showClose: true,
-                    message: 'Error: ' + this.responseResultForm.errMsg,
+                    message: 'Error: ' + this.responseResult.errMsg,
                     type: 'error',
                     duration: 6000,
                   });
@@ -149,7 +149,7 @@ export default {
           }), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
           .then((resp) => {
             console.log(resp)
-            this.responseResultForm.success = resp.data.success;
+            this.responseResult.success = resp.data.success;
             if (resp.data.success) {  // password recovery success
               this.$confirm('Password recovery success, do you want to go to login page?', 'Success', {
                 confirmButtonText: 'Yes',
@@ -159,10 +159,10 @@ export default {
                 this.$router.push('/login');
               }).catch(() => {});
             } else {  // // password recovery fail
-              this.responseResultForm.errMsg = resp.data.errMsg;
+              this.responseResult.errMsg = resp.data.errMsg;
               this.$message({
                 showClose: true,
-                message: 'Error: ' + this.responseResultForm.errMsg,
+                message: 'Error: ' + this.responseResult.errMsg,
                 type: 'error',
                 duration: 6000,
               });
