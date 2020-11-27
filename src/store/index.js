@@ -7,7 +7,9 @@ export default new Vuex.Store({
   state: {
     account: {
       userId: '',
+      name: '',
       type: '',
+      email: '',
     }
   },
   mutations: {

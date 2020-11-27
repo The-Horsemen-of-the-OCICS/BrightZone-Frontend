@@ -40,8 +40,10 @@ export default {
       loginResult: {
         success: '',
         errMsg: '',
-        userId: '',  // consistent with field <userId> in database
-        accountType: '',
+        userId: '',  // consistent with field <userId> in database, account's userId
+        name: '',  // account's name
+        type: '',  // account's type (student, professor, admin, teaching_assistant)
+        email: '', // account's email
       },
       rules: {
         email: [
@@ -65,14 +67,21 @@ export default {
                 if (resp.data.success) {  // login success
                   this.loginResult.success = true;
                   this.loginResult.userId = resp.data.userId;
-                  this.loginResult.accountType = resp.data.accountType;
+                  this.loginResult.name = resp.data.name;
+                  this.loginResult.type = resp.data.accountType;
+                  this.loginResult.email = resp.data.email;
                   this.$message({
                     showClose: true,
                     message: 'Login Success!',
                     type: 'success'
                   });
-                  this.$store.commit('login', {'userId':this.loginResult.userId, 'type': this.loginResult.accountType})
-                  switch (this.loginResult.accountType) {
+                  this.$store.commit('login', {
+                    'userId': this.loginResult.userId,
+                    'name': this.loginResult.name,
+                    'type': this.loginResult.type,
+                    'email': this.loginResult.email,
+                  })
+                  switch (this.loginResult.type) {
                     case 'administrator':
                       this.$router.push('/admin/adminIndex');
                       break;
