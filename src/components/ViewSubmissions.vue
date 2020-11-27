@@ -138,6 +138,8 @@ export default {
         const _this = this;
         this.deliverableSelection = '';
         this.deliverableData = [];
+        this.submissionData = [];
+        this.submissionMap = new Map();
         axios.get('http://localhost:8080/getAllDeliverables/' + classId).then(function (resp) {
           _this.deliverableData = resp.data;
         })

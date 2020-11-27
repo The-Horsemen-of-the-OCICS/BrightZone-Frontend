@@ -22,7 +22,7 @@
             </el-row>
             <div>
               Enrolled: {{this.classData.enrolled}}/{{this.classData.enrollCapacity}}
-              <el-progress :percentage="this.classData.enrolled / this.classData.enrollCapacity"></el-progress>
+              <el-progress :percentage="100 * this.classData.enrolled / this.classData.enrollCapacity"></el-progress>
             </div>
           </div>
         </el-card>
@@ -120,20 +120,21 @@ export default {
   name: "ClassHome",
   created() {
     const _this = this;
-
     const query = this.$route.query;
+    console.assert('here')
     console.log(query)
     if (query) {
-      this.classData = query.classData;
-    }
-
-    if (!this.classData) {
+      axios.get('http://localhost:8080/getAllClass/' + this.$parent.$data.userId).then(function (resp) {
+        console.log(resp.data)
+        _this.classData = resp.data.find(element => element.classId.toString() === query.classId.toString())
+        console.log(_this.classData)
+        axios.get('http://localhost:8080/admin/course/get/' + _this.classData.courseId).then(function (resp) {
+          _this.courseData = resp.data;
+        });
+      });
+    } else {
       this.$router.push('/404');
     }
-
-    axios.get('http://localhost:8080/admin/course/get/' + this.classData.courseId).then(function (resp) {
-      _this.courseData = resp.data;
-    });
   },
   data() {
     return {
@@ -166,9 +167,12 @@ export default {
 
   },
   methods:{
-    openClass(value) {
-      console.log(value);
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath);
     },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    }
   }
 }
 </script>

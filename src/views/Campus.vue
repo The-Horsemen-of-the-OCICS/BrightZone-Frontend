@@ -6,7 +6,7 @@
       <div class="content">
         <transition name="move" mode="out-in">
           <keep-alive>
-            <router-view></router-view>
+            <router-view :key="$route.fullPath"></router-view>
           </keep-alive>
         </transition>
       </div>

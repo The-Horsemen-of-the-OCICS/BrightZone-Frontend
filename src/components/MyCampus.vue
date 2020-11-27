@@ -77,7 +77,7 @@ export default {
       this.$router.push({
         path: '/classHome',
         query: {
-          classData: _this.classData.find(element => element.classId === value)
+          classId: value
         }
       })
     },
