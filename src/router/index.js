@@ -77,6 +77,11 @@ const routes = [
         component: () => import('@/views/account/MockIndex')
     },
     {
+        path: '/common/header',
+        name: 'CommonHeader',
+        component: () => import('@/views/common/Header')
+    },
+    {
         path: '/admin',
         component: () => import(/* webpackChunkName: "home" */ '@/views/admin/AdminHome.vue'),
         redirect: '/admin/adminIndex',

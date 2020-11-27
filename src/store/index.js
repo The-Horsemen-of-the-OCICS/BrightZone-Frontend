@@ -16,6 +16,13 @@ export default new Vuex.Store({
     login(state, account) {
       state.account = account;
       sessionStorage.setItem("userMsg", JSON.stringify(state));
+    },
+    logout(state) {
+      state.account.userId = '';
+      state.account.name = '';
+      state.account.type = '';
+      state.account.email = '';
+      sessionStorage.removeItem("userMsg");
     }
   },
   actions: {

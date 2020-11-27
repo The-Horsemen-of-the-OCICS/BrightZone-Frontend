@@ -18,6 +18,7 @@ Vue.config.productionTip = false
 
 Vue.use(VueI18n);
 Vue.use(VueAxios, axios)
+axios.defaults.withCredentials = true;  // allow cookies to be carried across domains
 
 Vue.use(ElementUI, {
     size: 'small',
