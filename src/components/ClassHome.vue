@@ -89,16 +89,21 @@
                   :value="item">
               </el-option>
             </el-select>
-            <el-button size="small" type="primary" style="margin-bottom: 10px;">Upload</el-button>
-            <el-button size="small" style="margin-bottom: 10px;">Clear</el-button>
+            <el-button size="small" type="primary" style="margin-bottom: 10px;"  @click="uploadClassMaterial">Upload</el-button>
+            <el-button size="small" style="margin-bottom: 10px;" @click="handleClear">Clear</el-button>
 
           </div>
           <div style="display: flex">
             <el-upload
-                class="upload-demo"
+                ref="upload"
                 drag
-                action=""
-                multiple>
+                action="https://localhost:8080/uploadClassMaterial/"
+                :multiple="true"
+                :file-list="uploadList"
+                :auto-upload="false"
+                :before-upload="beforeUpload"
+                :on-change="handleChange"
+            >
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">Drag files here or<em> Click </em></div>
               <div class="el-upload__tip" slot="tip">You can upload files up to a maximum of 2 MB.</div>
@@ -161,6 +166,7 @@ export default {
           'Quiz3',
       ],
       displayFileName: [],
+      uploadList:  []
     }
   },
   computed: {
@@ -172,6 +178,50 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
+    },
+    beforeUpload(file) {
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isLt2M) {
+        this.$message.error('File size exceeds 2MB!');
+        return false;
+      }
+      if (!this.directorySelection || this.directorySelection === '') {
+        this.$message.error('Please select or create a directory!');
+        return false;
+      }
+      return true;
+    },
+    handleChange(file, fileList) {
+      this.uploadList = fileList
+    },
+    submitUpload() {
+      this.$refs.upload.submit();
+    },
+    handleClear() {
+      this.$refs.upload.clearFiles();
+    },
+    uploadClassMaterial() {
+      const _this = this;
+      if (!this.uploadList) {
+        return this.$message.warning('Nothing to upload');
+      }
+      console.log(this.uploadList)
+      this.uploadList.forEach(file => {
+        const formData = new FormData();
+        formData.append("file", file.raw);
+        axios.post('http://localhost:8080/uploadClassMaterial/' + _this.classData.classId + '/' + _this.directorySelection, formData).then(function (resp) {
+          if (resp.data === 'SUCCEED') {
+            _this.$message({
+              type: 'success',
+              message: 'File <' + file.name + '> uploaded successfully!'
+            });
+          } else {
+            _this.$message.error('Database Error! Failed to upload.');
+          }
+        });
+      }
+      )
     }
   }
 }
