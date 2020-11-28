@@ -89,6 +89,13 @@ export default {
     axios.get('http://localhost:8080/getAllClass/' + this.$parent.$data.userId).then(function (resp) {
       _this.classData = resp.data;
     })
+
+    const query = this.$route.query;
+    console.log(query);
+    if (query && query.classId !== '') {
+      this.classSelection = query.classId
+      this.onChangeClass(this.classSelection);
+    }
   },
   data() {
     return {

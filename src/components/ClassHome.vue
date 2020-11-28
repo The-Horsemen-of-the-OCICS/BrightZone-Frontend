@@ -27,19 +27,19 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="4">
+      <el-col :span="5">
         <el-card style="max-width: 250px">
           <el-row style="margin-bottom: 10px">
-            <el-link icon="el-icon-document-checked" style="font-size: 20px"> View Deliverables</el-link>
+            <el-link icon="el-icon-document-checked" style="font-size: 18px" @click="viewDeliverables"> View Deliverables</el-link>
           </el-row>
           <el-row style="margin-bottom: 10px">
-            <el-link icon="el-icon-edit" style="font-size: 20px"> Create Deliverable</el-link>
+            <el-link icon="el-icon-edit" style="font-size: 18px" @click="createDeliverables"> Create Deliverable</el-link>
           </el-row>
           <el-row style="margin-bottom: 10px">
-            <el-link icon="el-icon-user" style="font-size: 20px"> View Students</el-link>
+            <el-link icon="el-icon-user" style="font-size: 18px" @click="viewStudents"> View Students</el-link>
           </el-row>
           <el-row>
-            <el-link icon="el-icon-document-copy" style="font-size: 20px"> View Submissions </el-link>
+            <el-link icon="el-icon-document-copy" style="font-size: 18px" @click="viewSubmissions"> View Submissions </el-link>
           </el-row>
         </el-card>
       </el-col>
@@ -105,7 +105,6 @@
                 :multiple="true"
                 :file-list="uploadList"
                 :auto-upload="false"
-                :before-upload="beforeUpload"
                 :on-change="handleChange"
             >
               <i class="el-icon-upload"></i>
@@ -207,19 +206,6 @@ export default {
         }
       }
     },
-    beforeUpload(file) {
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isLt2M) {
-        this.$message.error('File size exceeds 2MB!');
-        return false;
-      }
-      if (!this.directorySelection || this.directorySelection === '') {
-        this.$message.error('Please select or create a directory!');
-        return false;
-      }
-      return true;
-    },
     handleChange(file, fileList) {
       this.uploadList = fileList
     },
@@ -234,6 +220,18 @@ export default {
       if (!this.uploadList) {
         return this.$message.warning('Nothing to upload');
       }
+      if (!this.directorySelection || this.directorySelection === '') {
+        return this.$message.error('Please select or create a directory!');;
+      }
+      let sizeLimit = true;
+      this.uploadList.forEach(file => {
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+          sizeLimit = false;
+        }
+      });
+      if (!sizeLimit) return this.$message.error('File size exceeds 2MB!');
+
       console.log(this.uploadList)
       this.uploadList.forEach(file => {
         const formData = new FormData();
@@ -244,6 +242,8 @@ export default {
               type: 'success',
               message: 'File <' + file.name + '> uploaded successfully!'
             });
+            _this.uploadList = [];
+            _this.handleClear();
             _this.reloadData();
           } else {
             _this.$message.error('Database Error! Failed to upload ' + 'File <' + file.name + '>');
@@ -251,7 +251,39 @@ export default {
         });
       }
       )
-    }
+    },
+    viewDeliverables(){
+      this.$router.push({
+        path: '/viewDeliverables',
+        query: {
+          classId: (this.classData ? this.classData.classId : '')
+        }
+      })
+    },
+    createDeliverables(){
+      this.$router.push({
+        path: '/editDeliverable',
+        query: {
+          classId: (this.classData ? this.classData.classId : '')
+        }
+      })
+    },
+    viewStudents(){
+      this.$router.push({
+        path: '/viewStudents',
+        query: {
+          classId: (this.classData ? this.classData.classId : '')
+        }
+      })
+    },
+    viewSubmissions(){
+      this.$router.push({
+        path: '/viewSubmissions',
+        query: {
+          classId: (this.classData ? this.classData.classId : '')
+        }
+      })
+    },
   }
 }
 </script>

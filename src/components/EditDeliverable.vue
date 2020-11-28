@@ -73,20 +73,22 @@ export default {
     })
 
     const query = this.$route.query;
-    console.log(query);
-    if (Object.keys(query).length !== 0 && this.deliverableForm.classId === '') {
+
+    if (Object.keys(query).length >= 1 && this.deliverableForm.classId === '') {
       this.resetForm('deliverableForm')
       this.deliverableForm.classId = query.classId;
       axios.get('http://localhost:8080/getAllDeliverables/' + query.classId).then(function (resp) {
         _this.deliverableData = resp.data;
       })
-      this.deliverableForm.deliverableId = query.deliverableId;
-      this.deliverableForm.deliverableDesc = query.deliverableDesc;
-      this.deliverableForm.deadLine = query.deliverableDeadLine;
-      this.deliverableForm.deadlineDate = query.deliverableDeadLine.substr(0, query.deliverableDeadLine.indexOf('T'));
-      this.deliverableForm.deadlineTime = query.deliverableDeadLine.substr(query.deliverableDeadLine.indexOf('T') + 1, 8);
-      this.deliverableForm.percent = query.deliverableWeight;
-      this.deliverableForm.isNotified = query.notified;
+      if (Object.keys(query).length > 1) {
+        this.deliverableForm.deliverableId = query.deliverableId;
+        this.deliverableForm.deliverableDesc = query.deliverableDesc;
+        this.deliverableForm.deadLine = query.deliverableDeadLine;
+        this.deliverableForm.deadlineDate = query.deliverableDeadLine.substr(0, query.deliverableDeadLine.indexOf('T'));
+        this.deliverableForm.deadlineTime = query.deliverableDeadLine.substr(query.deliverableDeadLine.indexOf('T') + 1, 8);
+        this.deliverableForm.percent = query.deliverableWeight;
+        this.deliverableForm.isNotified = query.notified;
+      }
     }
 
   },
@@ -218,7 +220,11 @@ export default {
                   type: 'success',
                   message: 'Update Successfully!'
                 });
-                _this.resetForm('deliverableForm');
+                let curDeli = _this.deliverableData.find(s => s.deliverableId === _this.deliverableForm.deliverableId);
+                curDeli.deliverableDesc = _this.deliverableForm.deliverableDesc;
+                curDeli.deadLine = _this.deliverableForm.deadLine;
+                curDeli.percent =  _this.deliverableForm.percent
+                curDeli.isNotified = _this.deliverableForm.isNotified
               } else {
                 _this.$message.error('Database Error! Failed to update.');
               }
