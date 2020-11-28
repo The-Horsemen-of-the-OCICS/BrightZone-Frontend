@@ -39,7 +39,7 @@
             <el-link icon="el-icon-user" style="font-size: 20px"> View Students</el-link>
           </el-row>
           <el-row>
-            <el-link icon="el-icon-document-copy" style="font-size: 20px"> View Submissions</el-link>
+            <el-link icon="el-icon-document-copy" style="font-size: 20px"> View Submissions </el-link>
           </el-row>
         </el-card>
       </el-col>
@@ -53,23 +53,27 @@
                   class="sidebar-el-menu"
                   default-active="0"
                   active-text-color="#154360"
-                  @open="handleOpen"
-                  @close="handleClose"
+                  @select="handleSelect"
               >
                 <el-menu-item index="All" >
                   <i class="el-icon-caret-right"></i>
                   <span slot="title">All</span>
                 </el-menu-item>
 
-                <el-menu-item v-for="d in this.directoryData" index="All" >
+                <el-menu-item v-for="d in this.directoryData" :key="d" :index="d">
                   <i class="el-icon-caret-right"></i>
                   <span slot="title"> {{ d }}</span>
                 </el-menu-item>
               </el-menu>
             </div>
             <div>
-              <el-row v-for="f in this.allFileName" style="text-align: left; margin-left: 20px;" >
-                <el-link icon="el-icon-tickets" style="font-size: 20px; width: content-box"> {{f}}</el-link>
+              <el-row v-for="f in this.displayFileName" :key="f" style="text-align: left; margin-left: 10px; margin-top: 10px;" >
+                <el-col :span="21">
+                  <el-link icon="el-icon-tickets" style="font-size: 16px; width: content-box"> {{f}}</el-link>
+                </el-col>
+                <el-col :span="1">
+                  <el-button style="margin-left: 20px" icon="el-icon-delete" @click=""></el-button>
+                </el-col>
                 <el-divider></el-divider>
               </el-row>
             </div>
@@ -112,30 +116,21 @@
         </el-card>
       </el-col>
     </el-row>
-
   </div>
 </template>
 
-
 <script>
-
 import axios from "axios";
-
 export default {
   name: "ClassHome",
   created() {
     const _this = this;
     const query = this.$route.query;
-    console.assert('here')
-    console.log(query)
+
     if (query) {
       axios.get('http://localhost:8080/getAllClass/' + this.$parent.$data.userId).then(function (resp) {
-        console.log(resp.data)
         _this.classData = resp.data.find(element => element.classId.toString() === query.classId.toString())
-        console.log(_this.classData)
-        axios.get('http://localhost:8080/admin/course/get/' + _this.classData.courseId).then(function (resp) {
-          _this.courseData = resp.data;
-        });
+        _this.reloadData()
       });
     } else {
       this.$router.push('/404');
@@ -146,6 +141,8 @@ export default {
       classData: '',
       courseData: '',
       directorySelection: '',
+      allFiles: null,
+      directoryFilter: 'All',
       directoryData: [
           'Course Syllabus',
           'Course Slides',
@@ -153,19 +150,18 @@ export default {
           'FAQ',
           'Quizzes',
       ],
-      allFileName: [
-          'SyllabusFall2020',
-          'Topic-0',
-          'Topic-1',
-          'Topic-2',
-          'Assignment1',
-          'Assignment2',
-          'FAQ-2020-1',
-          'FAQ-2020-3',
-          'Quiz1',
-          'Quiz3',
-      ],
-      displayFileName: [],
+      displayFileName: [
+      'SyllabusFall2020',
+      'Topic-0',
+      'Topic-1',
+      'Topic-2',
+      'Assignment1',
+      'Assignment2',
+      'FAQ-2020-1',
+      'FAQ-2020-3',
+      'Quiz1',
+      'Quiz3',
+    ],
       uploadList:  []
     }
   },
@@ -173,11 +169,43 @@ export default {
 
   },
   methods:{
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+    reloadData() {
+      const _this = this;
+      axios.get('http://localhost:8080/getFileNames/' + this.classData.classId).then(function (resp) {
+        _this.allFiles = resp.data
+        console.log(resp.data)
+        _this.directoryData = []
+        _this.displayFileName = []
+        if (_this.allFiles.length > 0 ) {
+          for (let i = 1; i < _this.allFiles.length; i += 1) {
+            _this.displayFileName = _this.displayFileName.concat(_this.allFiles[i])
+          }
+          _this.directoryData = _this.allFiles[0];
+        }
+        _this.directoryFilter = 'All'
+
+      });
+      axios.get('http://localhost:8080/admin/course/get/' + this.classData.courseId).then(function (resp) {
+        _this.courseData = resp.data;
+      });
     },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
+    handleSelect(key) {
+      console.log(key)
+      if (key !== this.directoryFilter && this.allFiles.length > 0) {
+        this.displayFileName = [];
+        this.directoryFilter = key;
+        if (key === 'All') {
+          for (let i = 1; i < this.allFiles.length; i += 1) {
+            this.displayFileName = this.displayFileName.concat(this.allFiles[i])
+          }
+        } else {
+          let pos = 0;
+          for (let i = 0; i < this.allFiles[0].length; i += 1) {
+            if (this.allFiles[0][i] === key) pos = i;
+          }
+          this.displayFileName = this.allFiles[pos+1]
+        }
+      }
     },
     beforeUpload(file) {
       const isLt2M = file.size / 1024 / 1024 < 2;
@@ -216,8 +244,9 @@ export default {
               type: 'success',
               message: 'File <' + file.name + '> uploaded successfully!'
             });
+            _this.reloadData();
           } else {
-            _this.$message.error('Database Error! Failed to upload.');
+            _this.$message.error('Database Error! Failed to upload ' + 'File <' + file.name + '>');
           }
         });
       }

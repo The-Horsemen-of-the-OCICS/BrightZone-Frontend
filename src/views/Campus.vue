@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <v-head></v-head>
+    <Header></Header>
     <ProfessorNav></ProfessorNav>
     <div class="content-box" :class="{'content-collapse':collapse}">
       <div class="content">
@@ -16,7 +16,7 @@
 
 <script>
 import ProfessorNav from '@/components/ProfessorNav.vue'
-import vHead from '@/views/admin/AdminHeader.vue';
+import Header from '@/views/common/Header.vue';
 import bus from "@/components/common/bus";
 
 
@@ -29,7 +29,7 @@ export default {
     };
   },
   components: {
-    vHead,
+    Header,
     ProfessorNav
   },
   created() {
