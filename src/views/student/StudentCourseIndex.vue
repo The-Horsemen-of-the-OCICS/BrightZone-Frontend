@@ -3,7 +3,7 @@
      <el-row :gutter="20">
       <el-col :span="14">
         <div>
-          <h1 style="display: flex; text-align: left;">CSI 51089</h1>
+          <h1 style="display: flex; text-align: left;">{{ '[' + courseData.courseNo + '] ' + courseData.courseName }}</h1>
         </div>
       </el-col>
     </el-row>
@@ -16,15 +16,21 @@
 import axios from "axios";
 
 export default {
-  name: "StudentIndex",
-  created() {
+  name: "StudentCourseIndex",
+   created() {
     const _this = this;
-    //console.log(this.$route.params.classId)
+    console.log(this.$route.params.clazzId)
+    const params = new URLSearchParams([['clazzId', this.$route.params.clazzId ]]);
+    axios.get('http://localhost:8080/getCourseVo',{params}).then(function (resp) {
+      _this.courseData = resp.data;
+    })
+
+    
+    
   },
   data() {
     return {
-      courseData:[
-      ],
+      courseData:{},
     }
   },
   computed: {

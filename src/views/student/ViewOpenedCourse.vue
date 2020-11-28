@@ -54,6 +54,7 @@
 
 <script>
 import axios from "axios";
+import bus from "@/components/common/bus";
 
 export default {
   name: "ViewOpenedCourse",
@@ -70,20 +71,21 @@ export default {
   },
   methods: {
     register(index, row) {
+      console.log(row)
       const _this = this;
       this.$confirm('You are going to register "' + row.courseName +'(' + row.courseNo+ ')".', 'Notification', {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
         type: 'warning'
       }).then(() => {
-        axios.get('http://localhost:8080/registerCourse/' + this.classSelection + '/' + row.clazzId).then(function (resp) {
-          if (resp.data === true) {
-            _this.$message({
-              type: 'success',
-              message: 'Register Success!'
-            });
+        const params = new URLSearchParams([['clazzId', row.clazzId ]]);
+        axios.get('http://localhost:8080/registerCourse',{params}).then(function (resp) {
+          if (resp.data.data === true) {
+            _this.$message.success(resp.data.desc);
+            row.enrolled = 1
+            bus.$emit('register-course', row);
           } else {
-            _this.$message.error('Register Failed!');
+            _this.$message.error(resp.data.desc);
           }
         });
       }).catch(() => {

@@ -89,7 +89,7 @@ export default {
                       this.$router.push('/Campus');
                       break;
                     case 'student':
-                      this.$router.push('/mock/index');
+                      this.$router.push('/student');
                       break;
                     case 'teaching_assistant':
                       this.$router.push('/mock/index');

@@ -43,11 +43,11 @@ export default {
   },
   methods: {
     handleSelect(key, keyPath) {
-      console.log(key+"/"+this.$route.params.classId)
+      console.log(this.$route.params)
     if(key ==  '/studentCourse/ViewCourseDeliverable'){
- this.$router.push({
-          path: key+"/"+this.$route.params.classId 
-        })
+      this.$router.push({
+                path: key+"/"+this.$route.params.clazzId 
+              })
     }else{
       this.$router.push({
           path: key

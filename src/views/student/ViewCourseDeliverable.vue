@@ -69,11 +69,11 @@ export default {
   name: "ViewCourseDeliverable",
   created() {
     const _this = this;
-    const params = new URLSearchParams([['clazzId', this.$route.params.classId ]]);
+    const params = new URLSearchParams([['clazzId', this.$route.params.clazzId]]);
     axios.get('http://localhost:8080/getAllDeliverable',{params}).then(function (resp) {
       _this.deliverableData = resp.data;
     })
-    console.log(this.$route.params.classId)
+    console.log(this.$route.params.clazzId)
   },
   data() {
     return {
@@ -88,6 +88,7 @@ export default {
       const _this = this;
       formData.append("file", this.file.raw);
       formData.append("deliverableId", row.deliverableId);
+      console.log(formData.values())
       this.axios.post("http://localhost:8080/submitDeliverable", formData).then(function(resp){
         if (resp.data === true) {
           _this.$message({

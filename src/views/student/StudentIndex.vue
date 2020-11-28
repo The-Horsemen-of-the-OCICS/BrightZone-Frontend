@@ -3,8 +3,8 @@
      <el-row :gutter="20">
       <el-col :span="14">
         <el-row :gutter="20" class="el-row">
-          <el-col :span="12" v-for="c in this.courseData" :key="c.courseId"  style="margin-bottom: 20px">
-            <el-card class="box-card" shadow="hover" @click.native="openCourse(c.classId)">
+          <el-col :span="12" v-for="c in this.courseData" :key="c.courseId"  style="margin-bottom: 20px;cursor: pointer;" >
+            <el-card class="box-card" shadow="hover" @click.native="openCourse(c.clazzId)">
               <div slot="header" class="clearfix" style="margin: -20px">
                 <img src="http://www.scri8e.com/stars/bgs/1J1/sunsetpalmsbanner.jpg" class="image">
               </div>
@@ -23,6 +23,7 @@
 <script>
 
 import axios from "axios";
+import bus from "@/components/common/bus";
 
 export default {
   name: "StudentIndex",
@@ -30,7 +31,18 @@ export default {
     const _this = this;
     axios.get('http://localhost:8080/getAllRegisteredCourse').then(function (resp) {
       _this.courseData = resp.data;
+    });
+     bus.$on('register-course', msg => {
+       axios.get('http://localhost:8080/getAllRegisteredCourse').then(function (resp) {
+      _this.courseData = resp.data;
     })
+    });
+   bus.$on('drop-course', msg => {
+       _this.courseData=_this.courseData.filter((item) => { return item.clazzId !== msg.clazzId; });
+    });
+
+               
+
   },
   data() {
     return {
@@ -42,9 +54,10 @@ export default {
 
   },
   methods:{
-    openCourse(classId) {
+    openCourse(clazzId) {
+      console.log(clazzId)
       this.$router.push({
-        path: `/studentCourse/index/${classId}`,
+        path: `/studentCourse/index/${clazzId}`,
       })
     },
   }

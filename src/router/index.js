@@ -160,13 +160,13 @@ const routes = [
         redirect: "/studentCourse/index",
         children: [
             {
-                path: 'index/:classId',
+                path: 'index/:clazzId',
                 component: () => import('@/views/student/StudentCourseIndex'),
                 meta: {title: 'studentCourseIndex'},
                 name: 'StudentCourseIndex'
             },
             {
-                path: 'viewCourseDeliverable/:classId',
+                path: 'viewCourseDeliverable/:clazzId',
                 component: () => import('@/views/student/ViewCourseDeliverable'),
                 meta: {title: 'viewCourseDeliverable'},
                 name: 'ViewCourseDeliverable'

@@ -39,7 +39,7 @@
           <el-button
               size="mini"
               type="danger"
-              @click="register(scope.$index, scope.row)">Drop</el-button>
+              @click="drop(scope.$index, scope.row)">Drop</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -49,6 +49,7 @@
 
 <script>
 import axios from "axios";
+import bus from "@/components/common/bus";
 
 export default {
   name: "ViewRegisteredCourse",
@@ -56,8 +57,15 @@ export default {
     const _this = this;
     axios.get('http://localhost:8080/getAllRegisteredCourse').then(function (resp) {
       _this.courseData = resp.data;
+    });
+
+    bus.$on('register-course', msg => {
+      console.log(msg)
+       axios.get('http://localhost:8080/getAllRegisteredCourse').then(function (resp) {
+      _this.courseData = resp.data;
     })
-      console.log(this.$route.params.classId)
+    });
+    
   },
   data() {
     return {
@@ -65,21 +73,21 @@ export default {
     }
   },
   methods: {
-    register(index, row) {
+    drop(index, row) {
       const _this = this;
-      this.$confirm('You are going to register "' + row.courseName +'(' + row.courseNumber+ ')".', 'Notification', {
+      this.$confirm('You are going to Drop "' + row.courseName +'(' + row.courseNumber+ ')".', 'Notification', {
         confirmButtonText: 'Confirm',
         cancelButtonText: 'Cancel',
         type: 'warning'
       }).then(() => {
-        axios.get('http://localhost:8080/registerCourse/' + this.classSelection + '/' + row.clazzId).then(function (resp) {
-          if (resp.data === true) {
-            _this.$message({
-              type: 'success',
-              message: 'Drop Success!'
-            });
+        const params = new URLSearchParams([['clazzId', row.clazzId ]]);
+        axios.get('http://localhost:8080/dropCourse' ,{params}).then(function (resp) {
+          if (resp.data.data === true) {
+            _this.$message.success(resp.data.desc);
+            _this.courseData=_this.courseData.filter((item) => { return item.clazzId !== row.clazzId; });
+            bus.$emit('drop-course', row);
           } else {
-            _this.$message.error('Drop Failed!');
+            _this.$message.error(resp.data.desc);
           }
         });
       }).catch(() => {

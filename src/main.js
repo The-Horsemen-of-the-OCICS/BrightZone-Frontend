@@ -15,6 +15,7 @@ import './components/common/directives';
 import 'babel-polyfill';
 
 Vue.config.productionTip = false
+axios.defaults.withCredentials = true
 
 Vue.use(VueI18n);
 Vue.use(VueAxios, axios)
