@@ -34,10 +34,10 @@
                     <!--                      <h3 style="text-align: center">{{courseInfo.courseId}}</h3>-->
                     <el-input v-model="courseInfo.courseId" readOnly></el-input>
                   </el-form-item>
-                  <el-form-item label="Course Subject:" size="">
+                  <el-form-item label="Course Subject:" size="" prop="courseSubject">
                     <el-input v-model="courseInfo.courseSubject" readOnly></el-input>
                   </el-form-item>
-                  <el-form-item label="Course Number:" size="">
+                  <el-form-item label="Course Number:" size="" prop="courseNumber">
                     <el-input v-model="courseInfo.courseNumber" readOnly></el-input>
                   </el-form-item>
                   <el-form-item label="Course Credit:" size="">
@@ -183,8 +183,8 @@
 
     </div>
 
-    <!-- 编辑弹出框 -->
-    <el-dialog title="Modify the course" :visible.sync="editVisible"  width="60%">
+    <!-- edit dialog -->
+    <el-dialog title="Modify the course" :visible.sync="editVisible" width="50%">
       <el-form :model="editCourseForm" :rules="editCourseRules" label-width="140px">
         <el-form-item label="Course Name :" prop="courseName">
           <el-input v-model="editCourseForm.courseName"></el-input>
@@ -219,7 +219,13 @@ export default {
   data() {
     return {
 
-      courseInfo: {},
+      courseInfo: {
+        courseName: '',
+        courseSubject: '',
+        courseNumber: '',
+        courseCredit: '',
+        courseDesc: '',
+      },
       clazzData: [],
 
       multipleSelection: [],
@@ -237,19 +243,19 @@ export default {
       editCourseRules: {
         courseName:
             [
-              {require: true, message: 'Course name can not be none', trigger: 'blur'}
+              {required: true, message: 'Course name can not be none', trigger: 'blur'}
             ],
         courseSubject:
             [
-              {require: true, message: 'Course subject can not be none', trigger: 'blur'}
+              {required: true, message: 'Course subject can not be none', trigger: 'blur'}
             ],
         courseNumber:
             [
-              {require: true, message: 'Course number can not be none', trigger: 'blur'}
+              {required: true, message: 'Course number can not be none', trigger: 'blur'}
             ],
         courseCredit:
             [
-              {require: true, message: 'Course credit can not be none', trigger: 'blur'}
+              {required: true, message: 'Course credit can not be none', trigger: 'blur'}
             ],
       }
     };
@@ -261,6 +267,12 @@ export default {
     },
     onEditCourse() {
       this.editVisible = true
+      this.editCourseForm.courseName = this.$route.query.row.courseName
+      this.editCourseForm.courseId = this.$route.query.row.courseId
+      this.editCourseForm.courseSubject = this.$route.query.row.courseSubject
+      this.editCourseForm.courseNumber = this.$route.query.row.courseNumber
+      this.editCourseForm.courseDesc = this.$route.query.row.courseDesc
+      this.editCourseForm.credit = this.$route.query.row.credit
     },
     saveCourseEdit() {
       console.log(this.courseInfo)
@@ -270,7 +282,7 @@ export default {
   },
   created() {
     this.courseInfo = this.$route.query.row
-    this.editCourseForm=this.$route.query.row
+
     console.log(this.courseInfo)
     console.log(this.courseInfo.courseId)
     console.log(this.courseInfo.courseName)

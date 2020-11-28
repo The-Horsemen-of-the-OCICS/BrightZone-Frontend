@@ -11,11 +11,11 @@
     <div class="tags-close-box">
       <el-dropdown @command="handleTags">
         <el-button size="mini" type="primary">
-          标签选项<i class="el-icon-arrow-down el-icon--right"></i>
+          Tab Options<i class="el-icon-arrow-down el-icon--right"></i>
         </el-button>
         <el-dropdown-menu size="small" slot="dropdown">
-          <el-dropdown-item command="other">关闭其他</el-dropdown-item>
-          <el-dropdown-item command="all">关闭所有</el-dropdown-item>
+          <el-dropdown-item command="other">Close Others</el-dropdown-item>
+          <el-dropdown-item command="all">Close All</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -48,7 +48,7 @@ export default {
     // 关闭全部标签
     closeAll() {
       this.tagsList = [];
-      this.$router.push('/');
+      this.$router.push('/admin');
     },
     // 关闭其他标签
     closeOther() {

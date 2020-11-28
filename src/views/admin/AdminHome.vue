@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import vHead from '@/views/admin/AdminHeader.vue';
+import vHead from '@/views/common/Header.vue';
 import vSidebar from '@/views/admin/AdminSidebar.vue';
 import vTags from '@/views/admin/AdminTags.vue';
 import bus from '@/components/common/bus';

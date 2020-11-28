@@ -121,6 +121,12 @@ const routes = [
                 meta: {title: 'courseDetails'},
                 name: 'courseDetails'
             },
+            {
+                path: 'draw',
+                component: () => import(/* webpackChunkName: "dashboard" */ '@/views/admin/draw'),
+                meta: {title: 'draw'},
+                name: 'draw'
+            },
         ]
     },
     {
