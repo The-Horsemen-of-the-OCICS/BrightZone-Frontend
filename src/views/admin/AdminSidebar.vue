@@ -74,7 +74,11 @@ export default {
           index: 'courses',
           title: 'Courses'
         },
-
+        {
+          icon: 'el-icon-lx-copy',
+          index: 'notification',
+          title: 'Notification'
+        },
       ]
     };
   },

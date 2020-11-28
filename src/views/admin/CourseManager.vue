@@ -178,8 +178,8 @@ export default {
       this.$router.push({
         path: '/admin/courseDetails',
         query: {
-          id: row.id,
-          row: row
+          id: row.courseId,
+          row: row,
         }
       })
       // this.idx = index;

@@ -63,7 +63,7 @@
                 <a style="font-size: large;color: #20a0ff">Prerequisite Courses</a>
                 <el-button style="float: right; padding: 3px 0" type="text">Add new</el-button>
               </div>
-              <el-table :show-header="false" :data="todoList" style="width:100%;">
+              <el-table :show-header="false" :data="Prerequisite" style="width:100%;">
                 <el-table-column width="40">
                   <template slot-scope="scope">
                     <el-checkbox v-model="scope.row.status"></el-checkbox>
@@ -91,7 +91,7 @@
                 <a style="font-size: large;color: #20a0ff">Preclusion Courses</a>
                 <el-button style="float: right; padding: 3px 0" type="text">Add new</el-button>
               </div>
-              <el-table :show-header="false" :data="todoList" style="width:100%;">
+              <el-table :show-header="false" :data="Preclusion" style="width:100%;">
                 <el-table-column width="40">
                   <template slot-scope="scope">
                     <el-checkbox v-model="scope.row.status"></el-checkbox>
@@ -183,9 +183,59 @@
 
     </div>
 
+    <el-drawer
+        title="Edit the Course"
+        :with-header="drawerProp.withHeader"
+        size="35%"
+        :append-to-body="drawerProp.appendToBody"
+        :visible.sync="drawerProp.editDrawVisible"
+        :direction="drawerProp.direction"
+        :modal="drawerProp.model"
+        :before-close="cancelForm">
+      <div class="demo-drawer__content" style="height: fit-content">
+        <el-card shadow="hover">
+          <div slot="header" class="clearfix" style="text-align: left">
+            <a style="font-size: large;color: #20a0ff">Edit the Course</a>
+            <el-button-group style="float: right">
+              <el-button type="danger" @click="cancelForm" style="width: 80px">Cancel
+              </el-button>
+              <el-button type="primary" @click="saveCourseEdit" :loading="loading"
+                         style="width: 80px">{{ loading ? 'Submitting ...' : 'Submit' }}
+              </el-button>
+            </el-button-group>
+          </div>
+          <div class="form-box" style="float: left">
+            <el-form ref="form" :model="editCourseForm" :rules="editCourseRules"
+                     style="text-align: left;margin-top: 5%">
+
+              <el-form-item label="Course Name :" prop="courseName" label-width="formLabelWidth" style="margin-top: 5%">
+                <el-input v-model="editCourseForm.courseName"></el-input>
+              </el-form-item>
+              <el-form-item label="Course Subject :" prop="courseSubject">
+                <el-input v-model="editCourseForm.courseSubject" readonly></el-input>
+              </el-form-item>
+              <el-form-item label="Course Number :" prop="courseNumber">
+                <el-input v-model="editCourseForm.courseNumber"></el-input>
+              </el-form-item>
+              <el-form-item label="Course Credit :" prop="credit">
+                <el-input v-model="editCourseForm.credit"></el-input>
+              </el-form-item>
+              <el-form-item label="Course Description:">
+                <el-input type="textarea" rows="5" v-model="courseInfo.courseDesc"></el-input>
+              </el-form-item>
+
+            </el-form>
+          </div>
+
+
+        </el-card>
+
+      </div>
+    </el-drawer>
+
     <!-- edit dialog -->
     <el-dialog title="Modify the course" :visible.sync="editVisible" width="50%">
-      <el-form :model="editCourseForm" :rules="editCourseRules" label-width="140px">
+      <el-form :model="editCourseForm" label-width="140px">
         <el-form-item label="Course Name :" prop="courseName">
           <el-input v-model="editCourseForm.courseName"></el-input>
         </el-form-item>
@@ -195,17 +245,19 @@
         <el-form-item label="Course Number :" prop="courseNumber">
           <el-input v-model="editCourseForm.courseNumber"></el-input>
         </el-form-item>
-        <el-form-item label="Course Credit :" prop="courseCredit">
+        <el-form-item label="Course Credit :" prop="credit">
           <el-input v-model="editCourseForm.credit"></el-input>
         </el-form-item>
         <el-form-item label="Course Description:">
-          <el-input type="textarea" rows="5" v-model="editCourseForm.courseDesc"></el-input>
+          <el-input type="textarea" rows="5" v-model="courseInfo.courseDesc"></el-input>
         </el-form-item>
 
       </el-form>
       <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveCourseEdit">确 定</el-button>
+        <el-button @click="editVisible = false;">Cancel</el-button>
+         <el-button type="primary" @click="saveCourseEdit" :loading="loading"
+                    style="width: 80px">{{ loading ? 'Submitting ...' : 'Submit' }}
+              </el-button>
             </span>
     </el-dialog>
   </div>
@@ -216,29 +268,34 @@ import axios from "axios";
 
 export default {
   name: "CourseModify",
+  inject: ['reload'],
   data() {
     return {
 
-      courseInfo: {
-        courseName: '',
-        courseSubject: '',
-        courseNumber: '',
-        courseCredit: '',
-        courseDesc: '',
-      },
+      courseInfo: {},
       clazzData: [],
 
       multipleSelection: [],
       delList: [],
       editVisible: false,
 
-      editCourseForm: {
-        courseName: '',
-        courseSubject: '',
-        courseNumber: '',
-        courseCredit: '',
-        courseDesc: '',
+      loading: false,
+      timer: null,
+
+      credit: '',
+
+      editCourseForm: {},
+
+      drawerProp: {
+        direction: 'rtl',
+        editDrawVisible: false,
+        withHeader: false,
+        appendToBody: true,
+        model: false
       },
+
+      Preclusion: [],
+      Prerequisite: [],
 
       editCourseRules: {
         courseName:
@@ -253,11 +310,11 @@ export default {
             [
               {required: true, message: 'Course number can not be none', trigger: 'blur'}
             ],
-        courseCredit:
+        credit:
             [
               {required: true, message: 'Course credit can not be none', trigger: 'blur'}
             ],
-      }
+      },
     };
 
   },
@@ -266,23 +323,91 @@ export default {
       this.$message.success('提交成功！');
     },
     onEditCourse() {
-      this.editVisible = true
-      this.editCourseForm.courseName = this.$route.query.row.courseName
-      this.editCourseForm.courseId = this.$route.query.row.courseId
-      this.editCourseForm.courseSubject = this.$route.query.row.courseSubject
-      this.editCourseForm.courseNumber = this.$route.query.row.courseNumber
-      this.editCourseForm.courseDesc = this.$route.query.row.courseDesc
-      this.editCourseForm.credit = this.$route.query.row.credit
+      // this.editCourseForm.courseName = this.$route.query.row.courseName
+      // this.editCourseForm.courseId = this.$route.query.row.courseId
+      // this.editCourseForm.courseSubject = this.$route.query.row.courseSubject
+      // this.editCourseForm.courseNumber = this.$route.query.row.courseNumber
+      // this.editCourseForm.credit = this.$route.query.row.credit
+      // this.editCourseForm.courseDesc = this.$route.query.row.courseDesc
+      this.editCourseForm = this.$route.query.row
+      this.drawerProp.editDrawVisible = true;
+    },
+
+    //delete course
+    onDeleteCourse() {
+      // Double check
+      this.$confirm('Are you sure you want to delete this course : "' + this.courseInfo.courseSubject + this.courseInfo.courseNumber + "  " + this.courseInfo.courseName + '" ?', 'Check', {
+        type: 'warning'
+      })
+          .then(() => {
+            axios.delete('http://localhost:8080/admin/course/delete/' + this.courseInfo.courseId).then(resp => {
+              if (resp.data === "success") {
+                this.$notify({
+                  title: 'Success',
+                  message: 'Delete successfully!',
+                  type: 'success'
+                });
+                this.reload()
+                this.$router.push('/admin/courses');
+              } else {
+                this.$notify.error({
+                  title: 'Error',
+                  message: 'Ops,Something goes wrong!',
+                });
+              }
+              console.log(resp);
+            })
+
+          })
+          .catch(() => {
+          });
     },
     saveCourseEdit() {
-      console.log(this.courseInfo)
-      axios.post()
-    }
+      this.editCourseForm.courseId = this.courseInfo.courseId
+      this.timer = setTimeout(() => {
+        // 动画关闭需要一定的时间
+        setTimeout(() => {
+          this.loading = false;
+        }, 400);
+      }, 2000);
+      axios.post("http://localhost:8080/admin/course/update", this.editCourseForm).then(resp => {
+        console.log(resp)
+        if (resp.data === "success") {
+          this.loading = false;
+          this.drawerProp.addTaskDrawer = false;
+          this.reload()
+          clearTimeout(this.timer);
+          this.$notify({
+            title: 'Success',
+            message: 'Update a course successfully!',
+            type: 'success'
+          });
 
+        } else {
+          this.loading = false;
+          this.drawerProp.addTaskDrawer = false;
+          this.reload()
+          clearTimeout(this.timer);
+          this.$notify.error({
+            title: 'Error',
+            message: 'Invalid Change!',
+          });
+        }
+
+      })
+    },
+    cancelForm() {
+      this.loading = false;
+      this.drawerProp.editDrawVisible = false;
+      clearTimeout(this.timer);
+    },
   },
   created() {
-    this.courseInfo = this.$route.query.row
-
+    this.courseId = this.$route.query.id
+    axios.get('http://localhost:8080/admin/course/getCourseById/' + this.courseId).then(resp => {
+      this.courseInfo = resp.data
+      console.log(this.courseInfo)
+    })
     console.log(this.courseInfo)
     console.log(this.courseInfo.courseId)
     console.log(this.courseInfo.courseName)
@@ -350,27 +475,6 @@ export default {
   color: rgb(242, 94, 67);
 }
 
-.user-info {
-  display: flex;
-  align-items: center;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #ccc;
-  margin-bottom: 20px;
-}
-
-.user-avator {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-}
-
-.user-info-cont {
-  padding-left: 50px;
-  flex: 1;
-  font-size: 14px;
-  color: #999;
-}
-
 .user-info-cont div:first-child {
   font-size: 30px;
   color: #222;
@@ -394,13 +498,4 @@ export default {
   font-size: 14px;
 }
 
-.todo-item-del {
-  text-decoration: line-through;
-  color: #999;
-}
-
-.schart {
-  width: 100%;
-  height: 300px;
-}
 </style>

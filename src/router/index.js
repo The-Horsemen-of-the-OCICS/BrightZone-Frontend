@@ -122,10 +122,10 @@ const routes = [
                 name: 'courseDetails'
             },
             {
-                path: 'draw',
-                component: () => import(/* webpackChunkName: "dashboard" */ '@/views/admin/draw'),
-                meta: {title: 'draw'},
-                name: 'draw'
+                path: 'notification',
+                component: () => import(/* webpackChunkName: "dashboard" */ '@/views/admin/Notification'),
+                meta: {title: 'notification'},
+                name: 'notification'
             },
         ]
     },

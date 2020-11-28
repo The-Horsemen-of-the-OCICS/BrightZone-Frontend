@@ -35,7 +35,7 @@
       <el-col :span="8">
         <el-card shadow="hover" style="height:490px;">
           <div slot="header" class="clearfix">
-            <span>My To do List</span>
+            <span>CMS To do</span>
             <el-button style="float: right; padding: 3px 0" type="text" @click="drawerProp.addTaskDrawer = true">add
             </el-button>
           </div>
