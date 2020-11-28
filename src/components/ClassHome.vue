@@ -67,12 +67,12 @@
               </el-menu>
             </div>
             <div>
-              <el-row v-for="f in this.displayFileName" :key="f" style="text-align: left; margin-left: 10px; margin-top: 10px;" >
-                <el-col :span="21">
-                  <el-link icon="el-icon-tickets" style="font-size: 16px; width: content-box"> {{f}}</el-link>
+              <el-row v-for="fileName in this.displayFileName" :key="fileName" style="text-align: left; margin-left: 10px; margin-top: 10px;" >
+                <el-col :span="23">
+                  <el-link icon="el-icon-tickets" style="font-size: 16px; width: content-box" @click="downloadClassMaterial(fileName)"> {{fileName}}</el-link>
                 </el-col>
                 <el-col :span="1">
-                  <el-button style="margin-left: 20px" icon="el-icon-delete" @click=""></el-button>
+                  <el-button icon="el-icon-delete" @click="deleteClassMaterial(fileName)"></el-button>
                 </el-col>
                 <el-divider></el-divider>
               </el-row>
@@ -217,8 +217,8 @@ export default {
     },
     uploadClassMaterial() {
       const _this = this;
-      if (!this.uploadList) {
-        return this.$message.warning('Nothing to upload');
+      if (!this.uploadList || this.uploadList.length === 0) {
+        return this.$message.error('Nothing to upload');
       }
       if (!this.directorySelection || this.directorySelection === '') {
         return this.$message.error('Please select or create a directory!');;
@@ -284,6 +284,55 @@ export default {
         }
       })
     },
+    downloadClassMaterial(fileName) {
+      var dir = ''
+      for (let i = 1; i < this.allFiles.length; i += 1) {
+        for (let j = 0; j < this.allFiles[i].length; j += 1) {
+          if (fileName === this.allFiles[i][j]) {
+            dir = this.allFiles[0][i-1];
+            break;
+          }
+        }
+      }
+      const a = document.createElement('a')
+      a.download = fileName
+      a.href = 'http://localhost:8080/getClassMaterial/' + this.classData.classId + '/'+ dir + '/' + fileName
+      a.click();
+    },
+    deleteClassMaterial(fileName) {
+      const _this = this;
+      this.$confirm('You are going to delete file <' + fileName + '>.', 'Warning', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        var dir = ''
+        for (let i = 1; i < this.allFiles.length; i += 1) {
+          for (let j = 0; j < this.allFiles[i].length; j += 1) {
+            if (fileName === this.allFiles[i][j]) {
+              dir = this.allFiles[0][i-1];
+              break;
+            }
+          }
+        }
+        axios.delete('http://localhost:8080/deleteClassMaterial/' + this.classData.classId + '/'+ dir + '/' + fileName).then(function (resp) {
+          if (resp.data === 'SUCCEED') {
+            _this.$message({
+              type: 'success',
+              message: 'Deleted Successfully!'
+            });
+            _this.reloadData();
+          } else {
+            _this.$message.error('Database Error! Failed to delete file <' + fileName + '>!');
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Delete Cancelled'
+        });
+      });
+    }
   }
 }
 </script>
