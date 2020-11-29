@@ -75,7 +75,7 @@
 
       <el-form-item label="File" prop="fileName" >
         <div style="display: flex;">
-          <el-link v-bind:disabled="this.submissionForm.fileName === ''" v-bind:href="this.fileLink"><i class="el-icon-view el-icon--right"></i> View file here </el-link>
+          <el-link v-bind:disabled="this.submissionForm.fileName === ''" @click="downloadSubmissionFile"><i class="el-icon-view el-icon--right"></i> View file here </el-link>
         </div>
       </el-form-item>
 
@@ -148,7 +148,6 @@ export default {
       curDeadline: '',
       submissionSelection: '',
       lateSubmission: false,
-      fileLink: '',
       classData: [
       ],
       deliverableData: [
@@ -213,7 +212,6 @@ export default {
           this.submissionForm.studentId = curSub.studentId;
           this.submissionForm.fileName = curSub.fileName;
           this.submissionForm.grade = curSub.grade;
-          this.fileLink = "https://localhost:8080/" + curSub.fileName;
           this.lateSubmission =  (curSub.submitTime >= this.curDeadline);
         }
       }
@@ -269,11 +267,16 @@ export default {
         this.submissionForm.submissionDesc = '';
         this.submissionForm.submitTime = '';
         this.submissionSelection = '';
-        this.fileLink = '';
         this.lateSubmission = false;
-
       })
-    }
+    },
+    downloadSubmissionFile() {
+      const a = document.createElement('a')
+      const timestamp = Date.parse(this.submissionForm.submitTime)
+      a.download = fileName
+      a.href = 'http://localhost:8080/getGetSubmissionFile/' + this.classSelection + '/'+ this.deliverableSelection + '/' + this.submissionForm.studentId  + '/'+ timestamp + '/' + this.submissionForm.fileName;
+      a.click();
+    },
   }
 }
 </script>
