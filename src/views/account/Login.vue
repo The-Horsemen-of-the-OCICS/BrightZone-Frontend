@@ -83,10 +83,10 @@ export default {
                   })
                   switch (this.loginResult.type) {
                     case 'administrator':
-                      this.$router.push('/admin/adminIndex');
+                      this.$router.push('/admin');
                       break;
                     case 'professor':
-                      this.$router.push('/Campus');
+                      this.$router.push('/professor');
                       break;
                     case 'student':
                       this.$router.push('/student');

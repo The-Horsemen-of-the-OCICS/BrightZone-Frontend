@@ -41,7 +41,7 @@
 import axios from "axios";
 
 export default {
-  name: "MyCampus",
+  name: "ProfessorIndex",
   created() {
     const _this = this;
     axios.get('http://localhost:8080/admin/account/getAccount/' + this.$parent.$data.userId).then(function (resp) {

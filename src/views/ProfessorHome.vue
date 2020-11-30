@@ -21,7 +21,7 @@ import bus from "@/components/common/bus";
 
 
 export default {
-  name: 'Campus',
+  name: 'ProfessorHome',
   data() {
     return {
       collapse: false,
@@ -32,15 +32,15 @@ export default {
     Header,
     ProfessorNav
   },
-  created() {
-    if (!this.userId || this.userId === '' || this.userId < 2000000 || this.userId >= 3000000) {
-      this.$router.push('/404');
-    } else {
-      bus.$on('collapse-content', msg => {
-        this.collapse = msg;
-      });
-    }
-
-  },
+  // created() {
+  //   if (!this.userId || this.userId === '' || this.userId < 2000000 || this.userId >= 3000000) {
+  //     this.$router.push('/404');
+  //   } else {
+  //     bus.$on('collapse-content', msg => {
+  //       this.collapse = msg;
+  //     });
+  //   }
+  //
+  // },
 }
 </script>

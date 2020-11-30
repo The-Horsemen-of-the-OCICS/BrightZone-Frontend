@@ -61,8 +61,8 @@ export default {
       items: [
         {
           icon: 'el-icon-lx-home',
-          index: '/admin/adminIndex',
-          title: 'adminIndex'
+          index: '/admin/index',
+          title: 'AdminIndex'
         },
         {
           icon: 'el-icon-lx-people',

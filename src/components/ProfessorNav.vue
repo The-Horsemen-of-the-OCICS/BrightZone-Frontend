@@ -11,9 +11,9 @@
         @close="handleClose"
         router
     >
-      <el-menu-item index="myCampus" >
+      <el-menu-item index="index" >
         <i class="el-icon-s-home"></i>
-        <span slot="title">Home</span>
+        <span slot="title">Professor Index</span>
       </el-menu-item>
       <el-submenu index="viewDeliverables">
         <template slot="title">
