@@ -174,6 +174,11 @@ const routes = [
         ]
     },
     {
+        path: '/401',
+        name: 'Page401',
+        component: () => import('@/views/error-page/401')
+    },
+    {
         path: '/404',
         name: 'Page404',
         component: () => import('@/views/error-page/404')

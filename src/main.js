@@ -33,7 +33,8 @@ const i18n = new VueI18n({
 
 router.beforeEach((to, from, next) => {
     if (to.path === '/login' || to.path === '/register' || to.path === '/passwordRecovery'
-    || to.path === '/welcome'  || to.path === '/' || to.path === '/404' || to.path === '/mock/index') {
+        || to.path === '/welcome' || to.path === '/' || to.path === '/mock/index'
+        || to.path === '/404' || to.path === '/401') {
         next()
     } else {
         // get userMsg (in string format) from sessionStorage
@@ -47,8 +48,8 @@ router.beforeEach((to, from, next) => {
         } else if (objectUserMsg.account.type === 'administrator' && !to.path.startsWith('/admin')
             || objectUserMsg.account.type === 'professor' && !to.path.startsWith('/professor')
             || objectUserMsg.account.type === 'student' && !to.path.startsWith('/student') && !to.path.startsWith('/studentCourse')) {
-            Vue.prototype.$message.warning('Warning, you are not authorized to this page, please login first')
-            next({path: '/login'})
+            Vue.prototype.$message.warning('Warning, you are not authorized to this page')
+            next({path: '/401'})
         } else {
             next()
         }
