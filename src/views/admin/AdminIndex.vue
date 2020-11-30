@@ -10,7 +10,12 @@
           </div>
           <div>
             <div class="user-info-list" style="text-align: left;">
-              <div class="user-info-name"><label> User Name : </label> <span> {{ $store.state.account.name }}</span>
+              <div class="user-info-name"><label> User ID : </label> <span> {{ $store.state.account.userId }}</span>
+              </div>
+            </div>
+
+            <div class="user-info-list" style="text-align: left;">
+              <div style="margin-top: 25px" class="user-info-name"><label> User Name : </label> <span> {{ $store.state.account.name }}</span>
               </div>
             </div>
 

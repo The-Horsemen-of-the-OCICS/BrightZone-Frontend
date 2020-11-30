@@ -231,7 +231,7 @@
                 <el-input v-model="editCourseForm.credit"></el-input>
               </el-form-item>
               <el-form-item label="Course Description:">
-                <el-input type="textarea" rows="5" v-model="courseInfo.courseDesc"></el-input>
+                <el-input type="textarea" rows="5" v-model="editCourseForm.courseDesc"></el-input>
               </el-form-item>
 
             </el-form>
@@ -279,7 +279,6 @@
               <el-button type="primary" icon="el-icon-search" @click="handleSearch">Search</el-button>
 
 
-
               <el-form-item label="Course Name :" prop="courseName" label-width="formLabelWidth" style="margin-top: 5%">
                 <el-input v-model="editCourseForm.courseName"></el-input>
               </el-form-item>
@@ -293,7 +292,7 @@
                 <el-input v-model="editCourseForm.credit"></el-input>
               </el-form-item>
               <el-form-item label="Course Description:">
-                <el-input type="textarea" rows="5" v-model="courseInfo.courseDesc"></el-input>
+                <el-input type="textarea" rows="5" v-model="editCourseForm.courseDesc"></el-input>
               </el-form-item>
 
             </el-form>
@@ -459,6 +458,7 @@ export default {
         pageSize: 10
       },
 
+      courseId: '',
 
     };
 
@@ -474,11 +474,10 @@ export default {
       // this.editCourseForm.courseNumber = this.$route.query.row.courseNumber
       // this.editCourseForm.credit = this.$route.query.row.credit
       // this.editCourseForm.courseDesc = this.$route.query.row.courseDesc
-
-      axios.get('http://localhost:8080/admin/course/getCourseById/' + this.courseInfo.courseId).then(resp => {
-        this.editCourseForm = resp.data
-        console.log(this.editCourseForm)
-      })
+      // axios.get('http://localhost:8080/admin/course/getCourseById/' +  this.$route.params.courseId).then(resp => {
+      //   this.editCourseForm = resp.data
+      //   console.log(this.editCourseForm)
+      // })
       this.drawerProp.editDrawVisible = true;
     },
 
@@ -548,20 +547,25 @@ export default {
     cancelForm() {
       this.loading = false;
       this.drawerProp.editDrawVisible = false;
-      this.addPrerequisiteDrawerProp.editDrawVisible=false;
-      this.addPreclusionDrawerProp.editDrawVisible=false;
+      this.addPrerequisiteDrawerProp.editDrawVisible = false;
+      this.addPreclusionDrawerProp.editDrawVisible = false;
       clearTimeout(this.timer);
     },
   },
   created() {
-    this.courseId = this.$route.query.id
-    axios.get('http://localhost:8080/admin/course/getCourseById/' + this.courseId).then(resp => {
+    axios.get('http://localhost:8080/admin/course/getCourseById/' + this.$route.params.courseId).then(resp => {
       this.courseInfo = resp.data
       console.log(this.courseInfo)
     })
+    axios.get('http://localhost:8080/admin/course/getCourseById/' + this.$route.params.courseId).then(resp => {
+      this.editCourseForm = resp.data
+      console.log(this.courseInfo)
+    })
+
     console.log(this.courseInfo)
     console.log(this.courseInfo.courseId)
     console.log(this.courseInfo.courseName)
+    console.log(this.courseInfo.courseDesc)
     axios.get('http://localhost:8080/admin/class/getClassByCourseId/' + this.courseInfo.courseId).then(resp => {
       this.clazzData = resp.data
       console.log(this.clazzData)

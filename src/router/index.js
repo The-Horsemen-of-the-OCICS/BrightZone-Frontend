@@ -116,7 +116,7 @@ const routes = [
                 name: 'courses'
             },
             {
-                path: 'courseDetails',
+                path: 'courseDetails/:courseId',
                 component: () => import(/* webpackChunkName: "dashboard" */ '@/views/admin/CourseDetails'),
                 meta: {title: 'courseDetails'},
                 name: 'courseDetails'

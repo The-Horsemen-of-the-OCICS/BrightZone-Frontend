@@ -61,22 +61,22 @@ export default {
       items: [
         {
           icon: 'el-icon-lx-home',
-          index: 'adminIndex',
+          index: '/admin/adminIndex',
           title: 'adminIndex'
         },
         {
           icon: 'el-icon-lx-people',
-          index: 'accounts',
+          index: '/admin/accounts',
           title: 'Accounts'
         },
         {
           icon: 'el-icon-lx-sort',
-          index: 'courses',
+          index: '/admin/courses',
           title: 'Courses'
         },
         {
           icon: 'el-icon-lx-copy',
-          index: 'notification',
+          index: '/admin/notification',
           title: 'Notification'
         },
       ]

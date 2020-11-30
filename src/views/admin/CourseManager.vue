@@ -24,7 +24,8 @@
         </el-select>
         <el-input v-model="query.name" placeholder="username" class="handle-input mr10"></el-input>
         <el-button type="primary" icon="el-icon-search" @click="handleSearch" plain>Search</el-button>
-        <el-button type="primary" icon="el-icon-add" @click="handleAddCourse" style="float: right" round>Add new</el-button>
+        <el-button type="primary" icon="el-icon-add" @click="handleAddCourse" style="float: right" round>Add new
+        </el-button>
       </div>
       <el-table
           :data="tableData"
@@ -48,7 +49,7 @@
             <el-button
                 type="text"
                 icon="el-icon-edit"
-                @click="handleDetails(scope.$index, scope.row)"
+                @click="handleDetails(scope.row.courseId)"
             >Details
             </el-button>
             <el-button
@@ -113,6 +114,7 @@ export default {
       delList: [],
       editVisible: false,
 
+      courseId: '',
       form: {},
       idx: -1,
       id: -1
@@ -175,12 +177,13 @@ export default {
       this.multipleSelection = [];
     },
     // 编辑操作
-    handleDetails(index, row) {
+    handleDetails(courseId) {
+      console.log(courseId)
       this.$router.push({
-        path: '/admin/courseDetails',
-        query: {
-          id: row.courseId,
-        }
+        path: `/admin/courseDetails/${courseId}`,
+        // query: {
+        //   id: row.courseId,
+        // }
       })
       // this.idx = index;
       // this.form = row;
