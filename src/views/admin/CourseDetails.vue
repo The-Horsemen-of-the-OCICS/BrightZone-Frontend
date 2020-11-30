@@ -474,7 +474,11 @@ export default {
       // this.editCourseForm.courseNumber = this.$route.query.row.courseNumber
       // this.editCourseForm.credit = this.$route.query.row.credit
       // this.editCourseForm.courseDesc = this.$route.query.row.courseDesc
-      this.editCourseForm = this.$route.query.row
+
+      axios.get('http://localhost:8080/admin/course/getCourseById/' + this.courseInfo.courseId).then(resp => {
+        this.editCourseForm = resp.data
+        console.log(this.editCourseForm)
+      })
       this.drawerProp.editDrawVisible = true;
     },
 

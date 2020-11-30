@@ -180,7 +180,6 @@ export default {
         path: '/admin/courseDetails',
         query: {
           id: row.courseId,
-          row: row,
         }
       })
       // this.idx = index;
