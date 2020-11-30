@@ -31,6 +31,30 @@ const i18n = new VueI18n({
     messages
 });
 
+router.beforeEach((to, from, next) => {
+    if (to.path === '/login' || to.path === '/register' || to.path === '/passwordRecovery'
+    || to.path === '/welcome'  || to.path === '/' || to.path === '/404' || to.path === '/mock/index') {
+        next()
+    } else {
+        // get userMsg (in string format) from sessionStorage
+        const strUserMsg = sessionStorage.getItem("userMsg");
+        // parse userMsg (string format) to object
+        const objectUserMsg = JSON.parse(strUserMsg);
+
+        if (objectUserMsg.account.userId === '') {
+            Vue.prototype.$message.warning('Warning, please login first')
+            next({path: '/login'})
+        } else if (objectUserMsg.account.type === 'administrator' && !to.path.startsWith('/admin')
+            || objectUserMsg.account.type === 'professor' && !to.path.startsWith('/professor')
+            || objectUserMsg.account.type === 'student' && !to.path.startsWith('/student') && !to.path.startsWith('/studentCourse')) {
+            Vue.prototype.$message.warning('Warning, you are not authorized to this page, please login first')
+            next({path: '/login'})
+        } else {
+            next()
+        }
+    }
+});
+
 new Vue({
     router,
     store,
