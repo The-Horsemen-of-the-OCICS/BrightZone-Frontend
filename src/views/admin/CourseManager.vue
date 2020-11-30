@@ -23,7 +23,8 @@
           <el-option key="4" label="Teaching Assistant" value="teaching_assistant"></el-option>
         </el-select>
         <el-input v-model="query.name" placeholder="username" class="handle-input mr10"></el-input>
-        <el-button type="primary" icon="el-icon-search" @click="handleSearch">Search</el-button>
+        <el-button type="primary" icon="el-icon-search" @click="handleSearch" plain>Search</el-button>
+        <el-button type="primary" icon="el-icon-add" @click="handleAddCourse" style="float: right" round>Add new</el-button>
       </div>
       <el-table
           :data="tableData"

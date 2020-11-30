@@ -115,6 +115,7 @@ import {quillEditor} from 'vue-quill-editor';
 import bus from "@/components/common/bus";
 
 export default {
+  inject: ['reload'],
   name: "Notification",
   data() {
     return {
@@ -177,6 +178,7 @@ export default {
   created() {
     this.collapse = !this.collapse;
     bus.$emit('collapse', this.collapse);
+    // this.reload()
   }
 }
 </script>

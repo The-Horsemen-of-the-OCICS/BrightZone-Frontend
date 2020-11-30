@@ -680,7 +680,7 @@ export default {
 }
 
 .user-info-list {
-  font-size: 20px;
+  font-size: 18px;
   color: #222;
   line-height: 30px;
 }

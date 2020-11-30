@@ -13,7 +13,7 @@
         <el-col :span="24">
 
 
-          <el-col :span="14" style="float: left">
+          <el-col :span="12" style="float: left">
             <el-card shadow="hover" style="height:507px;">
               <div slot="header" class="clearfix" style="text-align: left">
                 <a style="font-size: large;color: #20a0ff">Basic information</a>
@@ -57,59 +57,69 @@
           </el-col>
 
 
-          <el-col :span="10" style="float: right">
-            <el-card shadow="hover" style="height:252px;">
+          <el-col :span="6" style="float: right">
+            <el-card shadow="hover" style="height:507px;">
               <div slot="header" class="clearfix" style="text-align: left">
                 <a style="font-size: large;color: #20a0ff">Prerequisite Courses</a>
-                <el-button style="float: right; padding: 3px 0" type="text">Add new</el-button>
+                <el-button style="float: right; padding: 3px 0" type="text"
+                           @click="addPrerequisiteDrawerProp.editDrawVisible = true">Add
+                  new
+                </el-button>
               </div>
-              <el-table :show-header="false" :data="Prerequisite" style="width:100%;">
-                <el-table-column width="40">
+              <el-table :show-header="false" :data="PrerequisiteCourses" style="width:100%;">
+                <el-table-column width="60">
                   <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.status"></el-checkbox>
                   </template>
                 </el-table-column>
                 <el-table-column>
                   <template slot-scope="scope">
-                    <div
-                        class="todo-item"
-                        :class="{'todo-item-del': scope.row.status}"
-                    >{{ scope.row.title }}
-                    </div>
+                    <div class="todo-item">{{ scope.row.courseName }}</div>
                   </template>
                 </el-table-column>
-                <el-table-column width="60">
-                  <template>
-                    <i class="el-icon-edit"></i>
-                    <i class="el-icon-delete"></i>
+                <el-table-column width="80">
+                  <template slot-scope="scope">
+                    <el-button
+                        type="text"
+                        icon="el-icon-edit"
+                        @click="handleDeletePrequisite(scope.row)"
+                    >Delete
+                    </el-button>
                   </template>
                 </el-table-column>
               </el-table>
             </el-card>
-            <el-card shadow="hover" style="height:252px;margin-top: 2px">
+          </el-col>
+
+          <el-col :span="6" style="float: right">
+            <el-card shadow="hover" style="height:507px;">
               <div slot="header" class="clearfix" style="text-align: left">
                 <a style="font-size: large;color: #20a0ff">Preclusion Courses</a>
-                <el-button style="float: right; padding: 3px 0" type="text">Add new</el-button>
+                <el-button style="float: right; padding: 3px 0" type="text"
+                           @click="addPreclusionDrawerProp.editDrawVisible = true">Add
+                  new
+                </el-button>
               </div>
-              <el-table :show-header="false" :data="Preclusion" style="width:100%;">
+              <el-table :show-header="false" :data="PreclusionCourses" style="width:100%;">
                 <el-table-column width="40">
                   <template slot-scope="scope">
-                    <el-checkbox v-model="scope.row.status"></el-checkbox>
                   </template>
                 </el-table-column>
                 <el-table-column>
                   <template slot-scope="scope">
                     <div
                         class="todo-item"
-                        :class="{'todo-item-del': scope.row.status}"
-                    >{{ scope.row.title }}
+                    >{{ scope.row.courseName }}
                     </div>
                   </template>
                 </el-table-column>
-                <el-table-column width="60">
-                  <template>
-                    <i class="el-icon-edit"></i>
-                    <i class="el-icon-delete"></i>
+                <el-table-column width="80">
+                  <template slot-scope="scope">
+                    <el-button
+                        type="text"
+                        icon="el-icon-edit"
+                        @click="handleDeletePreclusion(scope.row)"
+                    >Delete
+                    </el-button>
                   </template>
                 </el-table-column>
               </el-table>
@@ -233,6 +243,118 @@
       </div>
     </el-drawer>
 
+    <el-drawer
+        title="Add a new Prerequisite Course"
+        :with-header="addPrerequisiteDrawerProp.withHeader"
+        size="35%"
+        :append-to-body="addPrerequisiteDrawerProp.appendToBody"
+        :visible.sync="addPrerequisiteDrawerProp.editDrawVisible"
+        :direction="addPrerequisiteDrawerProp.direction"
+        :modal="addPrerequisiteDrawerProp.model"
+        :before-close="cancelForm">
+      <div class="demo-drawer__content" style="height: fit-content">
+        <el-card shadow="hover">
+          <div slot="header" class="clearfix" style="text-align: left">
+            <a style="font-size: large;color: #20a0ff">Add a new Prerequisite Course</a>
+            <el-button-group style="float: right">
+              <el-button type="danger" @click="cancelForm" style="width: 80px">Cancel
+              </el-button>
+              <el-button type="primary" @click="saveNewPrerequisiteCourse" :loading="loading"
+                         style="width: 80px">{{ loading ? 'Submitting ...' : 'Submit' }}
+              </el-button>
+            </el-button-group>
+          </div>
+          <div class="form-box" style="float: left">
+
+            <el-form ref="form" :model="editCourseForm" :rules="editCourseRules"
+                     style="text-align: left;margin-top: 5%">
+
+              <el-select v-model="query.address" placeholder="User Role" class="handle-select mr10">
+                <el-option key="1" label="Administrator" value="administrator"></el-option>
+                <el-option key="2" label="Professor" value="professor"></el-option>
+                <el-option key="3" label="Student" value="student"></el-option>
+                <el-option key="4" label="Teaching Assistant" value="teaching_assistant"></el-option>
+              </el-select>
+              <el-input v-model="query.name" placeholder="username" class="handle-input mr10"></el-input>
+              <el-button type="primary" icon="el-icon-search" @click="handleSearch">Search</el-button>
+
+
+
+              <el-form-item label="Course Name :" prop="courseName" label-width="formLabelWidth" style="margin-top: 5%">
+                <el-input v-model="editCourseForm.courseName"></el-input>
+              </el-form-item>
+              <el-form-item label="Course Subject :" prop="courseSubject">
+                <el-input v-model="editCourseForm.courseSubject" readonly></el-input>
+              </el-form-item>
+              <el-form-item label="Course Number :" prop="courseNumber">
+                <el-input v-model="editCourseForm.courseNumber"></el-input>
+              </el-form-item>
+              <el-form-item label="Course Credit :" prop="credit">
+                <el-input v-model="editCourseForm.credit"></el-input>
+              </el-form-item>
+              <el-form-item label="Course Description:">
+                <el-input type="textarea" rows="5" v-model="courseInfo.courseDesc"></el-input>
+              </el-form-item>
+
+            </el-form>
+          </div>
+
+
+        </el-card>
+
+      </div>
+    </el-drawer>
+
+    <el-drawer
+        title="add a new Preclusion Course"
+        :with-header="addPreclusionDrawerProp.withHeader"
+        size="35%"
+        :append-to-body="addPreclusionDrawerProp.appendToBody"
+        :visible.sync="addPreclusionDrawerProp.editDrawVisible"
+        :direction="addPreclusionDrawerProp.direction"
+        :modal="addPreclusionDrawerProp.model"
+        :before-close="cancelForm">
+      <div class="demo-drawer__content" style="height: fit-content">
+        <el-card shadow="hover">
+          <div slot="header" class="clearfix" style="text-align: left">
+            <a style="font-size: large;color: #20a0ff">Add new preclusion course</a>
+            <el-button-group style="float: right">
+              <el-button type="danger" @click="cancelForm" style="width: 80px">Cancel
+              </el-button>
+              <el-button type="primary" @click="saveNewPreclusionCourse" :loading="loading"
+                         style="width: 80px">{{ loading ? 'Submitting ...' : 'Submit' }}
+              </el-button>
+            </el-button-group>
+          </div>
+          <div class="form-box" style="float: left">
+            <el-form ref="form" :model="editCourseForm" :rules="editCourseRules"
+                     style="text-align: left;margin-top: 5%">
+
+              <el-form-item label="Course Name :" prop="courseName" label-width="formLabelWidth" style="margin-top: 5%">
+                <el-input v-model="editCourseForm.courseName"></el-input>
+              </el-form-item>
+              <el-form-item label="Course Subject :" prop="courseSubject">
+                <el-input v-model="editCourseForm.courseSubject" readonly></el-input>
+              </el-form-item>
+              <el-form-item label="Course Number :" prop="courseNumber">
+                <el-input v-model="editCourseForm.courseNumber"></el-input>
+              </el-form-item>
+              <el-form-item label="Course Credit :" prop="credit">
+                <el-input v-model="editCourseForm.credit"></el-input>
+              </el-form-item>
+              <el-form-item label="Course Description:">
+                <el-input type="textarea" rows="5" v-model="courseInfo.courseDesc"></el-input>
+              </el-form-item>
+
+            </el-form>
+          </div>
+
+
+        </el-card>
+
+      </div>
+    </el-drawer>
+
     <!-- edit dialog -->
     <el-dialog title="Modify the course" :visible.sync="editVisible" width="50%">
       <el-form :model="editCourseForm" label-width="140px">
@@ -286,17 +408,6 @@ export default {
 
       editCourseForm: {},
 
-      drawerProp: {
-        direction: 'rtl',
-        editDrawVisible: false,
-        withHeader: false,
-        appendToBody: true,
-        model: false
-      },
-
-      Preclusion: [],
-      Prerequisite: [],
-
       editCourseRules: {
         courseName:
             [
@@ -315,6 +426,40 @@ export default {
               {required: true, message: 'Course credit can not be none', trigger: 'blur'}
             ],
       },
+
+      drawerProp: {
+        direction: 'rtl',
+        editDrawVisible: false,
+        withHeader: false,
+        appendToBody: true,
+        model: false
+      },
+
+      PreclusionCourses: [],
+      PrerequisiteCourses: [],
+
+      addPreclusionDrawerProp: {
+        direction: 'rtl',
+        editDrawVisible: false,
+        withHeader: false,
+        appendToBody: true,
+        model: false
+      },
+      addPrerequisiteDrawerProp: {
+        direction: 'rtl',
+        editDrawVisible: false,
+        withHeader: false,
+        appendToBody: true,
+        model: false
+      },
+      query: {
+        address: '',
+        name: '',
+        pageIndex: 1,
+        pageSize: 10
+      },
+
+
     };
 
   },
@@ -399,6 +544,8 @@ export default {
     cancelForm() {
       this.loading = false;
       this.drawerProp.editDrawVisible = false;
+      this.addPrerequisiteDrawerProp.editDrawVisible=false;
+      this.addPreclusionDrawerProp.editDrawVisible=false;
       clearTimeout(this.timer);
     },
   },
