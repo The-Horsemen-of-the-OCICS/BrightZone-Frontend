@@ -107,7 +107,7 @@
           <el-row :span="8">
             <el-card shadow="hover" :body-style="{padding: '0px'}" style="margin-top: 8px">
               <div class="grid-content grid-con-3">
-                <i class="el-icon-lx-group grid-con-icon"></i>
+                <i class="el-icon-lx-read grid-con-icon"></i>
                 <div class="grid-cont-right">
                   <div class="grid-num">{{ clazzNum }}</div>
                   <div>Overall Classes</div>
@@ -154,7 +154,7 @@
         :modal="drawerProp.model"
         :before-close="cancelForm">
       <div class="demo-drawer__content">
-        <el-card shadow="hover" style="height:507px;">
+        <el-card shadow="hover" style="height:1000px;">
           <div slot="header" class="clearfix" style="text-align: left">
             <a style="font-size: large;color: #20a0ff">Add a New Task</a>
             <el-button-group style="float: right">
@@ -208,7 +208,7 @@
         :modal="editTodoDrawProp.model"
         :before-close="cancelForm">
       <div class="demo-drawer__content">
-        <el-card shadow="hover" style="height:507px;">
+        <el-card shadow="hover" style="height:1000px;">
           <div slot="header" class="clearfix" style="text-align: left">
             <a style="font-size: large;color: #20a0ff">Modify the Task</a>
             <el-button-group style="float: right">

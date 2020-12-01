@@ -13,7 +13,7 @@
         <el-col :span="24">
 
 
-          <el-col :span="12" style="float: left">
+          <el-col :span="10" style="float: left">
             <el-card shadow="hover" style="height:507px;">
               <div slot="header" class="clearfix" style="text-align: left">
                 <a style="font-size: large;color: #20a0ff">Basic information</a>
@@ -24,7 +24,7 @@
                   </el-button>
                 </el-button-group>
               </div>
-              <div class="form-box" style="float: left">
+              <div class="form-box" style="float: left;width: 87%">
                 <el-form ref="form" :model="courseInfo" label-width="140px" style="text-align: left">
                   <el-form-item label="Course Name:" size="">
                     <!--                      <h3 style="text-align: center">{{courseInfo.courseName}}</h3>-->
@@ -56,19 +56,18 @@
             </el-card>
           </el-col>
 
-
-          <el-col :span="6" style="float: right">
+          <el-col :span="7" style="float: right">
             <el-card shadow="hover" style="height:507px;">
               <div slot="header" class="clearfix" style="text-align: left">
-                <a style="font-size: large;color: #20a0ff">Prerequisite Courses</a>
+                <a style="font-size: large;color: #20a0ff">Preclusion Courses</a>
                 <el-button style="float: right; padding: 3px 0" type="text"
-                           @click="addPrerequisiteDrawerProp.editDrawVisible = true">Add
-                  new
+                           @click="openAddPreclusionDrawer">Add new
                 </el-button>
               </div>
-              <el-table :show-header="false" :data="PrerequisiteCourses" style="width:100%;">
-                <el-table-column width="60">
+              <el-table :show-header="false" :data="PreclusionCourses" style="width:100%;" height="400">
+                <el-table-column width="100">
                   <template slot-scope="scope">
+                    <div class="todo-item">{{ scope.row.courseSubject }}-{{ scope.row.courseNumber }}</div>
                   </template>
                 </el-table-column>
                 <el-table-column>
@@ -76,47 +75,11 @@
                     <div class="todo-item">{{ scope.row.courseName }}</div>
                   </template>
                 </el-table-column>
-                <el-table-column width="80">
+                <el-table-column width="70">
                   <template slot-scope="scope">
                     <el-button
                         type="text"
-                        icon="el-icon-edit"
-                        @click="handleDeletePrequisite(scope.row)"
-                    >Delete
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-card>
-          </el-col>
-
-          <el-col :span="6" style="float: right">
-            <el-card shadow="hover" style="height:507px;">
-              <div slot="header" class="clearfix" style="text-align: left">
-                <a style="font-size: large;color: #20a0ff">Preclusion Courses</a>
-                <el-button style="float: right; padding: 3px 0" type="text"
-                           @click="addPreclusionDrawerProp.editDrawVisible = true">Add
-                  new
-                </el-button>
-              </div>
-              <el-table :show-header="false" :data="PreclusionCourses" style="width:100%;">
-                <el-table-column width="40">
-                  <template slot-scope="scope">
-                  </template>
-                </el-table-column>
-                <el-table-column>
-                  <template slot-scope="scope">
-                    <div
-                        class="todo-item"
-                    >{{ scope.row.courseName }}
-                    </div>
-                  </template>
-                </el-table-column>
-                <el-table-column width="80">
-                  <template slot-scope="scope">
-                    <el-button
-                        type="text"
-                        icon="el-icon-edit"
+                        icon="el-icon-delete"
                         @click="handleDeletePreclusion(scope.row)"
                     >Delete
                     </el-button>
@@ -125,6 +88,40 @@
               </el-table>
             </el-card>
           </el-col>
+
+          <el-col :span="7" style="float: right">
+            <el-card shadow="hover" style="height:507px;">
+              <div slot="header" class="clearfix" style="text-align: left">
+                <a style="font-size: large;color: #20a0ff">Prerequisite Courses</a>
+                <el-button style="float: right; padding: 3px 0" type="text"
+                           @click="openAddPrerequisiteDrawer">Add new
+                </el-button>
+              </div>
+              <el-table :show-header="false" :data="PrerequisiteCourses" style="width:100%;" height="400">
+                <el-table-column width="100">
+                  <template slot-scope="scope">
+                    <div class="todo-item">{{ scope.row.courseSubject }}-{{ scope.row.courseNumber }}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column>
+                  <template slot-scope="scope">
+                    <div class="todo-item">{{ scope.row.courseName }}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column width="70">
+                  <template slot-scope="scope">
+                    <el-button
+                        type="text"
+                        icon="el-icon-delete"
+                        @click="handleDeletePrerequisite(scope.row)"
+                    >Delete
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-card>
+          </el-col>
+
 
           <el-col :span="24" style="margin-top: 5px">
             <el-card shadow="hover" style="height:252px;">
@@ -246,7 +243,7 @@
     <el-drawer
         title="Add a new Prerequisite Course"
         :with-header="addPrerequisiteDrawerProp.withHeader"
-        size="35%"
+        size="27%"
         :append-to-body="addPrerequisiteDrawerProp.appendToBody"
         :visible.sync="addPrerequisiteDrawerProp.editDrawVisible"
         :direction="addPrerequisiteDrawerProp.direction"
@@ -264,50 +261,65 @@
               </el-button>
             </el-button-group>
           </div>
-          <div class="form-box" style="float: left">
-
-            <el-form ref="form" :model="editCourseForm" :rules="editCourseRules"
-                     style="text-align: left;margin-top: 5%">
-
-              <el-select v-model="query.address" placeholder="User Role" class="handle-select mr10">
-                <el-option key="1" label="Administrator" value="administrator"></el-option>
-                <el-option key="2" label="Professor" value="professor"></el-option>
-                <el-option key="3" label="Student" value="student"></el-option>
-                <el-option key="4" label="Teaching Assistant" value="teaching_assistant"></el-option>
-              </el-select>
-              <el-input v-model="query.name" placeholder="username" class="handle-input mr10"></el-input>
-              <el-button type="primary" icon="el-icon-search" @click="handleSearch">Search</el-button>
-
-
-              <el-form-item label="Course Name :" prop="courseName" label-width="formLabelWidth" style="margin-top: 5%">
-                <el-input v-model="editCourseForm.courseName"></el-input>
-              </el-form-item>
+          <div class="form-box" style="float: left;width: 97%">
+            <el-form ref="form" :model="addPrerequisiteForm" :rules="addPrerequisiteCourseRules"
+                     style="text-align: left;margin-top: 5%;" label-width="auto">
+              <el-divider content-position="center" style="margin-top: 10%"><i class="el-icon-lx-search"></i> Search
+              </el-divider>
               <el-form-item label="Course Subject :" prop="courseSubject">
-                <el-input v-model="editCourseForm.courseSubject" readonly></el-input>
+                <el-select v-model="addPrerequisiteForm.courseSubject" filterable placeholder="Please Input or Select">
+                  <el-option
+                      v-for="item in courseSubjectList"
+                      :key="item.courseSubject"
+                      :label="item.courseSubject"
+                      :value="item.courseSubject">
+                  </el-option>
+                </el-select>
               </el-form-item>
               <el-form-item label="Course Number :" prop="courseNumber">
-                <el-input v-model="editCourseForm.courseNumber"></el-input>
+                <el-select v-model="addPrerequisiteForm.courseNumber" filterable placeholder="Please Input or Select">
+                  <el-option
+                      v-for="item in courseNumberList"
+                      :key="item.courseNumber"
+                      :label="item.courseNumber"
+                      :value="item.courseNumber">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <el-divider content-position="center" style="margin-top: 10%"><i class="el-icon-lx-vipcard"></i> Course info
+            </el-divider>
+            <el-form ref="form" :model="PrerequisiteCourseForm"
+                     style="text-align: left;margin-top: 5%;" label-width="auto">
+              <el-form-item label="Course Name :" prop="courseNumber">
+                <el-input v-model="PrerequisiteCourseForm.courseName" readonly></el-input>
+              </el-form-item>
+              <el-form-item label="Course ID :" prop="courseId">
+                <el-input v-model="PrerequisiteCourseForm.courseId" readonly></el-input>
+              </el-form-item>
+              <el-form-item label="Course Subject :" prop="courseSubject">
+                <el-input v-model="PrerequisiteCourseForm.courseSubject" readonly></el-input>
+              </el-form-item>
+              <el-form-item label="Course Number :" prop="courseNumber">
+                <el-input v-model="PrerequisiteCourseForm.courseNumber" readonly></el-input>
               </el-form-item>
               <el-form-item label="Course Credit :" prop="credit">
-                <el-input v-model="editCourseForm.credit"></el-input>
+                <el-input v-model="PrerequisiteCourseForm.credit" readonly></el-input>
               </el-form-item>
               <el-form-item label="Course Description:">
-                <el-input type="textarea" rows="5" v-model="editCourseForm.courseDesc"></el-input>
+                <el-input type="textarea" rows="5" v-model="PrerequisiteCourseForm.courseDesc" readonly></el-input>
               </el-form-item>
 
             </el-form>
           </div>
-
-
         </el-card>
-
       </div>
     </el-drawer>
 
     <el-drawer
         title="add a new Preclusion Course"
         :with-header="addPreclusionDrawerProp.withHeader"
-        size="35%"
+        size="27%"
         :append-to-body="addPreclusionDrawerProp.appendToBody"
         :visible.sync="addPreclusionDrawerProp.editDrawVisible"
         :direction="addPreclusionDrawerProp.direction"
@@ -325,30 +337,57 @@
               </el-button>
             </el-button-group>
           </div>
-          <div class="form-box" style="float: left">
-            <el-form ref="form" :model="editCourseForm" :rules="editCourseRules"
-                     style="text-align: left;margin-top: 5%">
-
-              <el-form-item label="Course Name :" prop="courseName" label-width="formLabelWidth" style="margin-top: 5%">
-                <el-input v-model="editCourseForm.courseName"></el-input>
-              </el-form-item>
+          <div class="form-box" style="float: left;width: 97%">
+            <el-form ref="form" :model="addPreclusionForm" :rules="addPreclusionCourseRules"
+                     style="text-align: left;margin-top: 5%;" label-width="auto">
+              <el-divider content-position="center" style="margin-top: 10%"><i class="el-icon-lx-search"></i> Search
+              </el-divider>
               <el-form-item label="Course Subject :" prop="courseSubject">
-                <el-input v-model="editCourseForm.courseSubject" readonly></el-input>
+                <el-select v-model="addPreclusionForm.courseSubject" filterable placeholder="Please Input or Select">
+                  <el-option
+                      v-for="item in courseSubjectList"
+                      :key="item.courseSubject"
+                      :label="item.courseSubject"
+                      :value="item.courseSubject">
+                  </el-option>
+                </el-select>
               </el-form-item>
               <el-form-item label="Course Number :" prop="courseNumber">
-                <el-input v-model="editCourseForm.courseNumber"></el-input>
+                <el-select v-model="addPreclusionForm.courseNumber" filterable placeholder="Please Input or Select">
+                  <el-option
+                      v-for="item in courseNumberList"
+                      :key="item.courseNumber"
+                      :label="item.courseNumber"
+                      :value="item.courseNumber">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <el-divider content-position="center" style="margin-top: 10%"><i class="el-icon-lx-vipcard"></i> Course info
+            </el-divider>
+            <el-form ref="form" :model="PreclusionCourseForm"
+                     style="text-align: left;margin-top: 5%;" label-width="auto">
+              <el-form-item label="Course Name :" prop="courseNumber">
+                <el-input v-model="PreclusionCourseForm.courseName" readonly></el-input>
+              </el-form-item>
+              <el-form-item label="Course ID :" prop="courseId">
+                <el-input v-model="PreclusionCourseForm.courseId" readonly></el-input>
+              </el-form-item>
+              <el-form-item label="Course Subject :" prop="courseSubject">
+                <el-input v-model="PreclusionCourseForm.courseSubject" readonly></el-input>
+              </el-form-item>
+              <el-form-item label="Course Number :" prop="courseNumber">
+                <el-input v-model="PreclusionCourseForm.courseNumber" readonly></el-input>
               </el-form-item>
               <el-form-item label="Course Credit :" prop="credit">
-                <el-input v-model="editCourseForm.credit"></el-input>
+                <el-input v-model="PreclusionCourseForm.credit" readonly></el-input>
               </el-form-item>
               <el-form-item label="Course Description:">
-                <el-input type="textarea" rows="5" v-model="courseInfo.courseDesc"></el-input>
+                <el-input type="textarea" rows="5" v-model="PreclusionCourseForm.courseDesc" readonly></el-input>
               </el-form-item>
 
             </el-form>
           </div>
-
-
         </el-card>
 
       </div>
@@ -386,11 +425,58 @@
 
 <script>
 import axios from "axios";
+import qs from "qs";
 
 export default {
   name: "CourseModify",
   inject: ['reload'],
   data() {
+    let getCourseInfoForPrerequisite = (rule, value, callback) => {
+      if (value !== '') {
+        axios.get('http://localhost:8080/admin/course/getCourseBySubjectAndNumber/' + this.addPrerequisiteForm.courseSubject + '/' + this.addPrerequisiteForm.courseNumber).then(resp => {
+          if (resp.data === null) {
+            callback('can not find this course')
+          } else {
+            console.log(resp.data)
+            this.PrerequisiteCourseForm = resp.data
+            callback();
+          }
+        })
+      } else {
+        callback('invalid input');
+      }
+    };
+    let getCourseInfoForPreclusion = (rule, value, callback) => {
+      if (value !== '') {
+        axios.get('http://localhost:8080/admin/course/getCourseBySubjectAndNumber/' + this.addPreclusionForm.courseSubject + '/' + this.addPreclusionForm.courseNumber).then(resp => {
+          if (resp.data === null) {
+            callback('can not find this course')
+          } else {
+            console.log(resp.data)
+            this.PreclusionCourseForm = resp.data
+            callback();
+          }
+        })
+      } else {
+        callback('invalid input');
+      }
+    };
+    let getRelatedCourseNumber = (rule, value, callback) => {
+      console.log(value)
+      if (value !== '') {
+        axios.get('http://localhost:8080/admin/course/getCourseBySubject/' + value).then(resp => {
+          if (resp.data === null) {
+            callback('Can not find a course number!')
+          } else {
+            console.log(resp.data)
+            this.courseNumberList = resp.data
+            callback();
+          }
+        })
+      } else {
+        callback('invalid input');
+      }
+    };
     return {
 
       courseInfo: {},
@@ -424,7 +510,36 @@ export default {
             [
               {required: true, message: 'Course credit can not be none', trigger: 'blur'}
             ],
+        courseDesc:
+            [
+              {required: true, message: 'Course description can not be none', trigger: 'blur'}
+            ]
       },
+      addPrerequisiteCourseRules: {
+        courseSubject:
+            [
+              {required: true, message: 'Course subject can not be none', trigger: 'blur'},
+              {validator: getRelatedCourseNumber, trigger: ['blur', 'change']}
+            ],
+        courseNumber:
+            [
+              {required: true, message: 'Course number can not be none', trigger: 'blur'},
+              {validator: getCourseInfoForPrerequisite, trigger: ['blur', 'change']}
+            ],
+      },
+      addPreclusionCourseRules: {
+        courseSubject:
+            [
+              {required: true, message: 'Course subject can not be none', trigger: 'blur'},
+              {validator: getRelatedCourseNumber, trigger: ['blur', 'change']}
+            ],
+        courseNumber:
+            [
+              {required: true, message: 'Course number can not be none', trigger: 'blur'},
+              {validator: getCourseInfoForPreclusion, trigger: ['blur', 'change']}
+            ],
+      },
+
 
       drawerProp: {
         direction: 'rtl',
@@ -457,8 +572,18 @@ export default {
         pageIndex: 1,
         pageSize: 10
       },
-
+      formLabelWidth: '100px',
       courseId: '',
+
+      courseSubjectList: [],
+      courseNumberList: [],
+      PrerequisiteCourseForm: {},
+      addPrerequisiteForm: {},
+      prerequisiteList: [],
+
+      PreclusionCourseForm: {},
+      addPreclusionForm: {},
+      preclusionList: [],
 
     };
 
@@ -468,19 +593,8 @@ export default {
       this.$message.success('提交成功！');
     },
     onEditCourse() {
-      // this.editCourseForm.courseName = this.$route.query.row.courseName
-      // this.editCourseForm.courseId = this.$route.query.row.courseId
-      // this.editCourseForm.courseSubject = this.$route.query.row.courseSubject
-      // this.editCourseForm.courseNumber = this.$route.query.row.courseNumber
-      // this.editCourseForm.credit = this.$route.query.row.credit
-      // this.editCourseForm.courseDesc = this.$route.query.row.courseDesc
-      // axios.get('http://localhost:8080/admin/course/getCourseById/' +  this.$route.params.courseId).then(resp => {
-      //   this.editCourseForm = resp.data
-      //   console.log(this.editCourseForm)
-      // })
       this.drawerProp.editDrawVisible = true;
     },
-
     //delete course
     onDeleteCourse() {
       // Double check
@@ -551,21 +665,191 @@ export default {
       this.addPreclusionDrawerProp.editDrawVisible = false;
       clearTimeout(this.timer);
     },
+
+    openAddPrerequisiteDrawer() {
+      axios.get('http://localhost:8080/admin/course/addPage/getSubject').then(resp => {
+        this.courseSubjectList = resp.data
+        console.log(this.courseSubjectList)
+      })
+      this.addPrerequisiteDrawerProp.editDrawVisible = true;
+    },
+    saveNewPrerequisiteCourse() {
+      if (this.loading) {
+        return;
+      }
+      this.$confirm('Confirm to submit？')
+          .then(_ => {
+            this.prerequisiteCourseId = this.PrerequisiteCourseForm.courseId
+
+            console.log(this.prerequisiteCourseId)
+
+            this.loading = true;
+            this.timer = setTimeout(() => {
+              // 动画关闭需要一定的时间
+              setTimeout(() => {
+                this.loading = false;
+              }, 400);
+            }, 2000);
+            axios.post("http://localhost:8080/admin/course/addPage/addPrerequisite/", qs.stringify({
+              'prerequisiteCourseId': this.prerequisiteCourseId,
+              'courseId': this.courseInfo.courseId,
+            }), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(resp => {
+              console.log(resp)
+              if (resp.data === "success") {
+                this.loading = false;
+                this.addPrerequisiteDrawerProp.editDrawVisible = false
+                this.reload()
+                clearTimeout(this.timer);
+                this.$notify({
+                  title: 'Success',
+                  message: 'Add a new prerequisite course!',
+                  type: 'success'
+                });
+
+              } else {
+                this.loading = false;
+                this.addPrerequisiteDrawerProp.editDrawVisible = false
+                this.reload()
+                clearTimeout(this.timer);
+                this.$notify.error({
+                  title: 'Error',
+                  message: 'Ops,Something goes wrong!',
+                });
+              }
+
+            })
+
+          })
+          .catch(_ => {
+          });
+    },
+    handleDeletePrerequisite(row) {
+      this.$confirm('Delete this Prerequisite course : \n"' + row.courseSubject + row.courseNumber + "  " + row.courseName + '" ?', 'Check', {
+        type: 'warning'
+      })
+          .then(() => {
+            axios.delete('http://localhost:8080/admin/course/CourseInfo/deleteCoursePrerequisite/' + this.courseInfo.courseId + '/' + row.courseId).then(resp => {
+              if (resp.data === "success") {
+                this.loading = false;
+                this.reload()
+                clearTimeout(this.timer);
+                this.$notify({
+                  title: 'Success',
+                  message: 'Delete successfully!',
+                  type: 'success'
+                });
+              } else {
+                this.$notify.error({
+                  title: 'Error',
+                  message: 'Ops,Something goes wrong!',
+                });
+              }
+              console.log(resp);
+            })
+
+          })
+          .catch(() => {
+          });
+    },
+    openAddPreclusionDrawer() {
+      axios.get('http://localhost:8080/admin/course/addPage/getSubject').then(resp => {
+        this.courseSubjectList = resp.data
+        console.log(this.courseSubjectList)
+      })
+      this.addPreclusionDrawerProp.editDrawVisible = true;
+    },
+    saveNewPreclusionCourse() {
+      if (this.loading) {
+        return;
+      }
+      this.$confirm('Confirm to submit new Preclusion course？')
+          .then(_ => {
+            this.preclusionCourseId = this.PreclusionCourseForm.courseId
+            this.loading = true;
+            this.timer = setTimeout(() => {
+              // 动画关闭需要一定的时间
+              setTimeout(() => {
+                this.loading = false;
+              }, 400);
+            }, 2000);
+            axios.post("http://localhost:8080/admin/course/addPage/addPreclusion/", qs.stringify({
+              'preclusionCourseId': this.preclusionCourseId,
+              'courseId': this.courseInfo.courseId,
+            }), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(resp => {
+              console.log(resp)
+              if (resp.data === "success") {
+                this.loading = false;
+                this.addPreclusionDrawerProp.editDrawVisible = false
+                this.reload()
+                clearTimeout(this.timer);
+                this.$notify({
+                  title: 'Success',
+                  message: 'Add a new prerequisite course!',
+                  type: 'success'
+                });
+              } else {
+                this.loading = false;
+                this.addPreclusionDrawerProp.editDrawVisible = false
+                this.reload()
+                clearTimeout(this.timer);
+                this.$notify.error({
+                  title: 'Error',
+                  message: 'Ops,Something goes wrong!',
+                });
+              }
+
+            })
+
+          })
+          .catch(_ => {
+          });
+    },
+    handleDeletePreclusion(row) {
+      this.$confirm('Delete this Preclusion course : \n"' + row.courseSubject + row.courseNumber + "  " + row.courseName + '" ?', 'Check', {
+        type: 'warning'
+      })
+          .then(() => {
+            axios.delete('http://localhost:8080/admin/course/CourseInfo/deleteCoursePreclusion/' + this.courseInfo.courseId + '/' + row.courseId).then(resp => {
+              if (resp.data === "success") {
+                this.loading = false;
+                this.reload()
+                clearTimeout(this.timer);
+                this.$notify({
+                  title: 'Success',
+                  message: 'Delete successfully!',
+                  type: 'success'
+                });
+              } else {
+                this.$notify.error({
+                  title: 'Error',
+                  message: 'Ops,Something goes wrong!',
+                });
+              }
+              console.log(resp);
+            })
+
+          })
+          .catch(() => {
+          });
+    },
+
   },
   created() {
     axios.get('http://localhost:8080/admin/course/getCourseById/' + this.$route.params.courseId).then(resp => {
+      console.log(this.$route.params.courseId)
       this.courseInfo = resp.data
-      console.log(this.courseInfo)
     })
     axios.get('http://localhost:8080/admin/course/getCourseById/' + this.$route.params.courseId).then(resp => {
       this.editCourseForm = resp.data
-      console.log(this.courseInfo)
     })
-
-    console.log(this.courseInfo)
-    console.log(this.courseInfo.courseId)
-    console.log(this.courseInfo.courseName)
-    console.log(this.courseInfo.courseDesc)
+    axios.get('http://localhost:8080/admin/course/CourseInfo/getCoursePrerequisite/' + this.$route.params.courseId).then(resp => {
+      this.PrerequisiteCourses = resp.data
+      console.log(this.PrerequisiteCourses)
+    })
+    axios.get('http://localhost:8080/admin/course/CourseInfo/getCoursePreclusion/' + this.$route.params.courseId).then(resp => {
+      this.PreclusionCourses = resp.data
+      console.log(this.PreclusionCourses)
+    })
     axios.get('http://localhost:8080/admin/class/getClassByCourseId/' + this.courseInfo.courseId).then(resp => {
       this.clazzData = resp.data
       console.log(this.clazzData)

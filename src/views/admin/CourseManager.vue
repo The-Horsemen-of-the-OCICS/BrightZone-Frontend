@@ -74,21 +74,72 @@
       </div>
     </div>
 
-    <!-- 编辑弹出框 -->
-    <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
-      <el-form ref="form" :model="form" label-width="70px">
-        <el-form-item label="用户名">
-          <el-input v-model="form.name"></el-input>
-        </el-form-item>
-        <el-form-item label="地址">
-          <el-input v-model="form.address"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveEdit">确 定</el-button>
-            </span>
-    </el-dialog>
+    <el-drawer
+        title="Add a Course"
+        :with-header="addCourseDrawerProp.withHeader"
+        size="35%"
+        :append-to-body="addCourseDrawerProp.appendToBody"
+        :visible.sync="addCourseDrawerProp.addCourseDrawer"
+        :direction="addCourseDrawerProp.direction"
+        :modal="addCourseDrawerProp.model"
+        :before-close="cancelForm">
+      <div class="demo-drawer__content">
+        <el-card shadow="hover" style="height: 1000px">
+          <div slot="header" class="clearfix" style="text-align: left">
+            <a style="font-size: large;color: #20a0ff">Add a Course</a>
+            <el-button-group style="float: right">
+              <el-button type="danger" @click="cancelForm" style="width: 80px">Cancel
+              </el-button>
+              <el-button type="primary" @click="handleSubmitNewCourse()" :loading="loading"
+                         style="width: 80px">{{ loading ? 'Submitting ...' : 'Submit' }}
+              </el-button>
+            </el-button-group>
+          </div>
+          <div class="form-box" style="float: left">
+            <el-form ref="form" :model="addCourseForm" :rules="addCourseRules" style="text-align: left;margin-top: 5%">
+
+              <el-form-item label="Course Subject :" prop="courseSubject" label-width="formLabelWidth"
+                            style="margin-top: 5%">
+                <el-input v-model="addCourseForm.courseSubject"></el-input>
+              </el-form-item>
+
+              <el-form-item label="Course Number :" prop="courseNumber" type="number" label-width="formLabelWidth"
+                            style="margin-top: 5%">
+                <el-input v-model.number="addCourseForm.courseNumber"></el-input>
+              </el-form-item>
+
+              <el-form-item label="Course Name :" prop="courseName" label-width="formLabelWidth" style="margin-top: 5%">
+                <el-input v-model="addCourseForm.courseName"></el-input>
+              </el-form-item>
+
+              <el-form-item label="Course Credit : " prop="Credit" label-width="formLabelWidth" style="margin-top: 5%">
+                <el-select v-model="addCourseForm.credit" placeholder="Credit" class="handle-select mr10">
+                  <el-option key="1" label="1" value="1"></el-option>
+                  <el-option key="2" label="2" value="2"></el-option>
+                  <el-option key="3" label="3" value="3"></el-option>
+                  <el-option key="4" label="4" value="4"></el-option>
+                  <el-option key="5" label="5" value="5"></el-option>
+                  <el-option key="6" label="6" value="6"></el-option>
+                  <el-option key="7" label="7" value="7"></el-option>
+                  <el-option key="8" label="8" value="8"></el-option>
+                </el-select>
+              </el-form-item>
+
+              <el-form-item label="Course Description:" prop="courseDesc" label-width="formLabelWidth"
+                            style="margin-top: 5%">
+                <el-input type="textarea" rows="5" v-model="addCourseForm.courseDesc"></el-input>
+              </el-form-item>
+
+            </el-form>
+
+          </div>
+
+
+        </el-card>
+
+      </div>
+    </el-drawer>
+
   </div>
 </template>
 
@@ -97,8 +148,36 @@ import axios from "axios";
 import {fetchData} from "@/api";
 
 export default {
+  inject: ['reload'],
   name: "CourseManager",
   data() {
+    let validateCourseNumber = (rule, value, callback) => {
+      if (value !== '') {
+        axios.get('http://localhost:8080/admin/course/addPageCheck/number/' + this.addCourseForm.courseSubject + '/' + this.addCourseForm.courseNumber).then(resp => {
+          if (resp.data === 'valid') {
+            callback()
+          } else {
+            callback('The course "' + this.addCourseForm.courseSubject + this.addCourseForm.courseNumber + '" already exist!')
+          }
+        })
+      } else {
+        callback('invalid input');
+      }
+    };
+    let validateCourseName = (rule, value, callback) => {
+      if (value !== '') {
+        axios.get('http://localhost:8080/admin/course/addPageCheck/name/' + this.addCourseForm.courseName).then(resp => {
+          if (resp.data === 'valid') {
+            callback()
+          } else {
+            callback('The course name"' + this.addCourseForm.courseName + '" already exist!')
+          }
+        })
+      } else {
+        callback('invalid input');
+      }
+    };
+
     return {
       query: {
         address: '',
@@ -114,7 +193,44 @@ export default {
       delList: [],
       editVisible: false,
 
-      courseId: '',
+      addCourseDrawerProp: {
+        direction: 'rtl',
+        addCourseDrawer: false,
+        withHeader: false,
+        appendToBody: true,
+        model: false
+      },
+      formLabelWidth: '100px',
+      addCourseForm: {},
+      loading: false,
+      timer: null,
+
+      addCourseRules: {
+        courseName:
+            [
+              {required: true, message: 'Course name can not be none', trigger: 'blur'},
+              {validator: validateCourseName, trigger: ['blur']}
+            ],
+        courseSubject:
+            [
+              {required: true, message: 'Course subject can not be none', trigger: 'blur'}
+            ],
+        courseNumber:
+            [
+              {required: true, message: 'Course number can not be none', trigger: 'blur',},
+              {type: 'number', message: 'Please input correct Number', trigger: ['blur', 'change']},
+              {validator: validateCourseNumber, trigger: ['blur']}
+            ],
+        credit:
+            [
+              {required: true, message: 'Course credit can not be none', trigger: 'blur'}
+            ],
+        courseDesc:
+            [
+              {required: true, message: 'Course description can not be none', trigger: 'blur'}
+            ],
+      },
+
       form: {},
       idx: -1,
       id: -1
@@ -128,12 +244,64 @@ export default {
     })
   },
   methods: {
+    // add course
+    handleAddCourse() {
+      this.addCourseDrawerProp.addCourseDrawer = true
+    },
+    cancelForm() {
+      this.loading = false;
+      this.addCourseDrawerProp.addCourseDrawer = false
+      clearTimeout(this.timer);
+    },
+    handleSubmitNewCourse() {
+      if (this.loading) {
+        return;
+      }
+      this.$confirm('Confirm to submit？')
+          .then(_ => {
+            this.loading = true;
+            this.timer = setTimeout(() => {
+              // 动画关闭需要一定的时间
+              setTimeout(() => {
+                this.loading = false;
+              }, 400);
+            }, 2000);
+            axios.post("http://localhost:8080/admin/course/addNewCourse", this.addCourseForm).then(resp => {
+              console.log(resp)
+              if (resp.data === "success") {
+                this.loading = false;
+                this.addCourseDrawerProp.addCourseDrawer = false
+                this.reload()
+                clearTimeout(this.timer);
+                this.$notify({
+                  title: 'Success',
+                  message: 'Add a new Course!',
+                  type: 'success'
+                });
+
+              } else {
+                this.loading = false;
+                this.addCourseDrawerProp.addCourseDrawer = false
+                this.reload()
+                clearTimeout(this.timer);
+                this.$notify.error({
+                  title: 'Error',
+                  message: 'Ops,Something goes wrong!',
+                });
+              }
+
+            })
+
+          })
+          .catch(_ => {
+          });
+    },
     // 触发搜索按钮
     handleSearch() {
       this.$set(this.query, 'pageIndex', 1);
       this.getData();
     },
-    // 删除操作
+    // handle delete button
     handleDelete(index, row) {
       // Double check
       this.$confirm('Are you sure you want to delete this course : "' + row.courseSubject + row.courseNumber + "  " + row.courseName + '" ?', 'Check', {
@@ -176,26 +344,15 @@ export default {
       this.$message.error(`删除了${str}`);
       this.multipleSelection = [];
     },
-    // 编辑操作
+    // handle course details button
     handleDetails(courseId) {
       console.log(courseId)
       this.$router.push({
         path: `/admin/courseDetails/${courseId}`,
-        // query: {
-        //   id: row.courseId,
-        // }
       })
-      // this.idx = index;
-      // this.form = row;
-      // this.editVisible = true;
     },
-    // 保存编辑
-    saveEdit() {
-      this.editVisible = false;
-      this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-      this.$set(this.tableData, this.idx, this.form);
-    },
-    // 分页导航
+
+    // Page
     handlePageChange(currentPage) {
       axios.get('http://localhost:8080/admin/course/getAll/' + (currentPage - 1) + '/10').then(resp => {
         console.log(resp)
@@ -245,4 +402,6 @@ export default {
   width: 40px;
   height: 40px;
 }
+
+
 </style>

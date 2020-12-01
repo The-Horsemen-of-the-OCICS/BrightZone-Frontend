@@ -65,7 +65,7 @@ export default {
           title: 'AdminIndex'
         },
         {
-          icon: 'el-icon-lx-people',
+          icon: 'el-icon-lx-group',
           index: '/admin/accounts',
           title: 'Accounts'
         },
