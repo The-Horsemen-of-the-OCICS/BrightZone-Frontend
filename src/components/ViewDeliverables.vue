@@ -152,7 +152,7 @@ export default {
     handleEditDeliverable(index, row) {
       console.log(index, row);
       this.$router.push({
-        path: '/editDeliverable',
+        path: '/professor/editDeliverable',
         query: {
           classId: this.classSelection,
           deliverableId: row.deliverableId,

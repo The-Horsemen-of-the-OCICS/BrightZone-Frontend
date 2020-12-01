@@ -13,7 +13,7 @@
     >
       <el-menu-item index="index" >
         <i class="el-icon-s-home"></i>
-        <span slot="title">Professor Index</span>
+        <span slot="title">Home</span>
       </el-menu-item>
       <el-submenu index="viewDeliverables">
         <template slot="title">

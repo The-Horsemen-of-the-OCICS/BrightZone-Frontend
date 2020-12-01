@@ -203,7 +203,7 @@ export default {
       const thisDeliverable = this.deliverableData.find(element => element.deliverableId === row.deliverableId);
       const thisSubmission = this.submissionData.find(element => element.submissionId === row.submissionId);
       this.$router.push({
-        path: '/evaluateSubmission',
+        path: '/professor/evaluateSubmission',
         query: {
           classId: _this.classSelection,
           deliverableId: row.deliverableId,

@@ -184,7 +184,7 @@ export default {
         _this.directoryFilter = 'All'
 
       });
-      axios.get('http://localhost:8080/admin/course/get/' + this.classData.courseId).then(function (resp) {
+      axios.get('http://localhost:8080/admin/course/getCourseById/' + this.classData.courseId).then(function (resp) {
         _this.courseData = resp.data;
       });
     },
@@ -254,7 +254,7 @@ export default {
     },
     viewDeliverables(){
       this.$router.push({
-        path: '/viewDeliverables',
+        path: '/professor/viewDeliverables',
         query: {
           classId: (this.classData ? this.classData.classId : '')
         }
@@ -262,7 +262,7 @@ export default {
     },
     createDeliverables(){
       this.$router.push({
-        path: '/editDeliverable',
+        path: '/professor/editDeliverable',
         query: {
           classId: (this.classData ? this.classData.classId : '')
         }
@@ -270,7 +270,7 @@ export default {
     },
     viewStudents(){
       this.$router.push({
-        path: '/viewStudents',
+        path: '/professor/viewStudents',
         query: {
           classId: (this.classData ? this.classData.classId : '')
         }
@@ -278,7 +278,7 @@ export default {
     },
     viewSubmissions(){
       this.$router.push({
-        path: '/viewSubmissions',
+        path: '/professor/viewSubmissions',
         query: {
           classId: (this.classData ? this.classData.classId : '')
         }

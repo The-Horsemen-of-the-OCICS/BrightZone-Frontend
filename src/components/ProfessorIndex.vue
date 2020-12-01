@@ -18,14 +18,14 @@
       </el-col>
       <el-col :span="14">
         <el-row :gutter="20" class="el-row">
-          <el-col :span="12" v-for="c in this.courseData" :key="c.courseId"  style="margin-bottom: 20px">
-            <el-card class="box-card" shadow="hover" @click.native="openClass(classData.find(element => element.courseId === c.courseId).classId)">
+          <el-col :span="12" v-for="c in this.courseData" :key="courseData.indexOf(c)"  style="margin-bottom: 20px">
+            <el-card class="box-card" shadow="hover" @click.native="openClass(classData[courseData.indexOf(c)].classId)">
               <div slot="header" class="clearfix" style="margin: -20px">
                 <img src="@/assets/img/test_banner.png" class="image">
               </div>
               <div>
                 <h3 style="display: flex; text-align: left;">{{ '[' + c.courseSubject + c.courseNumber + '] ' + c.courseName }}</h3>
-                <h4 style="display: flex; text-align: left; margin-top: 5px">Class  {{ classData.find(element => element.courseId === c.courseId).classId }} - Section {{ classData.find(element => element.courseId === c.courseId).section }}</h4>
+                <h4 style="display: flex; text-align: left; margin-top: 5px">Class  {{ classData[courseData.indexOf(c)].classId }} - Section {{ classData[courseData.indexOf(c)].section }}</h4>
               </div>
             </el-card>
           </el-col>
@@ -52,7 +52,7 @@ export default {
       _this.classData = resp.data;
       _this.courseData = [];
       _this.classData.forEach(c => {
-        axios.get('http://localhost:8080/admin/course/get/' + c.courseId).then(function (resp) {
+        axios.get('http://localhost:8080/admin/course/getCourseById/' + c.courseId).then(function (resp) {
           _this.courseData.push(resp.data);
         });
       });
@@ -75,7 +75,7 @@ export default {
       console.log(value);
       const _this = this;
       this.$router.push({
-        path: '/classHome',
+        path: '/professor/classHome',
         query: {
           classId: value
         }
