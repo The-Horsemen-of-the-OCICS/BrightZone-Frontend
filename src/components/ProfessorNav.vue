@@ -47,6 +47,10 @@
           <span>Evaluate Submission</span>
         </el-menu-item>
       </el-submenu>
+      <el-menu-item index="/professor/profile">
+        <i class="el-icon-lx-profile"></i>
+        <span>Profile</span>
+      </el-menu-item>
     </el-menu>
   </div>
 </template>

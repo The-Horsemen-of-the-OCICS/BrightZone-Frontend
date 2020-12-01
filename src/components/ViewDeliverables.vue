@@ -91,8 +91,7 @@ export default {
     })
 
     const query = this.$route.query;
-    console.log(query);
-    if (query && query.classId !== '') {
+    if (query.lenth > 0 && query.classId !== '') {
       this.classSelection = query.classId
       this.onChangeClass(this.classSelection);
     }

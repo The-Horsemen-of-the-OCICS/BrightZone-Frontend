@@ -101,10 +101,19 @@ export default {
           }
         }).catch(err => {})
       } else if (command === 'profile') {
-        this.$message({
-          message: 'Warning, profile functionality is still under development.',
-          type: 'warning'
-        });
+        switch (this.type) {
+          case 'administrator':
+            this.$router.push('/admin/profile');
+            break;
+          case 'professor':
+            this.$router.push('/professor/profile');
+            break;
+          case 'student':
+            this.$router.push('/student/profile');
+            break;
+          default:
+            break;
+        }
       }
     },
     // collapse side bar

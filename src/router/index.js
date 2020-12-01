@@ -54,7 +54,12 @@ const routes = [
                 name: "Class Home",
                 component: ClassHome
             },
-
+            {
+                path: 'profile',  // http://localhost:8181/professor/profile
+                component: () => import('@/views/common/Profile'),
+                meta: {title: 'profile'},
+                name: 'Professor profile'
+            },
         ]
     },
     {
@@ -127,6 +132,12 @@ const routes = [
                 meta: {title: 'notification'},
                 name: 'notification'
             },
+            {
+                path: 'profile',  // http://localhost:8181/admin/profile
+                component: () => import('@/views/common/Profile'),
+                meta: {title: 'profile'},
+                name: 'admin profile'
+            }
         ]
     },
     {
@@ -152,6 +163,12 @@ const routes = [
                 meta: {title: 'viewRegisteredCourse'},
                 name: 'ViewRegisteredCourse'
             },
+            {
+                path: 'profile',  // http://localhost:8181/student/profile
+                component: () => import('@/views/common/Profile'),
+                meta: {title: 'profile'},
+                name: 'StudentProfile'
+            }
         ]
     },
     {

@@ -79,6 +79,11 @@ export default {
           index: '/admin/notification',
           title: 'Notification'
         },
+        {
+          icon: 'el-icon-lx-profile',
+          index: '/admin/profile',
+          title: 'Profile',
+        }
       ]
     };
   },
