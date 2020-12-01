@@ -2,7 +2,7 @@
   <div>
     <el-row :gutter="10" class="el-row" >
       <el-col :span="8">
-        <el-card class="box-card" shadow="hover" >
+        <el-card class="box-card" shadow="always" >
           <div slot="header" class="clearfix" style="margin: -20px">
             <img src="@/assets/img/test_banner.png" class="image">
           </div>
@@ -13,19 +13,27 @@
         </el-card>
       </el-col>
       <el-col :span="8">
-        <el-card class="box-card" shadow="hover" >
-          <div>
-            <el-row>
-              <el-col style="display: flex">
-                Status: {{this.classData.classStatus}}
-              </el-col>
-            </el-row>
-            <div>
-              Enrolled: {{this.classData.enrolled}}/{{this.classData.enrollCapacity}}
-              <el-progress :percentage="100 * this.classData.enrolled / this.classData.enrollCapacity"></el-progress>
+        <el-card class="box-card">
+        <el-card class="box-card"shadow="never" :body-style="{padding: '0px'}" style="margin-top: -10px; margin-bottom: 10px">
+          <div class="grid-content grid-con-1">
+            <i class="el-icon-lx-people grid-con-icon"></i>
+            <div class="grid-cont-right">
+              <div class="grid-num">{{ this.classData.enrolled }}</div>
+              <div>Total Enrolled</div>
             </div>
           </div>
         </el-card>
+        <el-card class="box-card"shadow="never" :body-style="{padding: '0px'}" style="margin-bottom: -10px;">
+          <div class="grid-content grid-con-2">
+            <i class="el-icon-document-copy grid-con-icon"></i>
+            <div class="grid-cont-right">
+              <div class="grid-num">{{ this.deliverableData.length }}</div>
+              <div>Total Deliverables</div>
+            </div>
+          </div>
+        </el-card>
+        </el-card>
+
       </el-col>
       <el-col :span="5">
         <el-card style="max-width: 250px">
@@ -129,6 +137,9 @@ export default {
     if (query) {
       axios.get('http://localhost:8080/getAllClass/' + this.$parent.$data.userId).then(function (resp) {
         _this.classData = resp.data.find(element => element.classId.toString() === query.classId.toString())
+        axios.get('http://localhost:8080/getAllDeliverables/' + _this.classData.classId).then(function (resp) {
+          _this.deliverableData = resp.data;
+        })
         _this.reloadData()
       });
     } else {
@@ -137,6 +148,8 @@ export default {
   },
   data() {
     return {
+      deliverableData: [],
+      submissionData: [],
       classData: '',
       courseData: '',
       directorySelection: '',
@@ -350,5 +363,46 @@ export default {
   width: 100%;
   display: block;
 }
+.grid-content {
+  display: flex;
+  align-items: center;
+  height: 100px;
+}
 
+.grid-cont-right {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  color: #999;
+}
+
+.grid-num {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.grid-con-icon {
+  font-size: 50px;
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  line-height: 100px;
+  color: #fff;
+}
+
+.grid-con-1 .grid-con-icon {
+  background: rgb(45, 140, 240);
+}
+
+.grid-con-1 .grid-num {
+  color: rgb(45, 140, 240);
+}
+
+.grid-con-2 .grid-con-icon {
+  background: rgb(100, 213, 114);
+}
+
+.grid-con-2 .grid-num {
+  color: rgb(45, 140, 240);
+}
 </style>
