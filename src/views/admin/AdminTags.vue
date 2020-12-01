@@ -2,7 +2,7 @@
   <div class="tags" v-if="showTags">
     <ul>
       <li class="tags-li" v-for="(item,index) in tagsList" :class="{'active': isActive(item.path)}" :key="index">
-        <router-link :to="item.path" class="tags-li-title">
+        <router-link :to="item.path" class="tags-li-title" @click="handleReload">
           {{ item.title }}
         </router-link>
         <span class="tags-li-icon" @click="closeTags(index)"><i class="el-icon-close"></i></span>
@@ -26,12 +26,18 @@
 import bus from '@/components/common/bus';
 
 export default {
+  inject: ['reload'],
   data() {
     return {
       tagsList: []
     }
   },
   methods: {
+    handleReload() {
+      console.log("aaaa")
+      console.log()
+    },
+
     isActive(path) {
       return path === this.$route.fullPath;
     },
@@ -59,10 +65,29 @@ export default {
     },
     // 设置标签
     setTags(route) {
-      const isExist = this.tagsList.some(item => {
-        return item.path === route.fullPath;
+      // const isExist = this.tagsList.some(item => {
+      //   return item.path === route.fullPath;
+      // })
+      // if (!isExist) {
+      //   if (this.tagsList.length >= 8) {
+      //     this.tagsList.shift();
+      //   }
+      //   this.tagsList.push({
+      //     title: route.meta.title,
+      //     path: route.fullPath,
+      //     name: route.matched[1].components.default.name
+      //   })
+      // }
+      const existSameNameTag = this.tagsList.some(item => {
+        return item.title === route.meta.title;
       })
-      if (!isExist) {
+      if(existSameNameTag){
+        this.tagsList.some(item => {
+          if(item.title === route.meta.title){
+            item.path=route.fullPath
+          }
+        })
+      }else{
         if (this.tagsList.length >= 8) {
           this.tagsList.shift();
         }
@@ -104,6 +129,8 @@ export default {
           }
           this.tagsList.splice(i, 1);
           break;
+        }else{
+          console.log("asd")
         }
       }
     })

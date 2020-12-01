@@ -349,6 +349,7 @@ export default {
       console.log(courseId)
       this.$router.push({
         path: `/admin/courseDetails/${courseId}`,
+        meta: `${courseId}`,
       })
     },
 
