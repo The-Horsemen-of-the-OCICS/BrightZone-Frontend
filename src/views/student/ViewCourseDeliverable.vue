@@ -5,7 +5,7 @@
           stripe
           :data="deliverableData"
           style="width: 100%"
-          empty-text='No opened courses found!'
+          empty-text='No deliverable found!'
           ref="openedCourseTable"
       >
 
@@ -72,6 +72,7 @@ export default {
     const params = new URLSearchParams([['clazzId', this.$route.params.clazzId]]);
     axios.get('http://localhost:8080/getAllDeliverable',{params}).then(function (resp) {
       _this.deliverableData = resp.data;
+      console.log(resp.status)
     })
     console.log(this.$route.params.clazzId)
   },

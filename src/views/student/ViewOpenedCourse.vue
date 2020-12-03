@@ -62,6 +62,8 @@ export default {
     const _this = this;
     axios.get('http://localhost:8080/getAllOpenedCourse').then(function (resp) {
       _this.courseData = resp.data;
+            console.log(resp.status)
+
     })
   },
   data() {

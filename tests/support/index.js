@@ -30,5 +30,9 @@ Cypress.on('uncaught:exception', (err) => {
     }
 })
 
+// Cypress.Cookies.defaults({
+//     whitelist: ['JSESSIONID']
+// })
+
 // Import any global stylesheets here
 // require('../../src/styles/index.scss') // 💅
