@@ -64,7 +64,7 @@
                            @click="openAddPreclusionDrawer">Add new
                 </el-button>
               </div>
-              <el-table :show-header="false" :data="PreclusionCourses" style="width:100%;" height="400">
+              <el-table :show-header="false" :data="PreclusionCourses" style="width:100%" height="400">
                 <el-table-column width="100">
                   <template slot-scope="scope">
                     <div class="todo-item">{{ scope.row.courseSubject }}-{{ scope.row.courseNumber }}</div>
@@ -123,11 +123,13 @@
           </el-col>
 
 
-          <el-col :span="24" style="margin-top: 5px">
+          <el-col :span="24" style="margin-top: 10px">
             <el-card shadow="hover" style="height:252px;">
               <div slot="header" class="clearfix" style="text-align: left">
                 <a style="font-size: large;color: #20a0ff">The related classes of this course</a>
-                <el-button style="float: right; padding: 3px 0" type="text">Add new class</el-button>
+                <el-button style="float: right; padding: 3px 0" type="text"
+                           @click="openAddClazzDrawer">Add new
+                </el-button>
               </div>
               <el-table
                   :data="clazzData"
@@ -190,6 +192,7 @@
 
     </div>
 
+    <!--    drawer for course edit-->
     <el-drawer
         title="Edit the Course"
         :with-header="drawerProp.withHeader"
@@ -239,7 +242,7 @@
 
       </div>
     </el-drawer>
-
+    <!--    drawer for add new Prerequisite Course-->
     <el-drawer
         title="Add a new Prerequisite Course"
         :with-header="addPrerequisiteDrawerProp.withHeader"
@@ -315,7 +318,7 @@
         </el-card>
       </div>
     </el-drawer>
-
+    <!--    drawer for add new Preclusion Course-->
     <el-drawer
         title="add a new Preclusion Course"
         :with-header="addPreclusionDrawerProp.withHeader"
@@ -392,34 +395,153 @@
 
       </div>
     </el-drawer>
-
-    <!-- edit dialog -->
-    <el-dialog title="Modify the course" :visible.sync="editVisible" width="50%">
-      <el-form :model="editCourseForm" label-width="140px">
-        <el-form-item label="Course Name :" prop="courseName">
-          <el-input v-model="editCourseForm.courseName"></el-input>
-        </el-form-item>
-        <el-form-item label="Course Subject :" prop="courseSubject">
-          <el-input v-model="editCourseForm.courseSubject"></el-input>
-        </el-form-item>
-        <el-form-item label="Course Number :" prop="courseNumber">
-          <el-input v-model="editCourseForm.courseNumber"></el-input>
-        </el-form-item>
-        <el-form-item label="Course Credit :" prop="credit">
-          <el-input v-model="editCourseForm.credit"></el-input>
-        </el-form-item>
-        <el-form-item label="Course Description:">
-          <el-input type="textarea" rows="5" v-model="courseInfo.courseDesc"></el-input>
-        </el-form-item>
-
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="editVisible = false;">Cancel</el-button>
-         <el-button type="primary" @click="saveCourseEdit" :loading="loading"
-                    style="width: 80px">{{ loading ? 'Submitting ...' : 'Submit' }}
+    <!--    drawer for add new Clazz-->
+    <el-drawer
+        title="add a new Clazz under the given course"
+        :with-header="addClazzDrawerProp.withHeader"
+        size="50%"
+        :append-to-body="addClazzDrawerProp.appendToBody"
+        :visible.sync="addClazzDrawerProp.editDrawVisible"
+        :direction="addClazzDrawerProp.direction"
+        :modal="addClazzDrawerProp.model"
+        :before-close="cancelForm">
+      <div class="demo-drawer__content" style="height: 105%">
+        <el-card shadow="hover" style="height:100%;">
+          <div slot="header" class="clearfix" style="text-align: left">
+            <a style="font-size: large;color: #20a0ff">Schedule new class under
+              {{ this.courseInfo.courseSubject }}{{ this.courseInfo.courseNumber }}</a>
+            <el-button-group style="float: right">
+              <el-button type="danger" @click="cancelForm" style="width: 80px">Cancel
               </el-button>
-            </span>
-    </el-dialog>
+              <el-button type="primary" @click="saveNewPreclusionCourse" :loading="loading"
+                         style="width: 80px">{{ loading ? 'Submitting ...' : 'Submit' }}
+              </el-button>
+            </el-button-group>
+          </div>
+          <div class="form-box" style="width: 97%;">
+            <div style="width: 100%;float: left">
+              <el-form ref="form" :model="addClazzForm" :rules="addClazzRules"
+                       style="text-align: left;" label-width="auto" :label-position="'right'">
+                <el-divider content-position="center"><i class="el-icon-lx-search"></i> Basic
+                  Information
+                </el-divider>
+                <div style="width: 45%;float: left">
+                  <el-form-item label="Professor : " prop="Professor">
+                    <el-select v-model="addClazzForm.profId" filterable placeholder="Please schedule professor" style="width: 100%">
+                      <el-option
+                          v-for="item in professorList"
+                          :key="item.userId"
+                          :label="item.name"
+                          :value="item.userId">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="Section :" prop="Section">
+                    <el-input v-model="addClazzForm.section" style="width: 100%"></el-input>
+                  </el-form-item>
+                  <el-form-item label="enrolled :" prop="enrolled">
+                    <el-input v-model="addClazzForm.enrolled" style="width: 100%"></el-input>
+                  </el-form-item>
+                  <el-form-item label="Enroll Capacity :" prop="enrollCapacity">
+                    <el-input v-model="addClazzForm.enrollCapacity" style="width: 100%"></el-input>
+                  </el-form-item>
+                  <el-form-item label="Enroll Deadline :" prop="enrollDeadline">
+                    <el-date-picker
+                        v-model="addClazzForm.enrollDeadline"
+                        type="datetime"
+                        placeholder="Set Enroll Deadline"
+                        default-time="12:00:00"
+                        style="width: 100%">
+                    </el-date-picker>
+                  </el-form-item>
+                  <el-form-item label="Drop no Penalty :" prop="dropNoPenaltyDeadline">
+                    <el-date-picker
+                        v-model="addClazzForm.dropNoPenaltyDeadline"
+                        type="datetime"
+                        placeholder="Set Drop Deadline"
+                        default-time="12:00:00"
+                        style="width: 100%">
+                    </el-date-picker>
+                  </el-form-item>
+                  <el-form-item label="Drop no Fail :" prop="dropNoFailDeadline">
+                    <el-date-picker
+                        v-model="addClazzForm.dropNoFailDeadline"
+                        type="datetime"
+                        placeholder="Set Drop Deadline"
+                        default-time="12:00:00"
+                        style="width: 100%">
+                    </el-date-picker>
+                  </el-form-item>
+                </div>
+                <div style="width: 50%;float: right;height: 100%">
+                  <el-form-item label="Class Description : " prop="Description">
+                    <el-input type="textarea" rows="17" v-model="addClazzForm.classDesc"></el-input>
+                  </el-form-item>
+                </div>
+              </el-form>
+            </div>
+
+            <div style="width: 100%;float: left">
+              <el-divider content-position="center"><i class="el-icon-lx-search"></i> Schedules
+              </el-divider>
+              <el-form :model="scheduleForm" class="demo-form-inline" label-width="auto">
+                <div style="width: 100%;">
+                  <el-card shadow="hover" style="height: 360px;width: 45%;float: left;margin: 10px"
+                           v-for="(item, index) in addClazzForm.schedules" :key="index">
+                    <div slot="header" class="clearfix">
+                      <span>Class schedule {{ index }}</span>
+                      <el-button style="float: right; padding: 3px 0" type="text" @click="addClazzTimeSchedule">add
+                      </el-button>
+                    </div>
+                    <el-form-item label="WeekDay : " :prop="'schedules.'+ index+'.weekDay'" :rules="addWeekDayRule">
+                      <el-select v-model="item.weekDay" filterable placeholder="the class day" style="width: 88%">
+                        <el-option
+                            v-for="weekDay in weekDayList"
+                            :key="weekDay"
+                            :label="weekDay"
+                            :value="weekDay">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="Start Time:" :prop="'schedules.'+ index+'.startTime'">
+                      <el-time-select placeholder="Start Time" v-model="item.startTime"
+                                      :picker-options="{ start: '08:00', step: '00:15', end: '20:30'}" style="width: 88%">
+                      </el-time-select>
+                    </el-form-item>
+                    <el-form-item label="End Time:" :prop="'schedules.'+ index+'.endTime'">
+                      <el-time-select placeholder="End Time" v-model="item.endTime"
+                                      :picker-options="{ start: '08:00',step: '00:15',end: '20:30',minTime: item.startTime}" style="width: 88%">
+                      </el-time-select>
+                    </el-form-item>
+                    <el-form-item label="Room Capacity:" :prop="'schedules.'+ index+'.roomCapacityAsked'">
+                      <el-select v-model="item.roomCapacityAsked" filterable placeholder="Size" style="width: 88%">
+                        <el-option
+                            v-for="item in roomCapacityList"
+                            :key="item.roomCapacity"
+                            :label="item.roomCapacity"
+                            :value="item.roomCapacity">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                    <el-form-item label="Available Room" :prop="'schedules.'+ index+'.roomId'">
+                      <el-select v-model="item.roomId" filterable placeholder="Available Rooms" style="width: 88%">
+                        <el-option
+                            v-for="item in availableRoomList"
+                            :key="item.roomId"
+                            :label="item.roomId"
+                            :value="item.roomId">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                    <!--                    <el-button type="primary" style="float: right" round @click="addClazzTimeSchedule">add Schedule</el-button>-->
+                  </el-card>
+                </div>
+              </el-form>
+            </div>
+          </div>
+        </el-card>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -566,6 +688,13 @@ export default {
         appendToBody: true,
         model: false
       },
+      addClazzDrawerProp: {
+        direction: 'rtl',
+        editDrawVisible: false,
+        withHeader: false,
+        appendToBody: true,
+        model: false
+      },
       query: {
         address: '',
         name: '',
@@ -577,6 +706,7 @@ export default {
 
       courseSubjectList: [],
       courseNumberList: [],
+
       PrerequisiteCourseForm: {},
       addPrerequisiteForm: {},
       prerequisiteList: [],
@@ -585,6 +715,29 @@ export default {
       addPreclusionForm: {},
       preclusionList: [],
 
+      addClazzForm: {
+        schedules: [{
+          weekDay: '',
+          startTime: '',
+          endTime: '',
+          roomCapacityAsked: '',
+          roomId: '',
+        }],
+        courseId: '',
+        classStatus: '',
+        section: '',
+        enrolled: '',
+        enrollCapacity: '',
+        profId: '',
+        enrollDeadline: '',
+        dropNoPenaltyDeadline: '',
+        dropNoFailDeadline: '',
+        classDesc: '',
+      },
+      scheduleForm: {},
+      professorList: [],
+
+      weekDayList: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     };
 
   },
@@ -663,6 +816,7 @@ export default {
       this.drawerProp.editDrawVisible = false;
       this.addPrerequisiteDrawerProp.editDrawVisible = false;
       this.addPreclusionDrawerProp.editDrawVisible = false;
+      this.addClazzDrawerProp.editDrawVisible = false;
       clearTimeout(this.timer);
     },
 
@@ -751,6 +905,7 @@ export default {
           .catch(() => {
           });
     },
+
     openAddPreclusionDrawer() {
       axios.get('http://localhost:8080/admin/course/addPage/getSubject').then(resp => {
         this.courseSubjectList = resp.data
@@ -831,6 +986,19 @@ export default {
           })
           .catch(() => {
           });
+    },
+
+    openAddClazzDrawer() {
+      this.addClazzDrawerProp.editDrawVisible = true;
+    },
+    addClazzTimeSchedule() {
+      this.addClazzForm.schedules.push({
+        weekDay: '',
+        startTime: '',
+        endTime: '',
+        roomCapacityAsked: '',
+        roomId: '',
+      });
     },
 
   },
@@ -937,4 +1105,11 @@ export default {
   font-size: 14px;
 }
 
+
+</style>
+
+<style lang="scss">
+.el-drawer.rtl {
+  overflow: scroll
+}
 </style>
