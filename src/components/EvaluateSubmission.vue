@@ -108,27 +108,27 @@ export default {
     const query = this.$route.query;
     console.log(query);
     if (Object.keys(query).length !== 0 && this.classSelection === '') {
-
-      this.classSelection = query.classId;
       axios.get('http://localhost:8080/getAllDeliverables/' + query.classId).then(function (resp) {
         _this.deliverableData = resp.data;
       })
+      axios.get('http://localhost:8080/getAllSubmission/' + query.deliverableId).then(function (resp) {
+        _this.submissionData = resp.data;
+      })
+
+      this.classSelection = query.classId;
       this.deliverableSelection = query.deliverableId;
       this.deliverableForm.deliverableDesc = query.deliverableDesc;
       this.deliverableForm.deadLine = query.deadLine;
       this.deliverableForm.percent = query.percent;
       console.log(this.deliverableForm);
 
-
       this.submissionSelection = query.submissionId;
-      axios.get('http://localhost:8080/getAllSubmission/' + query.deliverableId).then(function (resp) {
-        _this.submissionData = resp.data;
-      })
       this.submissionForm.grade = query.grade;
       this.submissionForm.studentId = query.studentId;
       this.submissionForm.fileName = query.fileName;
       this.submissionForm.submissionDesc = query.submissionDesc;
       this.submissionForm.submitTime = query.submitTime;
+      this.submissionForm.submissionId = query.submissionId;
       console.log(this.submissionForm);
 
 
@@ -228,8 +228,6 @@ export default {
             type: 'warning'
           }).then(() => {
             const url = 'http://localhost:8080/submitGrade/' + this.submissionForm.submissionId + '/' + this.submissionForm.grade;
-            console.log(url);
-
             axios.post(url).then(function (resp) {
               if (resp.data === 'SUCCEED') {
                 _this.$message({
