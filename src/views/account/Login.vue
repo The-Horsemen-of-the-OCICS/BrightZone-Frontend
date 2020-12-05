@@ -48,6 +48,7 @@ export default {
         name: '',  // account's name
         type: '',  // account's type (student, professor, admin, teaching_assistant)
         email: '', // account's email
+        lastLogin: '', // last login time of account
       },
       rules: {
         email: [
@@ -74,6 +75,7 @@ export default {
                   this.loginResult.name = resp.data.name;
                   this.loginResult.type = resp.data.accountType;
                   this.loginResult.email = resp.data.email;
+                  this.loginResult.lastLogin = resp.data.lastLogin;
                   this.$message({
                     showClose: true,
                     message: 'Login Success!',
@@ -84,6 +86,7 @@ export default {
                     'name': this.loginResult.name,
                     'type': this.loginResult.type,
                     'email': this.loginResult.email,
+                    'lastLogin': this.loginResult.lastLogin,
                   })
                   switch (this.loginResult.type) {
                     case 'administrator':

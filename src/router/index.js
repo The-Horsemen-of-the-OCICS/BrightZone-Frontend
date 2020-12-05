@@ -60,6 +60,12 @@ const routes = [
                 meta: {title: 'profile'},
                 name: 'Professor profile'
             },
+            {
+                path: 'createRequest',  // http://localhost:8181/professor/createRequest
+                component: () => import('@/views/common/CreateRequest'),
+                meta: {title: 'createRequest'},
+                name: 'create request',
+            }
         ]
     },
     {
@@ -168,6 +174,12 @@ const routes = [
                 component: () => import('@/views/common/Profile'),
                 meta: {title: 'profile'},
                 name: 'StudentProfile'
+            },
+            {
+                path: 'createRequest',  // http://localhost:8181/student/createRequest
+                component: () => import('@/views/common/CreateRequest'),
+                meta: {title: 'createRequest'},
+                name: 'create request',
             }
         ]
     },

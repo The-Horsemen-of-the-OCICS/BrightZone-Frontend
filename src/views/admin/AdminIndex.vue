@@ -30,7 +30,7 @@
             </div>
             <div class="user-info-list" style="text-align: left;">
               <div style="margin-top: 25px" class="user-info-name"><label> Last Login Time
-                : </label><span>{{ $store.state.account.lastLoginTime }}</span></div>
+                : </label><span>{{ $store.state.account.lastLogin }}</span></div>
             </div>
           </div>
         </el-card>

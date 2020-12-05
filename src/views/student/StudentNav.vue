@@ -33,6 +33,10 @@
         <i class="el-icon-lx-profile"></i>
         <span>Profile</span>
       </el-menu-item>
+      <el-menu-item index="/student/createRequest">
+        <i class="el-icon-lx-mail"></i>
+        <span>Request</span>
+      </el-menu-item>
     </el-menu>
   </div>
 </template>
