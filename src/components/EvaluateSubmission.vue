@@ -202,6 +202,9 @@ export default {
         });
       }
     },
+    validGrade() {
+      return (this.submissionForm.grade && this.submissionForm.grade !== '' && this.submissionForm.grade <= 1 && this.submissionForm.grade >= 0)
+    },
     onChangeSubmission(submissionId) {
       if (submissionId && submissionId !== '') {
         const curSub = this.submissionData.find(element => element.submissionId === submissionId)
@@ -219,7 +222,7 @@ export default {
     submitForm(formName) {
       const _this = this
       this.$refs[formName].validate((valid) => {
-        if (valid) {
+        if (valid && _this.validGrade()) {
           this.submissionForm.grade = (!this.submissionForm.grade || this.submissionForm.grade === '') ? 0 : this.submissionForm.grade;
           const msg = ('You are going to update the grade for submission # ' + this.submissionForm.submissionId + ' to ' + this.submissionForm.grade)
           this.$confirm(msg, 'Warning', {

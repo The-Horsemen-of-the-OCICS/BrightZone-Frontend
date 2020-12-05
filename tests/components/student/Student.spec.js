@@ -1,6 +1,3 @@
-/// <reference types="cypress" />
-import EditDeliverable from '@/components/EditDeliverable.vue'
-
 describe('RegisterCourse', () => {
   before('Visits the login page',() => {
     cy.visit('http://localhost:8181/login')

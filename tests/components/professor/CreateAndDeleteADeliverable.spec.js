@@ -1,7 +1,4 @@
-/// <reference types="cypress" />
-import EditDeliverable from '@/components/EditDeliverable.vue'
-
-describe('CreateDeliverable', () => {
+describe('Create and submit a deliverable successfully', () => {
   it('Visits the login page',() => {
     cy.visit('http://localhost:8181/login')
 
