@@ -22,6 +22,10 @@ require('@cypress/vue/dist/support')
 // Alternatively you can use CommonJS syntax:
 require('./commands')
 
+Cypress.Cookies.defaults({
+    preserve: ['JSESSIONID']
+})
+
 const resizeObserverLoopErrRe = /^[^(ResizeObserver loop limit exceeded)]/
 Cypress.on('uncaught:exception', (err) => {
     /* returning false here prevents Cypress from failing the test */
@@ -30,9 +34,7 @@ Cypress.on('uncaught:exception', (err) => {
     }
 })
 
-// Cypress.Cookies.defaults({
-//     whitelist: ['JSESSIONID']
-// })
+
 
 // Import any global stylesheets here
 // require('../../src/styles/index.scss') // 💅
