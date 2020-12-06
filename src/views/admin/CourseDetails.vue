@@ -215,7 +215,7 @@
             </el-button-group>
           </div>
           <div class="form-box" style="float: left">
-            <el-form ref="form" :model="editCourseForm" :rules="editCourseRules"
+            <el-form ref="editCourseForm" :model="editCourseForm" :rules="editCourseRules"
                      style="text-align: left;margin-top: 5%">
 
               <el-form-item label="Course Name :" prop="courseName" label-width="formLabelWidth" style="margin-top: 5%">
@@ -225,10 +225,10 @@
                 <el-input v-model="editCourseForm.courseSubject" readonly></el-input>
               </el-form-item>
               <el-form-item label="Course Number :" prop="courseNumber">
-                <el-input v-model="editCourseForm.courseNumber"></el-input>
+                <el-input v-model.number="editCourseForm.courseNumber"></el-input>
               </el-form-item>
               <el-form-item label="Course Credit :" prop="credit">
-                <el-input v-model="editCourseForm.credit"></el-input>
+                <el-input v-model.number="editCourseForm.credit"></el-input>
               </el-form-item>
               <el-form-item label="Course Description:">
                 <el-input type="textarea" rows="5" v-model="editCourseForm.courseDesc"></el-input>
@@ -265,7 +265,7 @@
             </el-button-group>
           </div>
           <div class="form-box" style="float: left;width: 97%">
-            <el-form ref="form" :model="addPrerequisiteForm" :rules="addPrerequisiteCourseRules"
+            <el-form ref="addPrerequisiteForm" :model="addPrerequisiteForm" :rules="addPrerequisiteCourseRules"
                      style="text-align: left;margin-top: 5%;" label-width="auto">
               <el-divider content-position="center" style="margin-top: 10%"><i class="el-icon-lx-search"></i> Search
               </el-divider>
@@ -341,7 +341,7 @@
             </el-button-group>
           </div>
           <div class="form-box" style="float: left;width: 97%">
-            <el-form ref="form" :model="addPreclusionForm" :rules="addPreclusionCourseRules"
+            <el-form ref="addPreclusionForm" :model="addPreclusionForm" :rules="addPreclusionCourseRules"
                      style="text-align: left;margin-top: 5%;" label-width="auto">
               <el-divider content-position="center" style="margin-top: 10%"><i class="el-icon-lx-search"></i> Search
               </el-divider>
@@ -413,21 +413,22 @@
             <el-button-group style="float: right">
               <el-button type="danger" @click="cancelForm" style="width: 80px">Cancel
               </el-button>
-              <el-button type="primary" @click="saveNewPreclusionCourse" :loading="loading"
+              <el-button type="primary" @click="saveNewClazz('addClazzForm')" :loading="loading"
                          style="width: 80px">{{ loading ? 'Submitting ...' : 'Submit' }}
               </el-button>
             </el-button-group>
           </div>
           <div class="form-box" style="width: 97%;">
             <div style="width: 100%;float: left">
-              <el-form ref="form" :model="addClazzForm" :rules="addClazzRules"
+              <el-form ref="addClazzForm" :model="addClazzForm" :rules="addClazzRules"
                        style="text-align: left;" label-width="auto" :label-position="'right'">
                 <el-divider content-position="center"><i class="el-icon-lx-search"></i> Basic
                   Information
                 </el-divider>
                 <div style="width: 45%;float: left">
-                  <el-form-item label="Professor : " prop="Professor">
-                    <el-select v-model="addClazzForm.profId" filterable placeholder="Please schedule professor" style="width: 100%">
+                  <el-form-item label="Professor : " prop="profId">
+                    <el-select v-model="addClazzForm.profId" filterable placeholder="Please schedule professor"
+                               style="width: 100%">
                       <el-option
                           v-for="item in professorList"
                           :key="item.userId"
@@ -436,14 +437,16 @@
                       </el-option>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label="Section :" prop="Section">
-                    <el-input v-model="addClazzForm.section" style="width: 100%"></el-input>
+                  <el-form-item label="Section :" prop="section">
+                    <el-input v-model.number="addClazzForm.section" placeholder="Please input the section"
+                              style="width: 100%"></el-input>
                   </el-form-item>
                   <el-form-item label="enrolled :" prop="enrolled">
-                    <el-input v-model="addClazzForm.enrolled" style="width: 100%"></el-input>
+                    <el-input v-model.number="addClazzForm.enrolled" style="width: 100%"></el-input>
                   </el-form-item>
                   <el-form-item label="Enroll Capacity :" prop="enrollCapacity">
-                    <el-input v-model="addClazzForm.enrollCapacity" style="width: 100%"></el-input>
+                    <el-input v-model.number="addClazzForm.enrollCapacity" placeholder="Larger than Enrolled"
+                              style="width: 100%"></el-input>
                   </el-form-item>
                   <el-form-item label="Enroll Deadline :" prop="enrollDeadline">
                     <el-date-picker
@@ -475,66 +478,91 @@
                 </div>
                 <div style="width: 50%;float: right;height: 100%">
                   <el-form-item label="Class Description : " prop="Description">
-                    <el-input type="textarea" rows="17" v-model="addClazzForm.classDesc"></el-input>
+                    <el-input type="textarea" rows="17" v-model="addClazzForm.classDesc"
+                              placeholder="Please write something about the class,Here!"></el-input>
                   </el-form-item>
                 </div>
-              </el-form>
-            </div>
 
-            <div style="width: 100%;float: left">
-              <el-divider content-position="center"><i class="el-icon-lx-search"></i> Schedules
-              </el-divider>
-              <el-form :model="scheduleForm" class="demo-form-inline" label-width="auto">
-                <div style="width: 100%;">
-                  <el-card shadow="hover" style="height: 360px;width: 45%;float: left;margin: 10px"
-                           v-for="(item, index) in addClazzForm.schedules" :key="index">
-                    <div slot="header" class="clearfix">
-                      <span>Class schedule {{ index }}</span>
-                      <el-button style="float: right; padding: 3px 0" type="text" @click="addClazzTimeSchedule">add
-                      </el-button>
-                    </div>
-                    <el-form-item label="WeekDay : " :prop="'schedules.'+ index+'.weekDay'" :rules="addWeekDayRule">
-                      <el-select v-model="item.weekDay" filterable placeholder="the class day" style="width: 88%">
-                        <el-option
-                            v-for="weekDay in weekDayList"
-                            :key="weekDay"
-                            :label="weekDay"
-                            :value="weekDay">
-                        </el-option>
-                      </el-select>
-                    </el-form-item>
-                    <el-form-item label="Start Time:" :prop="'schedules.'+ index+'.startTime'">
-                      <el-time-select placeholder="Start Time" v-model="item.startTime"
-                                      :picker-options="{ start: '08:00', step: '00:15', end: '20:30'}" style="width: 88%">
-                      </el-time-select>
-                    </el-form-item>
-                    <el-form-item label="End Time:" :prop="'schedules.'+ index+'.endTime'">
-                      <el-time-select placeholder="End Time" v-model="item.endTime"
-                                      :picker-options="{ start: '08:00',step: '00:15',end: '20:30',minTime: item.startTime}" style="width: 88%">
-                      </el-time-select>
-                    </el-form-item>
-                    <el-form-item label="Room Capacity:" :prop="'schedules.'+ index+'.roomCapacityAsked'">
-                      <el-select v-model="item.roomCapacityAsked" filterable placeholder="Size" style="width: 88%">
-                        <el-option
-                            v-for="item in roomCapacityList"
-                            :key="item.roomCapacity"
-                            :label="item.roomCapacity"
-                            :value="item.roomCapacity">
-                        </el-option>
-                      </el-select>
-                    </el-form-item>
-                    <el-form-item label="Available Room" :prop="'schedules.'+ index+'.roomId'">
-                      <el-select v-model="item.roomId" filterable placeholder="Available Rooms" style="width: 88%">
-                        <el-option
-                            v-for="item in availableRoomList"
-                            :key="item.roomId"
-                            :label="item.roomId"
-                            :value="item.roomId">
-                        </el-option>
-                      </el-select>
-                    </el-form-item>
-                    <!--                    <el-button type="primary" style="float: right" round @click="addClazzTimeSchedule">add Schedule</el-button>-->
-                  </el-card>
+
+                <div style="width: 100%;float: left">
+                  <el-divider content-position="center"><i class="el-icon-lx-search"></i> Schedules
+                  </el-divider>
+
+                  <div style="width: 100%;">
+
+                    <el-card shadow="hover" style="height: 360px;width: 45%;float: left;margin: 10px"
+                             v-for="(schedule, index) in addClazzForm.schedules" :key="index">
+                      <div slot="header" class="clearfix">
+                        <span>Class schedule {{ index }}</span>
+                        <!--                        <el-button style="float: right; padding: 3px 0" type="text" @click="addClazzTimeSchedule">Save-->
+                        <!--                        </el-button>-->
+                        <el-button-group style="float: right">
+                          <el-button type="danger" icon="el-icon-delete"
+                                     @click="delClazzTimeSchedule(index)"></el-button>
+                          <el-button type="primary" icon="el-icon-plus" @click="addClazzTimeSchedule"></el-button>
+                        </el-button-group>
+                      </div>
+                      <el-form-item
+                          label="WeekDay : "
+                          :prop="'schedules.'+ index+'.weekDay'"
+                          :rules="weekDay">
+                        <el-select v-model="schedule.weekDay" filterable placeholder="the class day"
+                                   style="width: 88%">
+                          <el-option
+                              v-for="weekDay in weekDayList"
+                              :key="weekDay.Value"
+                              :label="weekDay.Name"
+                              :value="weekDay.Value">
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item label="Start Time : "
+                                    :prop="'schedules.' + index + '.startTime'"
+                                    :rules="addStartTimeRule">
+                        <el-time-select placeholder="Start Time" v-model="schedule.startTime"
+                                        :picker-options="{ start: '08:00', step: '00:15', end: '20:30'}"
+                                        style="width: 88%">
+                        </el-time-select>
+                      </el-form-item>
+                      <el-form-item label="End Time:"
+                                    :prop="'schedules.'+ index+'.endTime'"
+                                    :rules="addEndTimeRule">
+                        <el-time-select placeholder="End Time" v-model="schedule.endTime"
+                                        :picker-options="{ start: '08:00',step: '00:15',end: '20:30',minTime: schedule.startTime}"
+                                        style="width: 88%">
+                        </el-time-select>
+                      </el-form-item>
+                      <el-form-item label="Room Capacity:"
+                                    :prop="'schedules.'+ index+'.roomCapacityAsked'"
+                                    :rules="addRoomCapacityRule">
+                        <el-select v-model="schedule.roomCapacityAsked" filterable placeholder="Room size request"
+                                   style="width: 88%" @change="getAvailableRoom(index,schedule)">
+                          <el-option
+                              v-for="item in roomCapacityList"
+                              :key="item"
+                              :label="item"
+                              :value="item">
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item label="Available Room"
+                                    :prop="'schedules.'+ index+'.roomId'"
+                                    :rules="availableRoomRule">
+                        <el-select v-model="schedule.roomId" filterable placeholder="Available Rooms"
+                                   style="width: 88%">
+                          <el-option
+                              v-for="item in availableRoomList"
+                              :key="item.roomId"
+                              :label="'Room: '+item.roomId"
+                              :value="item.roomId">
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+
+                      <!--                    <el-button type="primary" style="float: right" round @click="addClazzTimeSchedule">add Schedule</el-button>-->
+                    </el-card>
+                  </div>
+
                 </div>
               </el-form>
             </div>
@@ -552,12 +580,12 @@ import qs from "qs";
 export default {
   name: "CourseModify",
   inject: ['reload'],
-  data() {
+  data: function () {
     let getCourseInfoForPrerequisite = (rule, value, callback) => {
       if (value !== '') {
         axios.get('http://localhost:8080/admin/course/getCourseBySubjectAndNumber/' + this.addPrerequisiteForm.courseSubject + '/' + this.addPrerequisiteForm.courseNumber).then(resp => {
           if (resp.data === null) {
-            callback('can not find this course')
+            callback(new Error('can not find this course'))
           } else {
             console.log(resp.data)
             this.PrerequisiteCourseForm = resp.data
@@ -572,7 +600,7 @@ export default {
       if (value !== '') {
         axios.get('http://localhost:8080/admin/course/getCourseBySubjectAndNumber/' + this.addPreclusionForm.courseSubject + '/' + this.addPreclusionForm.courseNumber).then(resp => {
           if (resp.data === null) {
-            callback('can not find this course')
+            callback(new Error('can not find this course'))
           } else {
             console.log(resp.data)
             this.PreclusionCourseForm = resp.data
@@ -588,7 +616,7 @@ export default {
       if (value !== '') {
         axios.get('http://localhost:8080/admin/course/getCourseBySubject/' + value).then(resp => {
           if (resp.data === null) {
-            callback('Can not find a course number!')
+            callback(new Error('Can not find a course number!'))
           } else {
             console.log(resp.data)
             this.courseNumberList = resp.data
@@ -599,6 +627,92 @@ export default {
         callback('invalid input');
       }
     };
+    let classSectionValidator = (rule, value, callback) => {
+      if (value !== '') {
+        if (value === '0') {
+          callback(new Error('section can not be 0'))
+        } else {
+          const index = this.clazzData.findIndex(item => item.section === value);
+          if (index === -1) {
+            callback();
+          } else {
+            callback(new Error('This section already exists! try another number.'))
+          }
+        }
+      } else {
+        callback(new Error('invalid input'));
+      }
+    };
+    let classCapacityValidator = (rule, value, callback) => {
+      if (value !== '') {
+        if (value > 180) {
+          callback(new Error('Max room capacity is 180'));
+          console.log(this.addClazzForm.enrolled)
+        } else if (value <= this.addClazzForm.enrolled) {
+          callback(new Error('Minimum should bigger than enrolled'));
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
+    };
+    let classEnrollDeadlineValidator = (rule, value, callback) => {
+      if (value !== null) {
+        let oDate1 = new Date(value);
+        let oDate2 = new Date();
+        if (oDate1.getTime() === oDate2.getTime()) {
+          callback(new Error('The Deadline can not be today!'));
+        } else if (oDate1.getTime() > oDate2.getTime()) {
+          callback();
+        } else {
+          callback(new Error('Must be in the future!'));
+        }
+      }
+    };
+    let classDropNoPenaltyDeadlineValidator = (rule, value, callback) => {
+      if (value !== null) {
+        let oDate1 = new Date(value);
+        let oDate2 = new Date(this.addClazzForm.enrollDeadline);
+        if (oDate1.getTime() === oDate2.getTime()) {
+          callback(new Error('The Drop Deadline can not be Enroll Deadline!'));
+        } else if (oDate1.getTime() > oDate2.getTime()) {
+          callback();
+        } else {
+          callback(new Error('Should after enroll DeadLine!'));
+        }
+      }
+    };
+    let classDropNoFailDeadlineValidator = (rule, value, callback) => {
+      if (value !== null) {
+        let oDate1 = new Date(value);
+        let oDate2 = new Date(this.addClazzForm.dropNoPenaltyDeadline);
+        if (oDate1.getTime() === oDate2.getTime()) {
+          callback(new Error('Same with Drop no Penalty'));
+        } else if (oDate1.getTime() > oDate2.getTime()) {
+          callback();
+        } else {
+          callback(new Error('Should after Drop no Penalty DeadLine!'));
+        }
+      }
+    };
+
+    let addWeekDayRuleValidator = (rule, value, callback) => {
+      if (value !== null) {
+        const arr = this.addClazzForm.schedules.filter(item => item.weekDay === value)
+        console.log(arr)
+        console.log(arr.length)
+
+        if (arr.length === 1) {
+          callback()
+        } else {
+          callback(new Error('Pls schedule to different day!'))
+        }
+      } else {
+        callback(new Error('invalid input!'))
+      }
+    };
+
     return {
 
       courseInfo: {},
@@ -626,11 +740,13 @@ export default {
             ],
         courseNumber:
             [
-              {required: true, message: 'Course number can not be none', trigger: 'blur'}
+              {required: true, message: 'Course number can not be none', trigger: 'blur'},
+              {type: 'number', message: 'Please input correct Number', trigger: ['blur', 'change']},
             ],
         credit:
             [
-              {required: true, message: 'Course credit can not be none', trigger: 'blur'}
+              {required: true, message: 'Course credit can not be none', trigger: 'blur'},
+              {type: 'number', message: 'Please input correct Number', trigger: ['blur', 'change']},
             ],
         courseDesc:
             [
@@ -662,6 +778,61 @@ export default {
             ],
       },
 
+      addClazzRules: {
+        profId:
+            [
+              {required: true, message: 'Professor can not be none', trigger: ['blur', 'change']},
+            ],
+        section:
+            [
+              {required: true, message: 'Section can not be none', trigger: 'blur'},
+              {type: 'number', message: 'Please input correct Number', trigger: ['blur', 'change']},
+              {validator: classSectionValidator, trigger: ['blur', 'change']}
+            ],
+        enrolled:
+            [
+              {required: true, message: 'Enrolled number can not be none', trigger: 'blur'},
+              {type: 'number', message: 'Please input correct Number', trigger: ['blur', 'change']},
+            ],
+        enrollCapacity:
+            [
+              {required: true, message: 'Capacity can not be none', trigger: 'blur'},
+              {type: 'number', message: 'Please input correct Number', trigger: ['blur', 'change']},
+              {validator: classCapacityValidator, trigger: ['blur', 'change']}
+            ],
+        enrollDeadline:
+            [
+              {required: true, message: 'Enroll Deadline can not be none', trigger: 'blur'},
+              {validator: classEnrollDeadlineValidator, trigger: ['blur']}
+            ],
+        dropNoPenaltyDeadline:
+            [
+              {required: true, message: 'Deadline can not be none', trigger: 'blur'},
+              {validator: classDropNoPenaltyDeadlineValidator, trigger: ['blur']},
+            ],
+        dropNoFailDeadline:
+            [
+              {required: true, message: 'Deadline can not be none', trigger: 'blur'},
+              {validator: classDropNoFailDeadlineValidator, trigger: ['blur']},
+            ]
+      },
+
+      weekDay: [
+        {required: true, message: 'Weekday can not be none', trigger: ['blur', 'change']},
+        {validator: addWeekDayRuleValidator, trigger: ['blur', 'change']},
+      ],
+      addStartTimeRule: [
+        {required: true, message: 'Start Time can not be none', trigger: 'blur'}
+      ],
+      addEndTimeRule: [
+        {required: true, message: 'End Time can not be none', trigger: 'blur'}
+      ],
+      addRoomCapacityRule: [
+        {required: true, message: 'Room Capacity Request can not be none', trigger: 'blur'},
+      ],
+      availableRoomRule: [
+        {required: true, message: 'Room Capacity Request can not be none', trigger: 'blur'}
+      ],
 
       drawerProp: {
         direction: 'rtl',
@@ -726,7 +897,7 @@ export default {
         courseId: '',
         classStatus: '',
         section: '',
-        enrolled: '',
+        enrolled: '0',
         enrollCapacity: '',
         profId: '',
         enrollDeadline: '',
@@ -737,7 +908,45 @@ export default {
       scheduleForm: {},
       professorList: [],
 
-      weekDayList: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      //weekDayList: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      weekDayList: [
+        {
+          Name: "Monday",
+          Value: "Mon",
+        },
+        {
+          Name: "Tuesday",
+          Value: "Tues",
+        },
+        {
+          Name: "Wednesday",
+          Value: "Wed",
+        },
+        {
+          Name: "Thursday",
+          Value: "Thurs",
+        },
+        {
+          Name: "Friday",
+          Value: "Fri",
+        },
+        {
+          Name: "Saturday",
+          Value: "Sat",
+        },
+        {
+          Name: "Sunday",
+          Value: "Sun",
+        },
+      ],
+      roomCapacityList: [],
+
+      availableRoomList: [],
+
+      editScheduleIndex: 0,
+
+      classBasicInfo: {},
+
     };
 
   },
@@ -778,37 +987,56 @@ export default {
           });
     },
     saveCourseEdit() {
-      this.editCourseForm.courseId = this.courseInfo.courseId
-      this.timer = setTimeout(() => {
-        // 动画关闭需要一定的时间
-        setTimeout(() => {
-          this.loading = false;
-        }, 400);
-      }, 2000);
-      axios.post("http://localhost:8080/admin/course/update", this.editCourseForm).then(resp => {
-        console.log(resp)
-        if (resp.data === "success") {
-          this.loading = false;
-          this.drawerProp.addTaskDrawer = false;
-          this.reload()
-          clearTimeout(this.timer);
-          this.$notify({
-            title: 'Success',
-            message: 'Update a course successfully!',
-            type: 'success'
-          });
+      this.$refs.editCourseForm.validate(valid => {
+        if (valid) {
+          if (this.loading) {
+            return;
+          }
+          this.$confirm('Confirm to submit change？')
+              .then(_ => {
+                this.editCourseForm.courseId = this.courseInfo.courseId
+                this.timer = setTimeout(() => {
+                  // 动画关闭需要一定的时间
+                  setTimeout(() => {
+                    this.loading = false;
+                  }, 400);
+                }, 2000);
+                axios.post("http://localhost:8080/admin/course/update", this.editCourseForm).then(resp => {
+                  console.log(resp)
+                  if (resp.data === "success") {
+                    this.loading = false;
+                    this.drawerProp.addTaskDrawer = false;
+                    this.reload()
+                    clearTimeout(this.timer);
+                    this.$notify({
+                      title: 'Success',
+                      message: 'Update a course successfully!',
+                      type: 'success'
+                    });
 
-        } else {
-          this.loading = false;
-          this.drawerProp.addTaskDrawer = false;
-          this.reload()
-          clearTimeout(this.timer);
-          this.$notify.error({
-            title: 'Error',
-            message: 'Invalid Change!',
+                  } else {
+                    this.loading = false;
+                    this.drawerProp.addTaskDrawer = false;
+                    this.reload()
+                    clearTimeout(this.timer);
+                    this.$notify.error({
+                      title: 'Error',
+                      message: 'Invalid Change!',
+                    });
+                  }
+
+                })
+              })
+              .catch(_ => {
+              });
+        } else {  // invalid input
+          this.$message({
+            showClose: true,
+            message: 'Warning: Please input valid info',
+            type: 'warning'
           });
+          return false
         }
-
       })
     },
     cancelForm() {
@@ -828,54 +1056,66 @@ export default {
       this.addPrerequisiteDrawerProp.editDrawVisible = true;
     },
     saveNewPrerequisiteCourse() {
-      if (this.loading) {
-        return;
-      }
-      this.$confirm('Confirm to submit？')
-          .then(_ => {
-            this.prerequisiteCourseId = this.PrerequisiteCourseForm.courseId
+      this.$refs.addPrerequisiteForm.validate(valid => {
+        if (valid) {
+          if (this.loading) {
+            return;
+          }
+          this.$confirm('Confirm to submit？')
+              .then(_ => {
+                this.prerequisiteCourseId = this.PrerequisiteCourseForm.courseId
 
-            console.log(this.prerequisiteCourseId)
+                console.log(this.prerequisiteCourseId)
 
-            this.loading = true;
-            this.timer = setTimeout(() => {
-              // 动画关闭需要一定的时间
-              setTimeout(() => {
-                this.loading = false;
-              }, 400);
-            }, 2000);
-            axios.post("http://localhost:8080/admin/course/addPage/addPrerequisite/", qs.stringify({
-              'prerequisiteCourseId': this.prerequisiteCourseId,
-              'courseId': this.courseInfo.courseId,
-            }), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(resp => {
-              console.log(resp)
-              if (resp.data === "success") {
-                this.loading = false;
-                this.addPrerequisiteDrawerProp.editDrawVisible = false
-                this.reload()
-                clearTimeout(this.timer);
-                this.$notify({
-                  title: 'Success',
-                  message: 'Add a new prerequisite course!',
-                  type: 'success'
-                });
+                this.loading = true;
+                this.timer = setTimeout(() => {
+                  // 动画关闭需要一定的时间
+                  setTimeout(() => {
+                    this.loading = false;
+                  }, 400);
+                }, 2000);
+                axios.post("http://localhost:8080/admin/course/addPage/addPrerequisite/", qs.stringify({
+                  'prerequisiteCourseId': this.prerequisiteCourseId,
+                  'courseId': this.courseInfo.courseId,
+                }), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(resp => {
+                  console.log(resp)
+                  if (resp.data === "success") {
+                    this.loading = false;
+                    this.addPrerequisiteDrawerProp.editDrawVisible = false
+                    this.reload()
+                    clearTimeout(this.timer);
+                    this.$notify({
+                      title: 'Success',
+                      message: 'Add a new prerequisite course!',
+                      type: 'success'
+                    });
 
-              } else {
-                this.loading = false;
-                this.addPrerequisiteDrawerProp.editDrawVisible = false
-                this.reload()
-                clearTimeout(this.timer);
-                this.$notify.error({
-                  title: 'Error',
-                  message: 'Ops,Something goes wrong!',
-                });
-              }
+                  } else {
+                    this.loading = false;
+                    this.addPrerequisiteDrawerProp.editDrawVisible = false
+                    this.reload()
+                    clearTimeout(this.timer);
+                    this.$notify.error({
+                      title: 'Error',
+                      message: 'Ops,Something goes wrong!',
+                    });
+                  }
 
-            })
+                })
 
-          })
-          .catch(_ => {
+              })
+              .catch(_ => {
+              });
+        } else {  // invalid input
+          this.$message({
+            showClose: true,
+            message: 'Warning: Please input valid info',
+            type: 'warning'
           });
+          return false
+        }
+      })
+
     },
     handleDeletePrerequisite(row) {
       this.$confirm('Delete this Prerequisite course : \n"' + row.courseSubject + row.courseNumber + "  " + row.courseName + '" ?', 'Check', {
@@ -914,50 +1154,62 @@ export default {
       this.addPreclusionDrawerProp.editDrawVisible = true;
     },
     saveNewPreclusionCourse() {
-      if (this.loading) {
-        return;
-      }
-      this.$confirm('Confirm to submit new Preclusion course？')
-          .then(_ => {
-            this.preclusionCourseId = this.PreclusionCourseForm.courseId
-            this.loading = true;
-            this.timer = setTimeout(() => {
-              // 动画关闭需要一定的时间
-              setTimeout(() => {
-                this.loading = false;
-              }, 400);
-            }, 2000);
-            axios.post("http://localhost:8080/admin/course/addPage/addPreclusion/", qs.stringify({
-              'preclusionCourseId': this.preclusionCourseId,
-              'courseId': this.courseInfo.courseId,
-            }), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(resp => {
-              console.log(resp)
-              if (resp.data === "success") {
-                this.loading = false;
-                this.addPreclusionDrawerProp.editDrawVisible = false
-                this.reload()
-                clearTimeout(this.timer);
-                this.$notify({
-                  title: 'Success',
-                  message: 'Add a new prerequisite course!',
-                  type: 'success'
-                });
-              } else {
-                this.loading = false;
-                this.addPreclusionDrawerProp.editDrawVisible = false
-                this.reload()
-                clearTimeout(this.timer);
-                this.$notify.error({
-                  title: 'Error',
-                  message: 'Ops,Something goes wrong!',
-                });
-              }
+      this.$refs.addPreclusionForm.validate(valid => {
+        if (valid) {
+          if (this.loading) {
+            return;
+          }
+          this.$confirm('Confirm to submit new Preclusion course？')
+              .then(_ => {
+                this.preclusionCourseId = this.PreclusionCourseForm.courseId
+                this.loading = true;
+                this.timer = setTimeout(() => {
+                  // 动画关闭需要一定的时间
+                  setTimeout(() => {
+                    this.loading = false;
+                  }, 400);
+                }, 2000);
+                axios.post("http://localhost:8080/admin/course/addPage/addPreclusion/", qs.stringify({
+                  'preclusionCourseId': this.preclusionCourseId,
+                  'courseId': this.courseInfo.courseId,
+                }), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(resp => {
+                  console.log(resp)
+                  if (resp.data === "success") {
+                    this.loading = false;
+                    this.addPreclusionDrawerProp.editDrawVisible = false
+                    this.reload()
+                    clearTimeout(this.timer);
+                    this.$notify({
+                      title: 'Success',
+                      message: 'Add a new prerequisite course!',
+                      type: 'success'
+                    });
+                  } else {
+                    this.loading = false;
+                    this.addPreclusionDrawerProp.editDrawVisible = false
+                    this.reload()
+                    clearTimeout(this.timer);
+                    this.$notify.error({
+                      title: 'Error',
+                      message: 'Ops,Something goes wrong!',
+                    });
+                  }
 
-            })
+                })
 
-          })
-          .catch(_ => {
+              })
+              .catch(_ => {
+              });
+        } else {  // invalid input
+          this.$message({
+            showClose: true,
+            message: 'Warning: Please input valid info',
+            type: 'warning'
           });
+          return false
+        }
+      })
+
     },
     handleDeletePreclusion(row) {
       this.$confirm('Delete this Preclusion course : \n"' + row.courseSubject + row.courseNumber + "  " + row.courseName + '" ?', 'Check', {
@@ -989,6 +1241,14 @@ export default {
     },
 
     openAddClazzDrawer() {
+      axios.get('http://localhost:8080/admin/class/getProfessorList').then(resp => {
+        this.professorList = resp.data
+        console.log(this.professorList)
+      })
+      axios.get('http://localhost:8080/admin/class/getClassroomSizeList').then(resp => {
+        this.roomCapacityList = resp.data
+        console.log(this.roomCapacityList)
+      })
       this.addClazzDrawerProp.editDrawVisible = true;
     },
     addClazzTimeSchedule() {
@@ -999,9 +1259,108 @@ export default {
         roomCapacityAsked: '',
         roomId: '',
       });
+      console.log(this.addClazzForm)
+    },
+    delClazzTimeSchedule(index) {
+      this.addClazzForm.schedules.splice(index, 1);
+      console.log(this.addClazzForm)
     },
 
-  },
+    getAvailableRoom(index, schedule) {
+      axios.post('http://localhost:8080/admin/class/classroomSchedule/', qs.stringify(schedule), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}).then(resp => {
+        console.log(resp.data)
+        if (resp.data === null) {
+          this.$notify.error({
+            title: 'Error',
+            message: 'Ops,Automatic schedule failed',
+          });
+        } else {
+          this.availableRoomList = resp.data
+          this.$notify({
+            title: 'Success',
+            message: 'Automatic classroom schedule Success!',
+            type: 'success'
+          });
+        }
+      })
+    },
+
+    saveNewClazz(formName) {
+      console.log("aaa")
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if (this.loading) {
+            return;
+          }
+          this.$confirm('Confirm to submit new class？')
+              .then(_ => {
+                this.scheduleForm = this.addClazzForm.schedules;
+
+                this.classBasicInfo = this.addClazzForm;
+                this.$delete(this.classBasicInfo, 'schedules')
+                this.classBasicInfo.courseId = this.courseInfo.courseId;
+                this.classBasicInfo.classStatus = 'open';
+
+                console.log(this.classBasicInfo);
+
+
+                this.loading = true;
+                this.timer = setTimeout(() => {
+                  // 动画关闭需要一定的时间
+                  setTimeout(() => {
+                    this.loading = false;
+                  }, 400);
+                }, 2000);
+
+                axios.post("http://localhost:8080/admin/class/addNewClassInfo/", this.classBasicInfo).then(resp => {
+                  console.log(resp)
+                  if (resp.data != null) {
+                    this.scheduleForm.push({
+                      profId: resp.data.profId,
+                      classId: resp.data.classId,
+                    });
+                    console.log(this.scheduleForm);
+                    axios.post("http://localhost:8080/admin/class/addNewClassSchedules/", this.scheduleForm).then(resp => {
+                      console.log(resp)
+                      if (resp.data === "success") {
+                        this.loading = false;
+                        this.addClazzDrawerProp.editDrawVisible = false
+                        this.reload()
+                        clearTimeout(this.timer);
+                        this.$notify({
+                          title: 'Success',
+                          message: 'Add a new class!',
+                          type: 'success'
+                        });
+                      } else {
+                        this.loading = false;
+                        this.addClazzDrawerProp.editDrawVisible = false
+                        this.reload()
+                        clearTimeout(this.timer);
+                        this.$notify.error({
+                          title: 'Error',
+                          message: 'Ops,Something goes wrong!',
+                        });
+                      }
+                    })
+                  }
+                })
+
+              })
+              .catch(_ => {
+              });
+        } else {  // invalid input
+          this.$message({
+            showClose: true,
+            message: 'Warning: Please input valid info',
+            type: 'warning'
+          });
+        }
+      })
+    }
+
+  }
+  ,
   created() {
     axios.get('http://localhost:8080/admin/course/getCourseById/' + this.$route.params.courseId).then(resp => {
       console.log(this.$route.params.courseId)
@@ -1022,7 +1381,8 @@ export default {
       this.clazzData = resp.data
       console.log(this.clazzData)
     })
-  },
+  }
+  ,
 }
 </script>
 
