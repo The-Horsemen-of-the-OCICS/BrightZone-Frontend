@@ -30,7 +30,7 @@
             </div>
             <div class="user-info-list" style="text-align: left;">
               <div style="margin-top: 25px" class="user-info-name"><label> Last Login Time
-                : </label><span>{{ $store.state.account.lastLogin }}</span></div>
+                : </label><span>{{ $store.state.account.lastLogin | FormatDate('yyyy-MM-dd HH:mm:ss') }}</span></div>
             </div>
           </div>
         </el-card>
@@ -523,7 +523,6 @@ export default {
     },
     handleEditTodo(row) {
       this.editTodoForm = row;
-      //this.drawerProp.addTaskDrawer=true;
       this.editTodoDrawProp.editTodoDrawVisible = true;
       console.log(this.editTodoDrawProp.editTodoDrawVisible)
     },

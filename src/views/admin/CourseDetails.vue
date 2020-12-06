@@ -12,7 +12,6 @@
       <el-row :gutter="20">
         <el-col :span="24">
 
-
           <el-col :span="10" style="float: left">
             <el-card shadow="hover" style="height:507px;">
               <div slot="header" class="clearfix" style="text-align: left">
@@ -122,9 +121,8 @@
             </el-card>
           </el-col>
 
-
           <el-col :span="24" style="margin-top: 10px">
-            <el-card shadow="hover" style="height:252px;">
+            <el-card shadow="hover" style="height:450px;">
               <div slot="header" class="clearfix" style="text-align: left">
                 <a style="font-size: large;color: #20a0ff">The related classes of this course</a>
                 <el-button style="float: right; padding: 3px 0" type="text"
@@ -133,19 +131,105 @@
               </div>
               <el-table
                   :data="clazzData"
-                  border
-                  class="table"
-                  ref="multipleTable"
-                  style="width: 100%"
-                  header-cell-class-name="table-header"
-              >
-                <el-table-column type="selection" align="center" min-width="3"></el-table-column>
-                <el-table-column prop="classId" label="ID" min-width="3"></el-table-column>
-                <el-table-column prop="section" label="Section" min-width="4"></el-table-column>
-                <el-table-column prop="profId" label="Professor" min-width="4"></el-table-column>
-                <el-table-column prop="roomId" label="room" min-width="3"></el-table-column>
-
-                <el-table-column label="Status" align="center" min-width="4">
+                  style="width:100%;" height="350" @expand-change="handleSubTableData">
+                <el-table-column type="expand">
+                  <template slot-scope="props">
+                    <div style="float: left;width: 45%">
+                      <el-form label-position="left" inline>
+                        <el-form-item label="ClassId : " style="width: 48%">
+                          <span>{{ props.row.classId }}</span>
+                        </el-form-item>
+                        <el-form-item label="Section : " style="width: 48%">
+                          <span>{{ props.row.section }}</span>
+                        </el-form-item>
+                        <el-form-item label="Drop No Penalty : " style="width: 48%">
+                          <span>{{ props.row.dropNoPenaltyDeadline | FormatDate('yyyy-MM-dd HH:mm:ss') }}</span>
+                        </el-form-item>
+                        <el-form-item label="Drop No Fail : " style="width: 48%">
+                          <span>{{ props.row.dropNoFailDeadline | FormatDate('yyyy-MM-dd HH:mm:ss') }}</span>
+                        </el-form-item>
+                        <el-form-item label="Enrolled : " style="width: 48%">
+                          <span>{{ props.row.enrolled }}</span>
+                        </el-form-item>
+                        <el-form-item label="Enroll Capacity : " style="width: 48%">
+                          <span>{{ props.row.enrollCapacity }}</span>
+                        </el-form-item>
+                        <el-form-item label="Enroll Rate : " style="width: 90%">"
+                          <el-progress type="circle"
+                                       :percentage=(props.row.enrolled*100/props.row.enrollCapacity).toFixed(0)
+                          ></el-progress>
+                        </el-form-item>
+                        <el-form-item label="Description : " style="width: 90%">
+                          <span>{{ props.row.classDesc }}</span>
+                        </el-form-item>
+                      </el-form>
+                    </div>
+                    <div style="float: right;width: 55%">
+                      <el-table
+                          :data="props.row.schedules"
+                          stripe
+                          style="width: 100%;text-align: center">
+                        <el-table-column
+                            type="index"
+                            label="Schedules"
+                            width="80px"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                            prop="roomId"
+                            label="Room Id"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                            prop="weekday"
+                            label="Weekday"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                            prop="startTime"
+                            label="Start time"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                            prop="endTime"
+                            label="Ent time"
+                        >
+                        </el-table-column>
+                      </el-table>
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                    label="Class ID"
+                    prop="classId">
+                </el-table-column>
+                <el-table-column
+                    label="Section"
+                    prop="section">
+                </el-table-column>
+                <el-table-column
+                    label="Professor">
+                  <template slot-scope="scope">
+                    <el-popover trigger="hover" placement="top">
+                      <div class="user-info-list" style="text-align: left;">
+                        <div class="user-info-name"><label> ID : </label>
+                          <span> {{ scope.row.profId }}</span>
+                        </div>
+                        <div class="user-info-name" style="margin-top: 20px"><label> Email : </label>
+                          <span> {{
+                              professorList.find(professor => professor.userId === scope.row.profId).email
+                            }}</span>
+                        </div>
+                      </div>
+                      <div slot="reference" class="name-wrapper">
+                        <el-tag size="medium">
+                          {{ professorList.find(professor => professor.userId === scope.row.profId).name }}
+                        </el-tag>
+                      </div>
+                    </el-popover>
+                  </template>
+                </el-table-column>
+                <el-table-column label="Status" align="center">
                   <template slot-scope="scope">
                     <el-tag
                         :type="scope.row.classStatus==='open'?'success':scope.row.classStatus==='close'?'primary':scope.row.classStatus==='cancel'?'danger':''"
@@ -153,35 +237,26 @@
                     </el-tag>
                   </template>
                 </el-table-column>
-
-                <el-table-column prop="enrolled" label="Enrolled" min-width="4"></el-table-column>
-                <el-table-column prop="enrollCapacity" label="Capacity" min-width="4"></el-table-column>
-                <el-table-column prop="dropNoPenaltyDeadline" label="Drop No Penalty" min-width="12"
-                                 align="center"></el-table-column>
-                <el-table-column prop="dropNoFailDeadline" label="Drop No Fail" min-width="12"
-                                 align="center"></el-table-column>
-                <el-table-column prop="classDesc" label="Description" min-width="20"></el-table-column>
-
-                <el-table-column label="Operator" align="center" min-width="11">
+                <el-table-column label="Operator" align="center">
                   <template slot-scope="scope">
                     <el-button
                         type="text"
                         icon="el-icon-edit"
-                        @click="handleEdit(scope.$index, scope.row)"
+                        @click="handleClassEdit(scope.$index, scope.row)"
                     >Modify
                     </el-button>
                     <el-button
                         type="text"
                         icon="el-icon-delete"
                         class="red"
-                        @click="handleDelete(scope.$index, scope.row)"
+                        @click="handleClassDelete(scope.$index, scope.row)"
                     >delete
                     </el-button>
                   </template>
                 </el-table-column>
+
               </el-table>
             </el-card>
-
           </el-col>
 
         </el-col>
@@ -503,16 +578,16 @@
                         </el-button-group>
                       </div>
                       <el-form-item
-                          label="WeekDay : "
-                          :prop="'schedules.'+ index+'.weekDay'"
-                          :rules="weekDay">
-                        <el-select v-model="schedule.weekDay" filterable placeholder="the class day"
+                          label="Weekday : "
+                          :prop="'schedules.'+ index+'.weekday'"
+                          :rules="weekday">
+                        <el-select v-model="schedule.weekday" filterable placeholder="the class day"
                                    style="width: 88%">
                           <el-option
-                              v-for="weekDay in weekDayList"
-                              :key="weekDay.Value"
-                              :label="weekDay.Name"
-                              :value="weekDay.Value">
+                              v-for="weekday in weekDayList"
+                              :key="weekday.Value"
+                              :label="weekday.Name"
+                              :value="weekday.Value">
                           </el-option>
                         </el-select>
                       </el-form-item>
@@ -570,12 +645,198 @@
         </el-card>
       </div>
     </el-drawer>
+    <!--    drawer for edit Clazz-->
+    <el-drawer
+        title="add a new Clazz under the given course"
+        :with-header="editClazzDrawerProp.withHeader"
+        size="50%"
+        :append-to-body="editClazzDrawerProp.appendToBody"
+        :visible.sync="editClazzDrawerProp.editDrawVisible"
+        :direction="editClazzDrawerProp.direction"
+        :modal="editClazzDrawerProp.model"
+        :before-close="cancelForm">
+      <div class="demo-drawer__content" style="height: 105%">
+        <el-card shadow="hover" style="height:100%;">
+          <div slot="header" class="clearfix" style="text-align: left">
+            <a style="font-size: large;color: #20a0ff">Edit class</a>
+            <el-button-group style="float: right">
+              <el-button type="danger" @click="cancelForm" style="width: 80px">Cancel
+              </el-button>
+              <el-button type="primary" @click="saveNewEditClazz('editClazzForm')" :loading="loading"
+                         style="width: 80px">{{ loading ? 'Submitting ...' : 'Submit' }}
+              </el-button>
+            </el-button-group>
+          </div>
+          <div class="form-box" style="width: 97%;">
+            <div style="width: 100%;float: left">
+              <el-form ref="editClazzForm" :model="editClazzForm" :rules="editClazzRules"
+                       style="text-align: left;" label-width="auto" :label-position="'right'">
+                <el-divider content-position="center"><i class="el-icon-lx-search"></i> Basic
+                  Information
+                </el-divider>
+                <div style="width: 45%;float: left">
+                  <el-form-item label="Professor : " prop="profId">
+                    <el-select v-model="editClazzForm.profId" filterable placeholder="Please schedule professor"
+                               style="width: 100%">
+                      <el-option
+                          v-for="item in professorList"
+                          :key="item.userId"
+                          :label="item.name"
+                          :value="item.userId">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="Section :" prop="section">
+                    <el-input v-model.number="editClazzForm.section" placeholder="Please input the section"
+                              style="width: 100%"></el-input>
+                  </el-form-item>
+                  <el-form-item label="Class Status : " prop="classStatus">
+                    <el-select v-model="editClazzForm.classStatus" filterable placeholder="Please Select Status"
+                               style="width: 100%">
+                      <el-option
+                          v-for="status in statusList"
+                          :key="status.Value"
+                          :label="status.Name"
+                          :value="status.Value">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="enrolled :" prop="enrolled">
+                    <el-input v-model.number="editClazzForm.enrolled" style="width: 100%"></el-input>
+                  </el-form-item>
+                  <el-form-item label="Enroll Capacity :" prop="enrollCapacity">
+                    <el-input v-model.number="editClazzForm.enrollCapacity" placeholder="Larger than Enrolled"
+                              style="width: 100%"></el-input>
+                  </el-form-item>
+                  <el-form-item label="Enroll Deadline :" prop="enrollDeadline">
+                    <el-date-picker
+                        v-model="editClazzForm.enrollDeadline"
+                        type="datetime"
+                        placeholder="Set Enroll Deadline"
+                        default-time="12:00:00"
+                        style="width: 100%">
+                    </el-date-picker>
+                  </el-form-item>
+                  <el-form-item label="Drop no Penalty :" prop="dropNoPenaltyDeadline">
+                    <el-date-picker
+                        v-model="editClazzForm.dropNoPenaltyDeadline"
+                        type="datetime"
+                        placeholder="Set Drop Deadline"
+                        default-time="12:00:00"
+                        style="width: 100%">
+                    </el-date-picker>
+                  </el-form-item>
+                  <el-form-item label="Drop no Fail :" prop="dropNoFailDeadline">
+                    <el-date-picker
+                        v-model="editClazzForm.dropNoFailDeadline"
+                        type="datetime"
+                        placeholder="Set Drop Deadline"
+                        default-time="12:00:00"
+                        style="width: 100%">
+                    </el-date-picker>
+                  </el-form-item>
+                </div>
+                <div style="width: 50%;float: right;height: 100%">
+                  <el-form-item label="Class Description : " prop="Description">
+                    <el-input type="textarea" rows="17" v-model="editClazzForm.classDesc"
+                              placeholder="Please write something about the class,Here!"></el-input>
+                  </el-form-item>
+                </div>
+
+
+                <div style="width: 100%;float: left">
+                  <el-divider content-position="center"><i class="el-icon-lx-search"></i> Schedules
+                  </el-divider>
+
+                  <div style="width: 100%;">
+
+                    <el-card shadow="hover" style="height: 360px;width: 45%;float: left;margin: 10px"
+                             v-for="(schedule, index) in editClazzForm.schedules" :key="index">
+                      <div slot="header" class="clearfix">
+                        <span>Class schedule {{ index }}</span>
+                        <!--                        <el-button style="float: right; padding: 3px 0" type="text" @click="addClazzTimeSchedule">Save-->
+                        <!--                        </el-button>-->
+                        <el-button-group style="float: right">
+                          <el-button type="danger" icon="el-icon-delete"
+                                     @click="delClazzTimeSchedule(index)"></el-button>
+                          <el-button type="primary" icon="el-icon-plus" @click="addClazzTimeSchedule"></el-button>
+                        </el-button-group>
+                      </div>
+                      <el-form-item
+                          label="Weekday : "
+                          :prop="'schedules.'+ index+'.weekday'"
+                          :rules="weekday">
+                        <el-select v-model="schedule.weekday" filterable placeholder="the class day"
+                                   style="width: 88%">
+                          <el-option
+                              v-for="weekday in weekDayList"
+                              :key="weekday.Value"
+                              :label="weekday.Name"
+                              :value="weekday.Value">
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item label="Start Time : "
+                                    :prop="'schedules.' + index + '.startTime'"
+                                    :rules="addStartTimeRule">
+                        <el-time-select placeholder="Start Time" v-model="schedule.startTime"
+                                        :picker-options="{ start: '08:00', step: '00:15', end: '20:30'}"
+                                        style="width: 88%">
+                        </el-time-select>
+                      </el-form-item>
+                      <el-form-item label="End Time:"
+                                    :prop="'schedules.'+ index+'.endTime'"
+                                    :rules="addEndTimeRule">
+                        <el-time-select placeholder="End Time" v-model="schedule.endTime"
+                                        :picker-options="{ start: '08:00',step: '00:15',end: '20:30',minTime: schedule.startTime}"
+                                        style="width: 88%">
+                        </el-time-select>
+                      </el-form-item>
+                      <el-form-item label="Room Capacity:"
+                                    :prop="'schedules.'+ index+'.roomCapacityAsked'"
+                                    >
+                        <el-select v-model="schedule.roomCapacity" filterable placeholder="Room size request"
+                                   style="width: 88%" @change="getAvailableRoom(index,schedule)">
+                          <el-option
+                              v-for="item in roomCapacityList"
+                              :key="item"
+                              :label="item"
+                              :value="item">
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item label="Available Room"
+                                    :prop="'schedules.'+ index+'.roomId'"
+                                    :rules="availableRoomRule">
+                        <el-select v-model="schedule.roomId" filterable placeholder="Available Rooms"
+                                   style="width: 88%">
+                          <el-option
+                              v-for="item in availableRoomList"
+                              :key="item.roomId"
+                              :label="'Room: '+item.roomId"
+                              :value="item.roomId">
+                          </el-option>
+                        </el-select>
+                      </el-form-item>
+
+                      <!--                    <el-button type="primary" style="float: right" round @click="addClazzTimeSchedule">add Schedule</el-button>-->
+                    </el-card>
+                  </div>
+
+                </div>
+              </el-form>
+            </div>
+          </div>
+        </el-card>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import qs from "qs";
+import moment from 'moment'
 
 export default {
   name: "CourseModify",
@@ -643,6 +904,26 @@ export default {
         callback(new Error('invalid input'));
       }
     };
+    let classSectionValidatorForEdit = (rule, value, callback) => {
+      if (value !== '') {
+        if (value === '0') {
+          callback(new Error('section can not be 0'))
+        } else {
+          const index = this.clazzData.findIndex(item => item.section === value);
+          if (index === -1) {
+            callback();
+          } else {
+            if (this.clazzData[index].classId === this.editClazzForm.classId) {
+              callback();
+            } else {
+              callback(new Error('This section already exists! try another number.'))
+            }
+          }
+        }
+      } else {
+        callback(new Error('invalid input'));
+      }
+    };
     let classCapacityValidator = (rule, value, callback) => {
       if (value !== '') {
         if (value > 180) {
@@ -683,10 +964,36 @@ export default {
         }
       }
     };
+    let classDropNoPenaltyDeadlineValidatorForEdit = (rule, value, callback) => {
+      if (value !== null) {
+        let oDate1 = new Date(value);
+        let oDate2 = new Date(this.editClazzForm.enrollDeadline);
+        if (oDate1.getTime() === oDate2.getTime()) {
+          callback(new Error('The Drop Deadline can not be Enroll Deadline!'));
+        } else if (oDate1.getTime() > oDate2.getTime()) {
+          callback();
+        } else {
+          callback(new Error('Should after enroll DeadLine!'));
+        }
+      }
+    };
     let classDropNoFailDeadlineValidator = (rule, value, callback) => {
       if (value !== null) {
         let oDate1 = new Date(value);
         let oDate2 = new Date(this.addClazzForm.dropNoPenaltyDeadline);
+        if (oDate1.getTime() === oDate2.getTime()) {
+          callback(new Error('Same with Drop no Penalty'));
+        } else if (oDate1.getTime() > oDate2.getTime()) {
+          callback();
+        } else {
+          callback(new Error('Should after Drop no Penalty DeadLine!'));
+        }
+      }
+    };
+    let classDropNoFailDeadlineValidatorForEdit = (rule, value, callback) => {
+      if (value !== null) {
+        let oDate1 = new Date(value);
+        let oDate2 = new Date(this.editClazzForm.dropNoPenaltyDeadline);
         if (oDate1.getTime() === oDate2.getTime()) {
           callback(new Error('Same with Drop no Penalty'));
         } else if (oDate1.getTime() > oDate2.getTime()) {
@@ -703,7 +1010,7 @@ export default {
         console.log(arr)
         console.log(arr.length)
 
-        if (arr.length === 1) {
+        if (arr.length === 1 || arr.length === 0) {
           callback()
         } else {
           callback(new Error('Pls schedule to different day!'))
@@ -817,21 +1124,64 @@ export default {
             ]
       },
 
-      weekDay: [
+      editClazzRules: {
+        profId:
+            [
+              {required: true, message: 'Professor can not be none', trigger: ['blur', 'change']},
+            ],
+        section:
+            [
+              {required: true, message: 'Section can not be none', trigger: 'blur'},
+              {type: 'number', message: 'Please input correct Number', trigger: ['blur', 'change']},
+              {validator: classSectionValidatorForEdit, trigger: ['blur', 'change']}
+            ],
+        classStatus:
+            [
+              {required: true, message: 'Status can not be none', trigger: ['blur', 'change']},
+            ],
+        enrolled:
+            [
+              {required: true, message: 'Enrolled number can not be none', trigger: 'blur'},
+              {type: 'number', message: 'Please input correct Number', trigger: ['blur', 'change']},
+            ],
+        enrollCapacity:
+            [
+              {required: true, message: 'Capacity can not be none', trigger: 'blur'},
+              {type: 'number', message: 'Please input correct Number', trigger: ['blur', 'change']},
+              {validator: classCapacityValidator, trigger: ['blur', 'change']}
+            ],
+        enrollDeadline:
+            [
+              {required: true, message: 'Enroll Deadline can not be none', trigger: ['blur', 'change']},
+              {validator: classEnrollDeadlineValidator, trigger: ['blur']}
+            ],
+        dropNoPenaltyDeadline:
+            [
+              {required: true, message: 'Deadline can not be none', trigger: ['blur', 'change']},
+              {validator: classDropNoPenaltyDeadlineValidatorForEdit, trigger: ['blur', 'change']},
+            ],
+        dropNoFailDeadline:
+            [
+              {required: true, message: 'Deadline can not be none', trigger: ['blur', 'change']},
+              {validator: classDropNoFailDeadlineValidatorForEdit, trigger: ['blur', 'change']},
+            ]
+      },
+
+      weekday: [
         {required: true, message: 'Weekday can not be none', trigger: ['blur', 'change']},
         {validator: addWeekDayRuleValidator, trigger: ['blur', 'change']},
       ],
       addStartTimeRule: [
-        {required: true, message: 'Start Time can not be none', trigger: 'blur'}
+        {required: true, message: 'Start Time can not be none', trigger: ['blur', 'change']}
       ],
       addEndTimeRule: [
-        {required: true, message: 'End Time can not be none', trigger: 'blur'}
+        {required: true, message: 'End Time can not be none', trigger: ['blur', 'change']}
       ],
       addRoomCapacityRule: [
-        {required: true, message: 'Room Capacity Request can not be none', trigger: 'blur'},
+        {required: true, message: 'Room Capacity Request can not be none', trigger: ['blur','change']},
       ],
       availableRoomRule: [
-        {required: true, message: 'Room Capacity Request can not be none', trigger: 'blur'}
+        {required: true, message: 'Room Capacity Request can not be none', trigger: ['blur', 'change']}
       ],
 
       drawerProp: {
@@ -860,6 +1210,13 @@ export default {
         model: false
       },
       addClazzDrawerProp: {
+        direction: 'rtl',
+        editDrawVisible: false,
+        withHeader: false,
+        appendToBody: true,
+        model: false
+      },
+      editClazzDrawerProp: {
         direction: 'rtl',
         editDrawVisible: false,
         withHeader: false,
@@ -905,10 +1262,43 @@ export default {
         dropNoFailDeadline: '',
         classDesc: '',
       },
+
+      editClazzForm: {
+        schedules: [{
+          weekDay: '',
+          startTime: '',
+          endTime: '',
+          roomCapacityAsked: '',
+          roomId: '',
+        }],
+        courseId: '',
+        classStatus: '',
+        section: '',
+        enrolled: '0',
+        enrollCapacity: '',
+        profId: '',
+        enrollDeadline: '',
+        dropNoPenaltyDeadline: '',
+        dropNoFailDeadline: '',
+        classDesc: '',
+      },
       scheduleForm: {},
       professorList: [],
 
-      //weekDayList: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      statusList: [
+        {
+          Name: "Open",
+          Value: "open",
+        },
+        {
+          Name: "Close",
+          Value: "close",
+        },
+        {
+          Name: "Cancel",
+          Value: "cancel",
+        },
+      ],
       weekDayList: [
         {
           Name: "Monday",
@@ -1045,6 +1435,7 @@ export default {
       this.addPrerequisiteDrawerProp.editDrawVisible = false;
       this.addPreclusionDrawerProp.editDrawVisible = false;
       this.addClazzDrawerProp.editDrawVisible = false;
+      this.editClazzDrawerProp.editDrawVisible = false;
       clearTimeout(this.timer);
     },
 
@@ -1241,10 +1632,6 @@ export default {
     },
 
     openAddClazzDrawer() {
-      axios.get('http://localhost:8080/admin/class/getProfessorList').then(resp => {
-        this.professorList = resp.data
-        console.log(this.professorList)
-      })
       axios.get('http://localhost:8080/admin/class/getClassroomSizeList').then(resp => {
         this.roomCapacityList = resp.data
         console.log(this.roomCapacityList)
@@ -1286,7 +1673,6 @@ export default {
     },
 
     saveNewClazz(formName) {
-      console.log("aaa")
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.loading) {
@@ -1357,7 +1743,150 @@ export default {
           });
         }
       })
-    }
+    },
+
+    handleSubTableData(row, expandedRows) {
+      console.log(row.classId)
+      if (expandedRows.length > 0) {
+        axios.get('http://localhost:8080/admin/class/getClassSchedulesByClassId/' + row.classId).then(resp => {
+          if (resp) {
+            this.clazzData.forEach((temp, index) => {
+              if (temp.classId === row.classId) {
+                this.clazzData[index].schedules = resp.data
+              }
+            })
+          }
+        })
+      }
+
+    },
+
+    handleClassEdit(index, row) {
+      axios.get('http://localhost:8080/admin/class/getClassroomSizeList').then(resp => {
+        this.roomCapacityList = resp.data
+        console.log(this.roomCapacityList)
+      })
+      axios.get('http://localhost:8080/admin/class/getClassInfoByCourseId/' + this.$route.params.courseId).then(resp => {
+        if (resp) {
+          resp.data.map(item => {
+            item.schedules = []
+          })
+          const tempData = resp.data
+          axios.get('http://localhost:8080/admin/class/getClassSchedulesByClassId/' + row.classId).then(resp => {
+            if (resp) {
+              this.clazzData.forEach((temp, index) => {
+                if (temp.classId === row.classId) {
+                  tempData[index].schedules = resp.data
+                  this.editClazzForm = tempData[index]
+                }
+              })
+            }
+          })
+        }
+      })
+      console.log(this.editClazzForm)
+      this.editClazzDrawerProp.editDrawVisible = true;
+    },
+    handleClassDelete(index, row) {
+      this.$confirm('Delete this class : \n"' + row.classId + " - " + row.section + '" ?', 'Check', {
+        type: 'warning'
+      })
+          .then(() => {
+            axios.delete('http://localhost:8080/admin/class/deleteClassByClassId/' + row.classId).then(resp => {
+              if (resp.data === "success") {
+                this.loading = false;
+                this.reload()
+                clearTimeout(this.timer);
+                this.$notify({
+                  title: 'Success',
+                  message: 'Delete successfully!',
+                  type: 'success'
+                });
+              } else {
+                this.$notify.error({
+                  title: 'Error',
+                  message: 'Ops,Something goes wrong!',
+                });
+              }
+              console.log(resp);
+            })
+          })
+          .catch(() => {
+          });
+    },
+    saveNewEditClazz(formName) {
+      console.log("asdfg")
+      console.log(this.editClazzForm)
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if (this.loading) {
+            return;
+          }
+          this.$confirm('Confirm to submit change？')
+              .then(_ => {
+                this.scheduleForm = this.editClazzForm.schedules;
+
+                this.classBasicInfo = this.editClazzForm;
+                this.$delete(this.classBasicInfo, 'schedules')
+
+                this.classBasicInfo.courseId = this.courseInfo.courseId;
+
+                console.log(this.classBasicInfo);
+
+
+                this.loading = true;
+                this.timer = setTimeout(() => {
+                  // 动画关闭需要一定的时间
+                  setTimeout(() => {
+                    this.loading = false;
+                  }, 400);
+                }, 2000);
+
+                axios.post("http://localhost:8080/admin/class/updateClassInfo/", this.classBasicInfo).then(resp => {
+                  console.log(resp)
+                  if (resp.data != null) {
+                    this.scheduleForm.push({
+                      profId: resp.data.profId,
+                      classId: resp.data.classId,
+                    });
+                    axios.post("http://localhost:8080/admin/class/updateClassSchedules/", this.scheduleForm).then(resp => {
+                      console.log(resp)
+                      if (resp.data === "success") {
+                        this.loading = false;
+                        this.editClazzDrawerProp.editDrawVisible = false
+                        this.reload()
+                        clearTimeout(this.timer);
+                        this.$notify({
+                          title: 'Success',
+                          message: 'Add a new class!',
+                          type: 'success'
+                        });
+                      } else {
+                        this.loading = false;
+                        this.editClazzDrawerProp.editDrawVisible = false
+                        this.reload()
+                        clearTimeout(this.timer);
+                        this.$notify.error({
+                          title: 'Error',
+                          message: 'Ops,Something goes wrong!',
+                        });
+                      }
+                    })
+                  }
+                })
+
+              })
+              .catch(_ => {
+              });
+        } else {  // invalid input
+          this.$message({
+            showClose: true,
+            message: 'Warning: Please input valid info',
+            type: 'warning'
+          });
+        }
+      })
+    },
 
   }
   ,
@@ -1377,9 +1906,17 @@ export default {
       this.PreclusionCourses = resp.data
       console.log(this.PreclusionCourses)
     })
-    axios.get('http://localhost:8080/admin/class/getClassByCourseId/' + this.courseInfo.courseId).then(resp => {
-      this.clazzData = resp.data
-      console.log(this.clazzData)
+    axios.get('http://localhost:8080/admin/class/getProfessorList').then(resp => {
+      this.professorList = resp.data
+      console.log(this.professorList)
+    })
+    axios.get('http://localhost:8080/admin/class/getClassInfoByCourseId/' + this.$route.params.courseId).then(resp => {
+      if (resp) {
+        resp.data.map(item => {
+          item.schedules = []
+        })
+        this.clazzData = resp.data
+      }
     })
   }
   ,
@@ -1447,15 +1984,6 @@ export default {
   color: #222;
 }
 
-.user-info-list {
-  font-size: 14px;
-  color: #999;
-  line-height: 25px;
-}
-
-.user-info-list span {
-  margin-left: 70px;
-}
 
 .mgb20 {
   margin-bottom: 20px;
@@ -1465,6 +1993,36 @@ export default {
   font-size: 14px;
 }
 
+.demo-table-expand {
+  font-size: 0;
+}
+
+.demo-table-expand label {
+  width: 130px;
+  color: #99a9bf;
+}
+
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+
+.user-info-list {
+  font-size: 15px;
+  color: #222;
+  line-height: 25px;
+}
+
+.user-info-list span {
+  margin-left: 5px;
+}
+
+.user-info-list label {
+  width: 50px;
+  float: left;
+  text-align: right;
+}
 
 </style>
 
