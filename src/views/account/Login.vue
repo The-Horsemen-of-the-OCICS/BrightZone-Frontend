@@ -3,8 +3,8 @@
     <div class="ms-login">
       <div class="ms-title">Course Management System</div>
       <el-form :model="loginForm" :rules="rules" ref="login" label-width="0px" class="ms-content">
-        <el-form-item prop="email">
-          <el-input v-model="loginForm.email" placeholder="email">
+        <el-form-item prop="emailOrUserId">
+          <el-input v-model="loginForm.emailOrUserId" placeholder="email or userId">
             <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
           </el-input>
         </el-form-item>
@@ -38,7 +38,7 @@ export default {
   data: function () {
     return {
       loginForm: {
-        email: '',
+        emailOrUserId: '',
         password: '',
       },
       loginResult: {
@@ -51,9 +51,8 @@ export default {
         lastLogin: '', // last login time of account
       },
       rules: {
-        email: [
-          {required: true, message: 'Please input email', trigger: 'blur'},
-          {type: 'email', message: 'Please input correct email', trigger: ['blur', 'change']}
+        emailOrUserId: [
+          {required: true, message: 'Please input email or userId', trigger: 'blur'},
         ],
         password: [
           {required: true, message: 'Please input password', trigger: 'blur'},
@@ -112,8 +111,16 @@ export default {
                     type: 'error'
                   });
                 }
-              }).catch(err => {
-          })
+              })
+              .catch(err => {
+                if (err.response.data.status === 500) {
+                  this.$message({
+                    showClose: true,
+                    message: 'Internal Server Error!',
+                    type: 'error'
+                  });
+                }
+              })
         } else {
           this.$message({
             showClose: true,
