@@ -200,6 +200,12 @@ const routes = [
                 meta: {title: 'viewCourseDeliverable'},
                 name: 'ViewCourseDeliverable'
             },
+            {
+                path: 'viewCourseMaterial/:clazzId',
+                component: () => import('@/views/student/ViewCourseMaterial'),
+                meta: {title: 'viewCourseMaterial'},
+                name: 'ViewCourseMaterial'
+            },
         ]
     },
     {

@@ -13,11 +13,20 @@
         <span slot="title">Home</span>
       </el-menu-item>
 
+   <el-menu-item index="/studentCourse/ViewCourseMaterial">
+       
+        <i class="el-icon-document-checked"></i>
+                <span slot="title">Materials</span>
+    </el-menu-item>
+
        <el-menu-item index="/studentCourse/ViewCourseDeliverable">
        
         <i class="el-icon-document-checked"></i>
                 <span slot="title">Deliverables</span>
     </el-menu-item>
+
+
+
 
     </el-menu>
   </div>
@@ -44,7 +53,7 @@ export default {
   methods: {
     handleSelect(key, keyPath) {
       console.log(this.$route.params)
-    if(key ==  '/studentCourse/ViewCourseDeliverable'){
+    if(key ==  '/studentCourse/ViewCourseDeliverable' || key ==  '/studentCourse/ViewCourseMaterial'){
       this.$router.push({
                 path: key+"/"+this.$route.params.clazzId 
               })

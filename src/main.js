@@ -41,7 +41,7 @@ router.beforeEach((to, from, next) => {
         const strUserMsg = sessionStorage.getItem("userMsg");
         // parse userMsg (string format) to object
         const objectUserMsg = JSON.parse(strUserMsg);
-
+        console.log(strUserMsg)
         if (objectUserMsg.account.userId === '') {
             Vue.prototype.$message.warning('Warning, please login first')
             next({path: '/login'})

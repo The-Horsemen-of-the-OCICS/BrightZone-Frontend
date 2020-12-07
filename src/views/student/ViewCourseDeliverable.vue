@@ -70,6 +70,7 @@ export default {
   created() {
     const _this = this;
     const params = new URLSearchParams([['clazzId', this.$route.params.clazzId]]);
+    console.log(this.$route.params.clazzId)
     axios.get('http://localhost:8080/getAllDeliverable',{params}).then(function (resp) {
       _this.deliverableData = resp.data;
       console.log(resp.status)
