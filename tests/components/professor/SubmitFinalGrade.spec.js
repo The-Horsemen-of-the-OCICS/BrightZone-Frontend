@@ -16,7 +16,8 @@ describe('Submit final grade for a student successfully', () => {
 
   it('Select the first student and submit his/her final grade',() => {
     cy.get('.el-select > .el-input > .el-input__inner').click().type('{downarrow}{enter}')
-    cy.get('.cell > .el-button').click()
+    cy.get('tbody > :nth-child(1) > .el-table_1_column_1 > .cell > .el-checkbox > .el-checkbox__input > .el-checkbox__inner').click()
+    cy.get('[style="margin-top: 20px; display: flex; justify-items: flex-end;"] > .el-button').click()
     cy.get('.el-button--primary').click()
     cy.wait(500)
   })

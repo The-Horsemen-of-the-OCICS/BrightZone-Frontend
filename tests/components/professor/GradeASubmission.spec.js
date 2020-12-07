@@ -2,7 +2,7 @@
 import EditDeliverable from '@/components/EditDeliverable.vue'
 
 describe('Grade a submission successfully', () => {
-  it('Visits the login page',() => {
+  it('Visits the login page and login as professor',() => {
     cy.visit('http://localhost:8181/login')
 
     cy.get(':nth-child(1) > .el-form-item__content > .el-input > .el-input__inner').type('floydheasley@uottawa.ca')
