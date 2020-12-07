@@ -15,7 +15,8 @@
             </div>
 
             <div class="user-info-list" style="text-align: left;">
-              <div style="margin-top: 25px" class="user-info-name"><label> User Name : </label> <span> {{ $store.state.account.name }}</span>
+              <div style="margin-top: 25px" class="user-info-name"><label> User Name : </label>
+                <span> {{ $store.state.account.name }}</span>
               </div>
             </div>
 
@@ -34,9 +35,7 @@
             </div>
           </div>
         </el-card>
-
       </el-col>
-
       <el-col :span="8">
         <el-card shadow="hover" style="height:490px;">
           <div slot="header" class="clearfix">
@@ -82,68 +81,145 @@
       </el-col>
       <el-col :span="8">
         <el-col :gutter="20" class="mgb20">
-          <el-row :span="8">
-            <el-card shadow="hover" :body-style="{padding: '0px'}">
-              <div class="grid-content grid-con-1">
-                <i class="el-icon-lx-people grid-con-icon"></i>
-                <div class="grid-cont-right">
-                  <div class="grid-num">{{ accountNum }}</div>
-                  <div>Overall Accounts</div>
+          <div>
+            <el-row :span="8">
+              <el-card shadow="hover" :body-style="{padding: '0px'}">
+                <div class="grid-content grid-con-1">
+                  <i class="el-icon-lx-people grid-con-icon"></i>
+                  <div class="grid-cont-right">
+                    <div class="grid-num">{{ accountNum }}</div>
+                    <div>Overall Accounts</div>
+                  </div>
                 </div>
-              </div>
-            </el-card>
-          </el-row>
-          <el-row :span="8">
-            <el-card shadow="hover" :body-style="{padding: '0px'}" style="margin-top: 8px">
-              <div class="grid-content grid-con-2">
-                <i class="el-icon-lx-global grid-con-icon"></i>
-                <div class="grid-cont-right">
-                  <div class="grid-num">{{ courseNum }}</div>
-                  <div>Overall Courses</div>
+              </el-card>
+            </el-row>
+            <el-row :span="8">
+              <el-card shadow="hover" :body-style="{padding: '0px'}" style="margin-top: 28px">
+                <div class="grid-content grid-con-2">
+                  <i class="el-icon-lx-global grid-con-icon"></i>
+                  <div class="grid-cont-right">
+                    <div class="grid-num">{{ courseNum }}</div>
+                    <div>Overall Courses</div>
+                  </div>
                 </div>
-              </div>
-            </el-card>
-          </el-row>
-          <el-row :span="8">
-            <el-card shadow="hover" :body-style="{padding: '0px'}" style="margin-top: 8px">
-              <div class="grid-content grid-con-3">
-                <i class="el-icon-lx-read grid-con-icon"></i>
-                <div class="grid-cont-right">
-                  <div class="grid-num">{{ clazzNum }}</div>
-                  <div>Overall Classes</div>
+              </el-card>
+            </el-row>
+            <el-row :span="8">
+              <el-card shadow="hover" :body-style="{padding: '0px'}" style="margin-top: 28px">
+                <div class="grid-content grid-con-3">
+                  <i class="el-icon-lx-read grid-con-icon"></i>
+                  <div class="grid-cont-right">
+                    <div class="grid-num">{{ clazzNum }}</div>
+                    <div>Overall Classes</div>
+                  </div>
                 </div>
-              </div>
-            </el-card>
-          </el-row>
-          <el-row :span="8">
-            <el-card shadow="hover" :body-style="{padding: '0px'}" style="margin-top: 8px">
-              <div class="grid-content grid-con-4">
-                <i class="el-icon-lx-location grid-con-icon"></i>
-                <div class="grid-cont-right">
-                  <div class="grid-num">{{ clazzNum }}</div>
-                  <div>Overall Classrooms</div>
+              </el-card>
+            </el-row>
+            <el-row :span="8">
+              <el-card shadow="hover" :body-style="{padding: '0px'}" style="margin-top: 28px">
+                <div class="grid-content grid-con-4">
+                  <i class="el-icon-lx-location grid-con-icon"></i>
+                  <div class="grid-cont-right">
+                    <div class="grid-num">{{ clazzNum }}</div>
+                    <div>Overall Classrooms</div>
+                  </div>
                 </div>
-              </div>
-            </el-card>
-          </el-row>
+              </el-card>
+            </el-row>
+          </div>
+
         </el-col>
       </el-col>
-
     </el-row>
-    <el-row :gutter="20">
-      <el-col :span="12">
-        <el-card shadow="hover">
-          <schart ref="bar" class="schart" canvasId="bar" :options="options"></schart>
-        </el-card>
-      </el-col>
-      <el-col :span="12">
-        <el-card shadow="hover">
-          <schart ref="line" class="schart" canvasId="line" :options="options2"></schart>
-        </el-card>
-      </el-col>
-    </el-row>
-
-
+    <div class="">
+      <div class="crumbs">
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item><i class="el-icon-lx-copy"></i> Notifications</el-breadcrumb-item>
+        </el-breadcrumb>
+      </div>
+      <div class="container">
+        <el-tabs v-model="message">
+          <el-tab-pane :label="`Draft${draft.length})`" name="first">
+            <el-table :data="unread" :show-header="false" style="width: 100%">
+              <el-table-column>
+                <template slot-scope="scope">
+                  <span class="message-title">{{ scope.row.title }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="date" width="180"></el-table-column>
+              <el-table-column width="120">
+                <template slot-scope="scope">
+                  <el-button size="small" @click="handleRead(scope.$index)">标为已读</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <!--          <div class="handle-row">-->
+            <!--            <el-button type="primary">全部标为已读</el-button>-->
+            <!--          </div>-->
+          </el-tab-pane>
+          <el-tab-pane :label="`Unread Msg(${unread.length})`" name="second">
+            <el-table :data="unread" :show-header="false" style="width: 100%">
+              <el-table-column>
+                <template slot-scope="scope">
+                  <span class="message-title">{{ scope.row.title }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="date" width="180"></el-table-column>
+              <el-table-column width="120">
+                <template slot-scope="scope">
+                  <el-button size="small" @click="handleRead(scope.$index)">标为已读</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <div class="handle-row">
+              <el-button type="primary">全部标为已读</el-button>
+            </div>
+          </el-tab-pane>
+          <el-tab-pane :label="`Read Msg(${read.length})`" name="third">
+            <template v-if="message === 'third'">
+              <el-table :data="read" :show-header="false" style="width: 100%">
+                <el-table-column>
+                  <template slot-scope="scope">
+                    <span class="message-title">{{ scope.row.title }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="date" width="150"></el-table-column>
+                <el-table-column width="120">
+                  <template slot-scope="scope">
+                    <el-button type="danger" @click="handleDel(scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <div class="handle-row">
+                <el-button type="danger">删除全部</el-button>
+              </div>
+            </template>
+          </el-tab-pane>
+          <el-tab-pane :label="`Recycle(${recycle.length})`" name="fourth">
+            <template v-if="message === 'fourth'">
+              <el-table :data="recycle" :show-header="false" style="width: 100%">
+                <el-table-column>
+                  <template slot-scope="scope">
+                    <span class="message-title">{{ scope.row.title }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="date" width="150"></el-table-column>
+                <el-table-column width="120">
+                  <template slot-scope="scope">
+                    <el-button @click="handleRestore(scope.$index)">还原</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <div class="handle-row">
+                <el-button type="danger">清空回收站</el-button>
+              </div>
+            </template>
+          </el-tab-pane>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="drawerProp.addTaskDrawer = true">add
+          </el-button>
+        </el-tabs>
+      </div>
+    </div>
     <el-drawer
         title="Add a Task"
         :with-header="drawerProp.withHeader"
@@ -363,33 +439,6 @@ export default {
             ],
       },
 
-      pickerOptions: {
-        shortcuts: [{
-          text: 'Next week',
-          onClick(picker) {
-            const start = new Date();
-            const end = new Date();
-            end.setTime(end.getTime() + 3600 * 1000 * 24 * 7);
-            picker.$emit('pick', [start, end]);
-          }
-        }, {
-          text: 'Next Month',
-          onClick(picker) {
-            const start = new Date();
-            const end = new Date();
-            end.setTime(end.getTime() + 3600 * 1000 * 24 * 30);
-            picker.$emit('pick', [start, end]);
-          }
-        }, {
-          text: 'Three Month',
-          onClick(picker) {
-            const start = new Date();
-            const end = new Date();
-            end.setTime(end.getTime() + 3600 * 1000 * 24 * 90);
-            picker.$emit('pick', [start, end]);
-          }
-        }]
-      },
       value1: '',
       value2: '',
 
@@ -413,12 +462,35 @@ export default {
       formLabelWidth: '100px',
       timer: null,
       editTodoForm: {},
+
+      message: 'first',
+      showHeader: false,
+      draft: [],
+      unread: [{
+        date: '2018-04-19 20:00:00',
+        title: '【系统通知】该系统将于今晚凌晨2点到5点进行升级维护',
+      }, {
+        date: '2018-04-19 21:00:00',
+        title: '今晚12点整发大红包，先到先得',
+      }],
+      read: [{
+        date: '2018-04-19 20:00:00',
+        title: '【系统通知】该系统将于今晚凌晨2点到5点进行升级维护'
+      }],
+      recycle: [{
+        date: '2018-04-19 20:00:00',
+        title: '【系统通知】该系统将于今晚凌晨2点到5点进行升级维护'
+      }]
     };
   },
   components: {
     Schart
   },
-  computed: {},
+  computed: {
+    unreadNum() {
+      return this.unread.length;
+    }
+  },
 
   methods: {
     changeDate() {
@@ -540,21 +612,21 @@ export default {
         return 'priorLevel';
       }
       return 'normalLevel';
+    },
+
+    handleRead(index) {
+      const item = this.unread.splice(index, 1);
+      console.log(item);
+      this.read = item.concat(this.read);
+    },
+    handleDel(index) {
+      const item = this.read.splice(index, 1);
+      this.recycle = item.concat(this.recycle);
+    },
+    handleRestore(index) {
+      const item = this.recycle.splice(index, 1);
+      this.read = item.concat(this.read);
     }
-    // handleListener() {
-    //     bus.$on('collapse', this.handleBus);
-    //     // 调用renderChart方法对图表进行重新渲染
-    //     window.addEventListener('resize', this.renderChart);
-    // },
-    // handleBus(msg) {
-    //     setTimeout(() => {
-    //         this.renderChart();
-    //     }, 200);
-    // },
-    // renderChart() {
-    //     this.$refs.bar.renderChart();
-    //     this.$refs.line.renderChart();
-    // }
   },
   created() {
     axios.get('http://localhost:8080/admin/index/getAccountsNum').then(resp => {
@@ -572,13 +644,14 @@ export default {
     })
   }
 
+
 };
 </script>
 
 
 <style scoped>
 .el-row {
-  margin-bottom: 20px;
+  /*margin-bottom: 8px;*/
 }
 
 .grid-content {
@@ -712,8 +785,16 @@ export default {
   color: #999;
 }
 
-.schart {
-  width: 100%;
+.message-title {
+  cursor: pointer;
+}
+
+.handle-row {
+  margin-top: 30px;
+}
+
+.container {
+  margin-top: 5px;
   height: 300px;
 }
 

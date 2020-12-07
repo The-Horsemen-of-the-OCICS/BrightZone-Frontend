@@ -794,7 +794,7 @@
                       </el-form-item>
                       <el-form-item label="Room Capacity:"
                                     :prop="'schedules.'+ index+'.roomCapacityAsked'"
-                                    >
+                      >
                         <el-select v-model="schedule.roomCapacity" filterable placeholder="Room size request"
                                    style="width: 88%" @change="getAvailableRoom(index,schedule)">
                           <el-option
@@ -842,9 +842,29 @@ export default {
   name: "CourseModify",
   inject: ['reload'],
   data: function () {
+    let courseNumberValidator = (rule, value, callback) => {
+      if (value !== '') {
+        axios.get('http://localhost:8080/admin/course/getCourseBySubjectAndNumber/' + this.editCourseForm.courseSubject + "/" + value).then(resp => {
+          console.log(resp)
+          if (resp) {
+            if (!resp.data) {
+              callback()
+            } else {
+              if (resp.data.courseId === this.editCourseForm.courseId) {
+                callback()
+              }
+              callback(new Error('Already exit!'))
+            }
+          }
+          callback(new Error("error"))
+        })
+      }
+    };
+
     let getCourseInfoForPrerequisite = (rule, value, callback) => {
       if (value !== '') {
         axios.get('http://localhost:8080/admin/course/getCourseBySubjectAndNumber/' + this.addPrerequisiteForm.courseSubject + '/' + this.addPrerequisiteForm.courseNumber).then(resp => {
+
           if (resp.data === null) {
             callback(new Error('can not find this course'))
           } else {
@@ -1047,8 +1067,9 @@ export default {
             ],
         courseNumber:
             [
-              {required: true, message: 'Course number can not be none', trigger: 'blur'},
+              {required: true, message: 'Course number can not be none', trigger: ['blur', 'change']},
               {type: 'number', message: 'Please input correct Number', trigger: ['blur', 'change']},
+              {validator: courseNumberValidator, trigger: ['blur', 'change']}
             ],
         credit:
             [
@@ -1178,7 +1199,7 @@ export default {
         {required: true, message: 'End Time can not be none', trigger: ['blur', 'change']}
       ],
       addRoomCapacityRule: [
-        {required: true, message: 'Room Capacity Request can not be none', trigger: ['blur','change']},
+        {required: true, message: 'Room Capacity Request can not be none', trigger: ['blur', 'change']},
       ],
       availableRoomRule: [
         {required: true, message: 'Room Capacity Request can not be none', trigger: ['blur', 'change']}

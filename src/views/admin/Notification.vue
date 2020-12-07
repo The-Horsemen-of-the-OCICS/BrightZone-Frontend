@@ -6,102 +6,15 @@
       </el-breadcrumb>
     </div>
     <el-row :gutter="20">
-      <el-col :span="10">
-        <div class="container">
-          <el-tabs v-model="message">
-            <el-tab-pane :label="`Draft${draft.length})`" name="first">
-              <el-table :data="unread" :show-header="false" style="width: 100%">
-                <el-table-column>
-                  <template slot-scope="scope">
-                    <span class="message-title">{{ scope.row.title }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="date" width="180"></el-table-column>
-                <el-table-column width="120">
-                  <template slot-scope="scope">
-                    <el-button size="small" @click="handleRead(scope.$index)">标为已读</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <!--          <div class="handle-row">-->
-              <!--            <el-button type="primary">全部标为已读</el-button>-->
-              <!--          </div>-->
-            </el-tab-pane>
-            <el-tab-pane :label="`Unread Msg(${unread.length})`" name="second">
-              <el-table :data="unread" :show-header="false" style="width: 100%">
-                <el-table-column>
-                  <template slot-scope="scope">
-                    <span class="message-title">{{ scope.row.title }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="date" width="180"></el-table-column>
-                <el-table-column width="120">
-                  <template slot-scope="scope">
-                    <el-button size="small" @click="handleRead(scope.$index)">标为已读</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-              <div class="handle-row">
-                <el-button type="primary">全部标为已读</el-button>
-              </div>
-            </el-tab-pane>
-            <el-tab-pane :label="`Read Msg(${read.length})`" name="third">
-              <template v-if="message === 'third'">
-                <el-table :data="read" :show-header="false" style="width: 100%">
-                  <el-table-column>
-                    <template slot-scope="scope">
-                      <span class="message-title">{{ scope.row.title }}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="date" width="150"></el-table-column>
-                  <el-table-column width="120">
-                    <template slot-scope="scope">
-                      <el-button type="danger" @click="handleDel(scope.$index)">删除</el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
-                <div class="handle-row">
-                  <el-button type="danger">删除全部</el-button>
-                </div>
-              </template>
-            </el-tab-pane>
-            <el-tab-pane :label="`Recycle(${recycle.length})`" name="fourth">
-              <template v-if="message === 'fourth'">
-                <el-table :data="recycle" :show-header="false" style="width: 100%">
-                  <el-table-column>
-                    <template slot-scope="scope">
-                      <span class="message-title">{{ scope.row.title }}</span>
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="date" width="150"></el-table-column>
-                  <el-table-column width="120">
-                    <template slot-scope="scope">
-                      <el-button @click="handleRestore(scope.$index)">还原</el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
-                <div class="handle-row">
-                  <el-button type="danger">清空回收站</el-button>
-                </div>
-              </template>
-            </el-tab-pane>
-            <el-button style="float: right; padding: 3px 0" type="text" @click="drawerProp.addTaskDrawer = true">add
-            </el-button>
-          </el-tabs>
-        </div>
-      </el-col>
-
-      <el-col :span="14">
+      <el-col :span="24">
         <div class="container">
           <div class="plugins-tips">
-            Vue-Quill-Editor：基于Quill、适用于Vue2的富文本编辑器。
-            访问地址：<a href="https://github.com/surmon-china/vue-quill-editor" target="_blank">vue-quill-editor</a>
+            Writing Notifications with CMS
           </div>
           <quill-editor ref="myTextEditor" v-model="content" :options="editorOption"></quill-editor>
-          <el-button class="editor-btn" type="primary" @click="submit">提交</el-button>
+          <el-button class="editor-btn" type="primary" @click="submit">Submit</el-button>
         </div>
       </el-col>
-
     </el-row>
 
   </div>
