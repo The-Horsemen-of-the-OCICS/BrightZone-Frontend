@@ -21,9 +21,11 @@
         <div class="login-btn">
           <el-button type="primary" @click="login()">Login</el-button>
         </div>
-        <a class="passwordRecovery" href="http://localhost:8181/passwordRecovery" target="_blank">forget password?</a>
+        <a class="passwordRecovery" href="http://localhost:8181/passwordRecovery">forget password?</a>
         <div class="register-btn">
-          <el-button type="primary" @click="register()">Or Register</el-button>
+          <el-button type="primary">
+            <router-link style="color: white" to="/register">Or Register</router-link>
+          </el-button>
         </div>
       </el-form>
     </div>
@@ -131,9 +133,6 @@ export default {
         }
       });
     },
-    register() {
-      this.$router.push('/register');
-    }
   },
 };
 </script>
@@ -182,6 +181,12 @@ export default {
   text-align: center;
 }
 
+.login-btn button {
+  width: 100%;
+  height: 36px;
+  margin-bottom: 10px;
+}
+
 .passwordRecovery {
   margin-top: 5px;
   margin-bottom: 10px;
@@ -194,17 +199,5 @@ export default {
 .register-btn {
   float: right;
   margin-bottom: 10px;
-}
-
-.login-btn button {
-  width: 100%;
-  height: 36px;
-  margin-bottom: 10px;
-}
-
-.login-tips {
-  font-size: 12px;
-  line-height: 30px;
-  color: #fff;
 }
 </style>

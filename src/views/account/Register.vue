@@ -4,12 +4,18 @@
       <div class="ms-title">Register Account</div>
       <el-form :model="registerForm" :rules="rules" ref="register" label-width="0px" class="ms-content">
         <el-form-item prop="email">
-          <el-input v-model="registerForm.email" placeholder="email">
+          <el-input v-model="registerForm.emailOrUserId" placeholder="email or userId">
             <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
           </el-input>
         </el-form-item>
-        <div class="login-btn">
+        <div class="register-btn">
           <el-button type="primary" @click="register('register')">Register</el-button>
+        </div>
+        <a class="passwordRecovery" href="http://localhost:8181/passwordRecovery">forget password?</a>
+        <div class="login-btn">
+          <el-button type="primary">
+            <router-link style="color: white" to="/login">Back to Login</router-link>
+          </el-button>
         </div>
       </el-form>
     </div>
@@ -25,16 +31,15 @@ export default {
   data: function () {
     return {
       registerForm: {
-        email: '',
+        emailOrUserId: '',
       },
       responseResult: {
         success: '',
         errMsg: '',
       },
       rules: {
-        email: [
-          {required: true, message: 'Please input email', trigger: 'blur'},
-          {type: 'email', message: 'Please input correct email', trigger: ['blur', 'change']}
+        emailOrUserId: [
+          {required: true, message: 'Please input email or userId', trigger: 'blur'},
         ],
       },
     };
@@ -121,19 +126,27 @@ export default {
   padding: 30px 30px;
 }
 
-.login-btn {
+.register-btn {
   text-align: center;
 }
 
-.login-btn button {
+.register-btn button {
   width: 100%;
   height: 36px;
   margin-bottom: 10px;
 }
 
-.login-tips {
-  font-size: 12px;
-  line-height: 30px;
-  color: #fff;
+.login-btn {
+  float: right;
+  margin-bottom: 10px;
+}
+
+.passwordRecovery {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: red;
+  float: left;
+  text-decoration:underline;
 }
 </style>

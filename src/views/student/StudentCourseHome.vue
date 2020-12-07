@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import vHead from '@/views/admin/AdminHeader.vue';
+import vHead from '@/views/common/Header';
 import StudentCourseNav from './StudentCourseNav.vue'
 import bus from "@/components/common/bus";
 

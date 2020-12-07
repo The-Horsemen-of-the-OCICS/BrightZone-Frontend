@@ -49,8 +49,15 @@
           </el-input>
         </el-form-item>
 
-        <div class="login-btn">
+        <div class="passwordRecovery-btn">
           <el-button type="primary" @click="passwordRecovery('passwordRecovery')">Recover</el-button>
+        </div>
+
+        <a class="login" href="http://localhost:8181/login">login?</a>
+        <div class="register-btn">
+          <el-button type="primary">
+            <router-link style="color: white" to="/register">Or Register</router-link>
+          </el-button>
         </div>
       </el-form>
     </div>
@@ -222,19 +229,27 @@ export default {
   padding: 30px 30px;
 }
 
-.login-btn {
+.passwordRecovery-btn {
   text-align: center;
 }
 
-.login-btn button {
+.passwordRecovery-btn button {
   width: 100%;
   height: 36px;
   margin-bottom: 10px;
 }
 
-.login-tips {
-  font-size: 12px;
-  line-height: 30px;
-  color: #fff;
+.login {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 15px;
+  color: red;
+  float: left;
+  text-decoration:underline;
+}
+
+.register-btn {
+  float: right;
+  margin-bottom: 10px;
 }
 </style>
