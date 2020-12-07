@@ -89,9 +89,6 @@ export default {
     }
   },
   created() {
-    this.collapse = !this.collapse;
-    bus.$emit('collapse', this.collapse);
-    // this.reload()
   }
 }
 </script>

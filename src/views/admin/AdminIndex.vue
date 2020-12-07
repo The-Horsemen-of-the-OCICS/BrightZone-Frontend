@@ -120,7 +120,7 @@
                 <div class="grid-content grid-con-4">
                   <i class="el-icon-lx-location grid-con-icon"></i>
                   <div class="grid-cont-right">
-                    <div class="grid-num">{{ clazzNum }}</div>
+                    <div class="grid-num">{{ classroomNum }}</div>
                     <div>Overall Classrooms</div>
                   </div>
                 </div>
@@ -139,24 +139,6 @@
       </div>
       <div class="container">
         <el-tabs v-model="message">
-          <el-tab-pane :label="`Draft${draft.length})`" name="first">
-            <el-table :data="unread" :show-header="false" style="width: 100%">
-              <el-table-column>
-                <template slot-scope="scope">
-                  <span class="message-title">{{ scope.row.title }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="date" width="180"></el-table-column>
-              <el-table-column width="120">
-                <template slot-scope="scope">
-                  <el-button size="small" @click="handleRead(scope.$index)">标为已读</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-            <!--          <div class="handle-row">-->
-            <!--            <el-button type="primary">全部标为已读</el-button>-->
-            <!--          </div>-->
-          </el-tab-pane>
           <el-tab-pane :label="`Unread Msg(${unread.length})`" name="second">
             <el-table :data="unread" :show-header="false" style="width: 100%">
               <el-table-column>
@@ -214,6 +196,24 @@
                 <el-button type="danger">清空回收站</el-button>
               </div>
             </template>
+          </el-tab-pane>
+          <el-tab-pane :label="`Draft${draft.length})`" name="first">
+            <el-table :data="unread" :show-header="false" style="width: 100%">
+              <el-table-column>
+                <template slot-scope="scope">
+                  <span class="message-title">{{ scope.row.title }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="date" width="180"></el-table-column>
+              <el-table-column width="120">
+                <template slot-scope="scope">
+                  <el-button size="small" @click="handleRead(scope.$index)">标为已读</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <!--          <div class="handle-row">-->
+            <!--            <el-button type="primary">全部标为已读</el-button>-->
+            <!--          </div>-->
           </el-tab-pane>
           <el-button style="float: right; padding: 3px 0" type="text" @click="drawerProp.addTaskDrawer = true">add
           </el-button>
@@ -349,6 +349,7 @@ export default {
       accountNum: '',
       courseNum: '',
       clazzNum: '',
+      classroomNum: '',
       todoList: [],
       addTaskForm: {},
       data: [
@@ -638,6 +639,9 @@ export default {
     axios.get('http://localhost:8080/admin/index/getClazzNum').then(resp => {
       this.clazzNum = resp.data
     })
+    axios.get('http://localhost:8080/admin/index/getClazzRoomNum').then(resp => {
+      this.classroomNum = resp.data
+    })
     axios.get('http://localhost:8080/admin/index/getAdminToDoList/' + this.$store.state.account.userId).then(resp => {
       this.todoList = resp.data
       console.log(this.todoList)
@@ -773,7 +777,7 @@ export default {
 }
 
 .mgb20 {
-  margin-bottom: 20px;
+  margin-bottom: 2px;
 }
 
 .todo-item {
@@ -795,7 +799,7 @@ export default {
 
 .container {
   margin-top: 5px;
-  height: 300px;
+  height: 230px;
 }
 
 </style>
