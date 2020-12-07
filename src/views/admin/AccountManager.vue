@@ -14,13 +14,12 @@
             icon="el-icon-delete"
             class="handle-del mr10"
             @click="delAllSelection"
-        >批量删除
+        >Batch Deletion
         </el-button>
-        <el-select v-model="query.address" placeholder="User Role" class="handle-select mr10">
+        <el-select style="width: 15%" v-model="query.role" clearable placeholder="User Role" class="handle-select mr10">
           <el-option key="1" label="Administrator" value="administrator"></el-option>
           <el-option key="2" label="Professor" value="professor"></el-option>
           <el-option key="3" label="Student" value="student"></el-option>
-          <el-option key="4" label="Teaching Assistant" value="teaching_assistant"></el-option>
         </el-select>
         <el-input v-model="query.name" placeholder="username" class="handle-input mr10"></el-input>
         <el-button type="primary" icon="el-icon-search" @click="handleSearch">Search</el-button>
@@ -174,7 +173,6 @@
 </template>
 
 <script>
-import {fetchData} from "@/api";
 import axios from "axios";
 
 export default {
@@ -183,8 +181,8 @@ export default {
   data() {
     return {
       query: {
-        address: '',
-        name: '',
+        role: '',  // account role:professor,administrator,student
+        name: '',  // account name
         pageIndex: 1,
         pageSize: 10
       },
@@ -193,6 +191,7 @@ export default {
       tableData: [],
       labelPosition: 'right',
       faculties: [],
+      facultyName: '',
 
       multipleSelection: [],
       delList: [],
@@ -273,29 +272,63 @@ export default {
     };
   },
   created() {
-    //this.getData();
-    axios.get('http://localhost:8080/admin/account/getAll/0/10').then(resp => {
-      this.tableData = resp.data.content
-      this.pageSize = resp.data.size
-      this.pageTotal = resp.data.totalElements
-    })
+    // get params from url
+    let type = this.$route.params.type;
+    if (type !== undefined) {
+      this.query.role = type;
+    }
+    let name = this.$route.params.name;
+    if (name !== undefined) {
+      this.query.name = name;
+    }
+    let pageNum = this.$route.params.pageNum;
+    // pageNum (in url) -> this.query.pageIndex (in data()) -> currentPage (in el-pagination)
+    this.query.pageIndex = parseInt(pageNum);
+
+    if (type === undefined && name === undefined && pageNum !== undefined) {  // raw query
+      axios.get('http://localhost:8080/admin/account/getAll/' + (this.query.pageIndex - 1) + '/10').then(resp => {
+        this.tableData = resp.data.content
+        this.pageSize = resp.data.size
+        this.pageTotal = resp.data.totalElements
+      }).catch(err => {})
+    } else if (type !== undefined && name === undefined && pageNum !== undefined) {  // query by user type
+      axios.get('http://localhost:8080/admin/account/getAllByType/' + type + '/' + (this.query.pageIndex - 1) + '/10').then(resp => {
+        this.tableData = resp.data.content
+        this.pageSize = resp.data.size
+        this.pageTotal = resp.data.totalElements
+      }).catch(err => {})
+    } else if (type === undefined && name !== undefined && pageNum !== undefined) {  // query by user name
+      axios.get('http://localhost:8080/admin/account/getAllByName/' + name + '/' + (this.query.pageIndex - 1) + '/10').then(resp => {
+        this.tableData = resp.data.content
+        this.pageSize = resp.data.size
+        this.pageTotal = resp.data.totalElements
+      })
+    } else if (type !== undefined && name !== undefined && pageNum !== undefined) {  // query by user type and user name
+      axios.get('http://localhost:8080/admin/account/getAllByTypeAndName/' + type + '/' + name + '/' + (this.query.pageIndex - 1) + '/10').then(resp => {
+        this.tableData = resp.data.content
+        this.pageSize = resp.data.size
+        this.pageTotal = resp.data.totalElements
+      }).catch(err => {})
+    } else {
+      this.$router.push('/404')
+    }
+
     axios.get('http://localhost:8080/admin/account/getAllFaculties').then(resp => {
       this.faculties = resp.data;
     })
   },
   methods: {
-    // 获取 easy-mock 的模拟数据
-    getData() {
-      fetchData(this.query).then(res => {
-        console.log(res);
-        this.tableData = res.list;
-        this.pageTotal = res.pageTotal || 50;
-      });
-    },
-    // 触发搜索按钮
     handleSearch() {
-      this.$set(this.query, 'pageIndex', 1);
-      this.getData();
+      if (this.query.role !== '' && this.query.name !== '') {  // query by user type and name
+        this.$router.push('/admin/accounts/t/'+ this.query.role + '/n/' + this.query.name + '/1');
+      } else if (this.query.role !== '' && this.query.name === '') {  // query by user type
+        this.$router.push('/admin/accounts/t/' + this.query.role + '/1');
+      } else if (this.query.role === '' && this.query.name !== '') {  // query by user name
+        this.$router.push('/admin/accounts/n/' + this.query.name + '/1');
+      } else {  // raw query
+        this.$router.push('/admin/accounts/1');
+      }
+      this.reload();
     },
     // 删除操作
     handleDelete(index, row) {
@@ -338,15 +371,15 @@ export default {
       for (let i = 0; i < length; i++) {
         str += this.multipleSelection[i].name + ' ';
       }
-      this.$message.error(`删除了${str}`);
+      this.$message.error(`Deleted ${str}`);
       this.multipleSelection = [];
     },
     // 编辑操作
     handleEdit(index, row) {
       axios.get('http://localhost:8080/admin/account/getAccount/' + row.userId).then(resp => {
-       if(resp){
-         this.editAccountForm = resp.data
-       }
+        if (resp) {
+          this.editAccountForm = resp.data
+        }
       })
       this.editAccountDrawerProp.editDrawVisible = true;
     },
@@ -406,12 +439,19 @@ export default {
 
     // Page Navigation
     handlePageChange(currentPage) {
-      axios.get('http://localhost:8080/admin/account/getAll/' + (currentPage - 1) + '/10').then(resp => {
-        console.log(resp)
-        this.tableData = resp.data.content
-        this.pageSize = resp.data.size
-        this.pageTotal = resp.data.totalElements
-      })
+      console.log('In handle page change method, current pageIndex:' + currentPage)
+      this.$router.push('/admin/accounts/' + currentPage)
+      this.reload()
+      if (this.query.role !== '' && this.query.name !== '') {
+        this.$router.push('/admin/accounts/t/'+ this.query.role + '/n/' + this.query.name + '/' + currentPage);
+      } else if (this.query.role !== '' && this.query.name === '') {
+        this.$router.push('/admin/accounts/t/' + this.query.role + '/' + currentPage);
+      } else if (this.query.role === '' && this.query.name !== '') {
+        this.$router.push('/admin/accounts/n/' + this.query.name + '/' + currentPage);
+      } else {
+        this.$router.push('/admin/accounts/' + currentPage);
+      }
+      this.reload();
     },
   }
 }

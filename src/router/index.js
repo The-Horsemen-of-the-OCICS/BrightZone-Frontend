@@ -116,9 +116,31 @@ const routes = [
             },
             {
                 path: 'accounts',
-                component: () => import(/* webpackChunkName: "dashboard" */ '@/views/admin/AccountManager'),
+                redirect: '/admin/accounts/1',
+            },
+            {
+                path: 'accounts/:pageNum',
+                component: () => import('@/views/admin/AccountManager'),
                 meta: {title: 'Accounts'},
                 name: 'accounts'
+            },
+            {
+                path: 'accounts/t/:type/:pageNum',
+                component: () => import('@/views/admin/AccountManager'),
+                meta: {title: 'Accounts'},
+                name: 'accountsByName'
+            },
+            {
+                path: 'accounts/n/:name/:pageNum',
+                component: () => import('@/views/admin/AccountManager'),
+                meta: {title: 'Accounts'},
+                name: 'accountsByType'
+            },
+            {
+                path: 'accounts/t/:type/n/:name/:pageNum',
+                component: () => import('@/views/admin/AccountManager'),
+                meta: {title: 'Accounts'},
+                name: 'accountsByTypeAndName'
             },
             {
                 path: 'courses',
