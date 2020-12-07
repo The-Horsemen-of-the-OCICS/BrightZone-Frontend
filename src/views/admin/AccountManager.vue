@@ -94,7 +94,7 @@
     <el-drawer
         title="Modify an Account"
         :with-header="editAccountDrawerProp.withHeader"
-        size="35%"
+        size="25%"
         :append-to-body="editAccountDrawerProp.appendToBody"
         :visible.sync="editAccountDrawerProp.editDrawVisible"
         :direction="editAccountDrawerProp.direction"
@@ -112,15 +112,57 @@
               </el-button>
             </el-button-group>
           </div>
-          <div class="form-box" style="float: left">
-            <el-form ref="form" :model="editAccountForm" :rules="editAccountRules" style="text-align: left;margin-top: 5%">
-              <el-form-item label="Task Name :" prop="notes" label-width="formLabelWidth" style="margin-top: 5%">
-                <el-input v-model="editAccountForm.name"></el-input>
-              </el-form-item>
 
-            </el-form>
-
-          </div>
+          <el-form ref="editAccountForm" :model="editAccountForm" :rules="editAccountRules"
+                   style="margin-top: 5%;" label-width="auto" :label-position="labelPosition">
+            <el-form-item label="User Name :" prop="name" style="margin-top: 5%;width: 70%">
+              <el-input v-model="editAccountForm.name"></el-input>
+            </el-form-item>
+            <el-form-item label="User Role :" prop="type" style="margin-top: 5%;width: 100%">
+              <el-select v-model="editAccountForm.type" filterable placeholder="Please Input or Select">
+                <el-option
+                    v-for="item in typeList"
+                    :key="item.Name"
+                    :label="item.Name"
+                    :value="item.Value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="Faculty :" prop="facultyId" style="margin-top: 5%">
+              <el-select v-model="editAccountForm.facultyId" filterable placeholder="Please Input or Select">
+                <el-option
+                    v-for="item in faculties"
+                    :key="item.facultyId"
+                    :label="item.facultyName"
+                    :value="item.facultyId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="Program :" prop="program" style="margin-top: 5%">
+              <el-select v-model="editAccountForm.program" filterable placeholder="Please Input or Select">
+                <el-option
+                    v-for="item in faculties"
+                    :key="item.facultyId"
+                    :label="item.facultyName"
+                    :value="item.facultyId">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="Email :" prop="email" style="margin-top: 5%;width: 70%">
+              <el-input v-model="editAccountForm.email" readonly></el-input>
+            </el-form-item>
+            <el-form-item label="Status : " prop="accountStatus" style="margin-top: 5%;width: 70%">
+              <el-select v-model="editAccountForm.accountStatus" filterable placeholder="Please Select Status"
+              >
+                <el-option
+                    v-for="status in statusList"
+                    :key="status.Value"
+                    :label="status.Name"
+                    :value="status.Value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
 
 
         </el-card>
@@ -136,6 +178,7 @@ import {fetchData} from "@/api";
 import axios from "axios";
 
 export default {
+  inject: ['reload'],
   name: "AccountManager",
   data() {
     return {
@@ -148,7 +191,7 @@ export default {
       pageSize: this.pageSize,
       pageTotal: this.pageTotal,
       tableData: [],
-
+      labelPosition: 'right',
       faculties: [],
 
       multipleSelection: [],
@@ -163,9 +206,65 @@ export default {
         appendToBody: true,
         model: false
       },
-      editAccountRules:{
-
+      statusList: [
+        {
+          Name: "current",
+          Value: "current",
+        },
+        {
+          Name: "unauthorized",
+          Value: "unauthorized",
+        },
+        {
+          Name: "expelled",
+          Value: "expelled",
+        },
+        {
+          Name: "sabbatical",
+          Value: "sabbatical",
+        },
+        {
+          Name: "alumni",
+          Value: "alumni",
+        },
+      ],
+      editAccountRules: {
+        name:
+            [
+              {required: true, message: 'Name can not be none', trigger: 'blur'}
+            ],
+        type:
+            [
+              {required: true, message: 'Please choose a level to this task', trigger: 'blur'}
+            ],
+        facultyId:
+            [
+              {required: true, message: 'faculty need to be set', trigger: 'blur'}
+            ],
+        program:
+            [
+              {required: true, message: 'program need to be set', trigger: 'blur'}
+            ],
+        accountStatus:
+            [
+              {required: true, message: 'status need to be set', trigger: 'blur'}
+            ],
       },
+
+      typeList: [
+        {
+          Name: "Admin",
+          Value: "administrator",
+        },
+        {
+          Name: "Professor",
+          Value: "professor",
+        },
+        {
+          Name: "Student",
+          Value: "student",
+        },
+      ],
       form: {},
       loading: false,
       timer: null,
@@ -244,8 +343,11 @@ export default {
     },
     // 编辑操作
     handleEdit(index, row) {
-      console.log(index)
-      this.editAccountForm = row;
+      axios.get('http://localhost:8080/admin/account/getAccount/' + row.userId).then(resp => {
+       if(resp){
+         this.editAccountForm = resp.data
+       }
+      })
       this.editAccountDrawerProp.editDrawVisible = true;
     },
     cancelForm() {
@@ -266,8 +368,7 @@ export default {
       }
       this.$confirm('Confirm Modify？')
           .then(_ => {
-            this.editTodoForm.adminId = this.$store.state.account.userId
-            console.log(this.editTodoForm)
+            console.log(this.editAccountForm)
             this.loading = true;
             this.timer = setTimeout(() => {
               // 动画关闭需要一定的时间
@@ -275,20 +376,21 @@ export default {
                 this.loading = false;
               }, 400);
             }, 2000);
-            axios.post("http://localhost:8080/admin/index/modifyAdminToDoList", this.editTodoForm).then(resp => {
+            axios.put("http://localhost:8080/admin/account/updateAccount", this.editAccountForm).then(resp => {
+              console.log(resp)
               if (resp.data === "success") {
                 this.loading = false;
-                this.drawerProp.addTaskDrawer = false;
+                this.editAccountDrawerProp.editDrawVisible = false;
                 this.reload()
                 clearTimeout(this.timer);
                 this.$notify({
                   title: 'Success',
-                  message: 'Task modify successfully!',
+                  message: 'Account modify successfully!',
                   type: 'success'
                 });
               } else {
                 this.loading = false;
-                this.drawerProp.addTaskDrawer = false;
+                this.editAccountDrawerProp.editDrawVisible = false;
                 this.reload()
                 clearTimeout(this.timer);
                 this.$notify.error({
@@ -296,9 +398,7 @@ export default {
                   message: 'Ops,Something goes wrong!Try again later!',
                 });
               }
-
             })
-
           })
           .catch(_ => {
           });
