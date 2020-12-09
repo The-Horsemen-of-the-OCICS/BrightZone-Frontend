@@ -7,15 +7,19 @@ describe('Submit final grade for a student successfully', () => {
     cy.get('.login-btn > .el-button').click()
 
     cy.url().should('include', '/professor/index')
+    cy.wait(500)
+
   })
 
   it('Visits the view students page',() => {
     cy.visit('http://localhost:8181/professor/viewStudents')
-
+    cy.wait(500)
   })
 
   it('Select the first student and submit his/her final grade',() => {
     cy.get('.el-select > .el-input > .el-input__inner').click().type('{downarrow}{enter}')
+    cy.get('tbody > :nth-child(1) > .el-table_1_column_1 > .cell > .el-checkbox > .el-checkbox__input > .el-checkbox__inner', { timeout: 10000 }).should('be.visible');
+
     cy.get('tbody > :nth-child(1) > .el-table_1_column_1 > .cell > .el-checkbox > .el-checkbox__input > .el-checkbox__inner').click()
     cy.get('[style="margin-top: 20px; display: flex; justify-items: flex-end;"] > .el-button').click()
     cy.get('.el-button--primary').click()
@@ -33,15 +37,21 @@ describe('Submit final grades for all students successfully', () => {
     cy.get('.login-btn > .el-button').click()
 
     cy.url().should('include', '/professor/index')
+    cy.wait(500)
+
   })
 
   it('Visits the view students page',() => {
     cy.visit('http://localhost:8181/professor/viewStudents')
+    cy.wait(500)
 
   })
 
   it('Select all students and submit final grades',() => {
     cy.get('.el-select > .el-input > .el-input__inner').click().type('{downarrow}{enter}')
+    cy.wait(500)
+    cy.get('.el-table__row--striped > .el-table_1_column_1 > .cell', { timeout: 10000 }).should('be.visible');
+
     cy.get('.has-gutter > tr > .el-table_1_column_1 > .cell > .el-checkbox > .el-checkbox__input > .el-checkbox__inner').click()
     cy.get('[style="margin-top: 20px; display: flex; justify-items: flex-end;"] > .el-button').click()
     cy.get('.el-button--primary').click()

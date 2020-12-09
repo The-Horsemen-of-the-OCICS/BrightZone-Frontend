@@ -7,12 +7,17 @@ describe('Create and submit a deliverable successfully', () => {
     cy.get('.login-btn > .el-button').click()
 
     cy.url().should('include', '/professor/index')
+    cy.wait(500)
+
   })
 
   it('Visits the edit deliverable page',() => {
     cy.visit('http://localhost:8181/professor/editDeliverable')
+    cy.wait(500)
 
     cy.get('[style="display: flex;"] > .el-select > .el-input > .el-input__inner').click().type('{downarrow}{enter}')
+    cy.wait(500)
+
   })
 
   it('Creates a new deliverable', ()=> {
@@ -38,8 +43,10 @@ describe('Create and submit a deliverable successfully', () => {
 
   it('Visits the view deliverables page', () => {
     cy.visit('http://localhost:8181/professor/viewDeliverables')
+    cy.wait(500)
 
     cy.get('.el-select > .el-input > .el-input__inner').click().type('{downarrow}{enter}')
+    cy.wait(500)
 
     cy.get('.el-table_1_column_1 > .cell > .caret-wrapper > .descending').click()
 

@@ -10,16 +10,26 @@ describe('Grade a submission successfully', () => {
     cy.get('.login-btn > .el-button').click()
 
     cy.url().should('include', '/professor/index')
+    cy.wait(500)
+
   })
 
   it('Visits the evaluate submission page',() => {
     cy.visit('http://localhost:8181/professor/evaluateSubmission')
+    cy.wait(500)
+
   })
 
   it('Selects a submission', ()=> {
     cy.get(':nth-child(1) > .el-input > .el-input__inner').click().type('{downarrow}{enter}')
+    cy.wait(500)
+
     cy.get('[style="margin-bottom: 10px; display: flex; justify-items: flex-end;"] > :nth-child(2) > .el-input > .el-input__inner').click().type('{downarrow}{enter}')
+    cy.wait(500)
+
     cy.get(':nth-child(3) > .el-input > .el-input__inner').click().type('{downarrow}{enter}')
+    cy.wait(500)
+
 
   })
 
@@ -32,8 +42,14 @@ describe('Grade a submission successfully', () => {
 
   it('Visits the view submissions page', () => {
     cy.visit('http://localhost:8181/professor/viewSubmissions')
+    cy.wait(500)
+
     cy.get('[style="margin-bottom: 10px; display: flex; justify-items: flex-end;"] > :nth-child(1) > .el-input > .el-input__inner').click().type('{downarrow}{enter}')
+    cy.wait(500)
+
     cy.get(':nth-child(2) > .el-input > .el-input__inner').click().type('{downarrow}{enter}')
+    cy.wait(500)
+
   })
 
   it('Observes that the grade is changed', () => {
@@ -50,10 +66,14 @@ describe('Invalid grade', () => {
     cy.get('.login-btn > .el-button').click()
 
     cy.url().should('include', '/professor/index')
+    cy.wait(500)
+
   })
 
   it('Visits the evaluate submission page', () => {
     cy.visit('http://localhost:8181/professor/evaluateSubmission')
+    cy.wait(500)
+
   })
 
   it('Selects a submission', () => {
