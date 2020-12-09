@@ -584,7 +584,7 @@
                         <el-select v-model="schedule.weekday" filterable placeholder="the class day"
                                    style="width: 88%">
                           <el-option
-                              v-for="weekday in weekDayList"
+                              v-for="weekday in weekdayList"
                               :key="weekday.Value"
                               :label="weekday.Name"
                               :value="weekday.Value">
@@ -769,7 +769,7 @@
                         <el-select v-model="schedule.weekday" filterable placeholder="the class day"
                                    style="width: 88%">
                           <el-option
-                              v-for="weekday in weekDayList"
+                              v-for="weekday in weekdayList"
                               :key="weekday.Value"
                               :label="weekday.Name"
                               :value="weekday.Value">
@@ -795,7 +795,7 @@
                       <el-form-item label="Room Capacity:"
                                     :prop="'schedules.'+ index+'.roomCapacityAsked'"
                       >
-                        <el-select v-model="schedule.roomCapacity" filterable placeholder="Room size request"
+                        <el-select v-model="schedule.roomCapacityAsked" filterable placeholder="Room size request"
                                    style="width: 88%" @change="getAvailableRoom(index,schedule)">
                           <el-option
                               v-for="item in roomCapacityList"
@@ -1024,9 +1024,9 @@ export default {
       }
     };
 
-    let addWeekDayRuleValidator = (rule, value, callback) => {
+    let addWeekdayRuleValidator = (rule, value, callback) => {
       if (value !== null) {
-        const arr = this.addClazzForm.schedules.filter(item => item.weekDay === value)
+        const arr = this.addClazzForm.schedules.filter(item => item.weekday === value)
         console.log(arr)
         console.log(arr.length)
 
@@ -1190,7 +1190,7 @@ export default {
 
       weekday: [
         {required: true, message: 'Weekday can not be none', trigger: ['blur', 'change']},
-        {validator: addWeekDayRuleValidator, trigger: ['blur', 'change']},
+        {validator: addWeekdayRuleValidator, trigger: ['blur', 'change']},
       ],
       addStartTimeRule: [
         {required: true, message: 'Start Time can not be none', trigger: ['blur', 'change']}
@@ -1266,7 +1266,7 @@ export default {
 
       addClazzForm: {
         schedules: [{
-          weekDay: '',
+          weekday: '',
           startTime: '',
           endTime: '',
           roomCapacityAsked: '',
@@ -1286,7 +1286,7 @@ export default {
 
       editClazzForm: {
         schedules: [{
-          weekDay: '',
+          weekday: '',
           startTime: '',
           endTime: '',
           roomCapacityAsked: '',
@@ -1320,7 +1320,7 @@ export default {
           Value: "cancel",
         },
       ],
-      weekDayList: [
+      weekdayList: [
         {
           Name: "Monday",
           Value: "Mon",
@@ -1661,7 +1661,7 @@ export default {
     },
     addClazzTimeSchedule() {
       this.addClazzForm.schedules.push({
-        weekDay: '',
+        weekday: '',
         startTime: '',
         endTime: '',
         roomCapacityAsked: '',

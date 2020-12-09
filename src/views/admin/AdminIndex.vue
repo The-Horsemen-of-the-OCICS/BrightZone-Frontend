@@ -223,7 +223,7 @@
     <el-drawer
         title="Add a Task"
         :with-header="drawerProp.withHeader"
-        size="35%"
+        size="25%"
         :append-to-body="drawerProp.appendToBody"
         :visible.sync="drawerProp.addTaskDrawer"
         :direction="drawerProp.direction"
@@ -242,26 +242,32 @@
             </el-button-group>
           </div>
           <div class="form-box" style="float: left">
-            <el-form ref="form" :model="addTaskForm" :rules="addTaskRules" style="text-align: left;margin-top: 5%">
-              <el-form-item label="Task Name :" prop="notes" label-width="formLabelWidth" style="margin-top: 5%">
+            <el-form ref="form" :model="addTaskForm" :rules="addTaskRules" style="text-align: left;margin-top: 5%"
+                     label-width="auto" :label-position="'right'">
+              <el-form-item label="Task Name :" prop="notes" style="margin-top: 5%;width: 55%">
                 <el-input v-model="addTaskForm.notes"></el-input>
               </el-form-item>
-              <el-form-item label="Urgent Level:" prop="level" label-width="formLabelWidth" style="margin-top: 10%">
+              <el-form-item label="Urgent Level:" prop="level" style="margin-top: 10%">
                 <el-radio-group v-model="addTaskForm.level">
                   <el-radio-button label="Urgent"></el-radio-button>
                   <el-radio-button label="Prior"></el-radio-button>
                   <el-radio-button label="Normal"></el-radio-button>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item label="Action Time" prop="time" label-width="formLabelWidth" style="margin-top: 10%">
+              <el-form-item label="Start Time" prop="startTime" style="margin-top: 10%">
                 <el-date-picker
-                    v-model="addTaskForm.time"
-                    type="daterange"
-                    align="right"
-                    range-separator="to"
-                    start-placeholder="start from"
-                    end-placeholder="end with"
-                    :picker-options="pickerOptions">
+                    v-model="addTaskForm.startTime"
+                    type="date"
+                    placeholder="Select Start Time"
+                    format="yyyy-MM-dd">
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item label="End Time" prop="endTime" style="margin-top: 10%">
+                <el-date-picker
+                    v-model="addTaskForm.endTime"
+                    type="date"
+                    placeholder="Select End Time"
+                    format="yyyy-MM-dd">
                 </el-date-picker>
               </el-form-item>
             </el-form>
@@ -277,7 +283,7 @@
     <el-drawer
         title="Modify a Task"
         :with-header="editTodoDrawProp.withHeader"
-        size="35%"
+        size="25%"
         :append-to-body="editTodoDrawProp.appendToBody"
         :visible.sync="editTodoDrawProp.editTodoDrawVisible"
         :direction="editTodoDrawProp.direction"
@@ -296,26 +302,32 @@
             </el-button-group>
           </div>
           <div class="form-box" style="float: left">
-            <el-form ref="form" :model="editTodoForm" :rules="addTaskRules" style="text-align: left;margin-top: 5%">
-              <el-form-item label="Task Name :" prop="notes" label-width="formLabelWidth" style="margin-top: 5%">
+            <el-form ref="form" :model="editTodoForm" :rules="addTaskRules" style="text-align: left;margin-top: 5%"
+                     label-width="auto" :label-position="'right'">
+              <el-form-item label="Task Name :" prop="notes" style="margin-top: 5%;width: 55%">
                 <el-input v-model="editTodoForm.notes"></el-input>
               </el-form-item>
-              <el-form-item label="Urgent Level:" prop="level" label-width="formLabelWidth" style="margin-top: 10%">
+              <el-form-item label="Urgent Level:" prop="level" style="margin-top: 10%">
                 <el-radio-group v-model="editTodoForm.level">
                   <el-radio-button label="Urgent"></el-radio-button>
                   <el-radio-button label="Prior"></el-radio-button>
                   <el-radio-button label="Normal"></el-radio-button>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item label="Action Time" prop="time" label-width="formLabelWidth" style="margin-top: 10%">
+              <el-form-item label="Start Time" prop="startTime" style="margin-top: 10%">
                 <el-date-picker
-                    v-model="editTodoForm.time"
-                    type="daterange"
-                    align="right"
-                    range-separator="to"
-                    start-placeholder="start from"
-                    end-placeholder="end with"
-                    :picker-options="pickerOptions">
+                    v-model="editTodoForm.startTime"
+                    type="date"
+                    placeholder="Select Start Time"
+                    format="yyyy-MM-dd">
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item label="End Time" prop="endTime" style="margin-top: 10%">
+                <el-date-picker
+                    v-model="editTodoForm.endTime"
+                    type="date"
+                    placeholder="Select End time"
+                    format="yyyy-MM-dd">
                 </el-date-picker>
               </el-form-item>
             </el-form>
@@ -343,7 +355,31 @@ export default {
   inject: ['reload'],
   name: 'dashboard',
 
+
   data() {
+    let startTimeValidator = (rule, value, callback) => {
+      if (value !== null) {
+        let oDate1 = new Date(value);
+        let oDate2 = new Date();
+        if (oDate1.getTime() >= oDate2.getTime()) {
+          callback();
+        } else {
+          callback(new Error('Must be in the future!'));
+        }
+      }
+    };
+    let endTimeValidator = (rule, value, callback) => {
+      if (value !== null) {
+        let oDate1 = new Date(value);
+        let oDate2 = new Date(this.addTaskForm.startTime);
+        if (oDate1.getTime() >= oDate2.getTime()) {
+          callback();
+        } else {
+          callback(new Error('Should after start time!'));
+        }
+      }
+    };
+
     return {
       name: localStorage.getItem('ms_username'),
       accountNum: '',
@@ -352,79 +388,6 @@ export default {
       classroomNum: '',
       todoList: [],
       addTaskForm: {},
-      data: [
-        {
-          name: '2018/09/04',
-          value: 1083
-        },
-        {
-          name: '2018/09/05',
-          value: 941
-        },
-        {
-          name: '2018/09/06',
-          value: 1139
-        },
-        {
-          name: '2018/09/07',
-          value: 816
-        },
-        {
-          name: '2018/09/08',
-          value: 327
-        },
-        {
-          name: '2018/09/09',
-          value: 228
-        },
-        {
-          name: '2018/09/10',
-          value: 1065
-        }
-      ],
-      options: {
-        type: 'bar',
-        title: {
-          text: '最近一周各品类销售图'
-        },
-        xRorate: 25,
-        labels: ['周一', '周二', '周三', '周四', '周五'],
-        datasets: [
-          {
-            label: '家电',
-            data: [234, 278, 270, 190, 230]
-          },
-          {
-            label: '百货',
-            data: [164, 178, 190, 135, 160]
-          },
-          {
-            label: '食品',
-            data: [144, 198, 150, 235, 120]
-          }
-        ]
-      },
-      options2: {
-        type: 'line',
-        title: {
-          text: '最近几个月各品类销售趋势图'
-        },
-        labels: ['6月', '7月', '8月', '9月', '10月'],
-        datasets: [
-          {
-            label: '家电',
-            data: [234, 278, 270, 190, 230]
-          },
-          {
-            label: '百货',
-            data: [164, 178, 150, 135, 160]
-          },
-          {
-            label: '食品',
-            data: [74, 118, 200, 235, 90]
-          }
-        ]
-      },
       addTaskRules: {
         notes:
             [
@@ -434,9 +397,15 @@ export default {
             [
               {required: true, message: 'Please choose a level to this task', trigger: 'blur'}
             ],
-        time:
+        startTime:
             [
-              {required: true, message: 'Start Time & End Time need to be set', trigger: 'blur'}
+              {required: true, message: 'Start Time need to be set', trigger: 'blur'},
+              {validator: startTimeValidator, trigger: ['blur']}
+            ],
+        endTime:
+            [
+              {required: true, message: 'End Time need to be set', trigger: 'blur'},
+              {validator: endTimeValidator, trigger: ['blur']}
             ],
       },
 
@@ -595,7 +564,11 @@ export default {
       clearTimeout(this.timer);
     },
     handleEditTodo(row) {
-      this.editTodoForm = row;
+      axios.get('http://localhost:8080/admin/index/getTodoListById/' + row.id).then(resp => {
+        if (resp) {
+          this.editTodoForm = resp.data;
+        }
+      })
       this.editTodoDrawProp.editTodoDrawVisible = true;
       console.log(this.editTodoDrawProp.editTodoDrawVisible)
     },

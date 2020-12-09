@@ -15,6 +15,7 @@
     "babel-polyfill": "^6.26.0",
     "core-js": "^3.6.5",
     "element-ui": "^2.14.1",
+    "eslint": "^7.15.0",
     "mavon-editor": "^2.9.0",
     "moment": "^2.29.1",
     "normalize.css": "^8.0.1",
@@ -37,7 +38,7 @@
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
-    "cypress": "^6.0.1",
+    "cypress": "^6.1.0",
     "vue-cli-plugin-cypress-experimental": "~1.2.0",
     "vue-template-compiler": "^2.6.11"
   },

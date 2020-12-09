@@ -178,7 +178,17 @@ import axios from "axios";
 export default {
   inject: ['reload'],
   name: "AccountManager",
+
   data() {
+    let editUserNameValidator = (rule, value, callback) => {
+      if (value !== null) {
+        if (value.split(" ").join("").length === 0) {
+          callback(new Error("User name can not be all blank"))
+        } else {
+          callback();
+        }
+      }
+    };
     return {
       query: {
         role: '',  // account role:professor,administrator,student
@@ -230,7 +240,8 @@ export default {
       editAccountRules: {
         name:
             [
-              {required: true, message: 'Name can not be none', trigger: 'blur'}
+              {required: true, message: 'Name can not be none', trigger: 'blur'},
+              {validator: editUserNameValidator, trigger: ['blur']}
             ],
         type:
             [
@@ -290,13 +301,15 @@ export default {
         this.tableData = resp.data.content
         this.pageSize = resp.data.size
         this.pageTotal = resp.data.totalElements
-      }).catch(err => {})
+      }).catch(err => {
+      })
     } else if (type !== undefined && name === undefined && pageNum !== undefined) {  // query by user type
       axios.get('http://localhost:8080/admin/account/getAllByType/' + type + '/' + (this.query.pageIndex - 1) + '/10').then(resp => {
         this.tableData = resp.data.content
         this.pageSize = resp.data.size
         this.pageTotal = resp.data.totalElements
-      }).catch(err => {})
+      }).catch(err => {
+      })
     } else if (type === undefined && name !== undefined && pageNum !== undefined) {  // query by user name
       axios.get('http://localhost:8080/admin/account/getAllByName/' + name + '/' + (this.query.pageIndex - 1) + '/10').then(resp => {
         this.tableData = resp.data.content
@@ -308,7 +321,8 @@ export default {
         this.tableData = resp.data.content
         this.pageSize = resp.data.size
         this.pageTotal = resp.data.totalElements
-      }).catch(err => {})
+      }).catch(err => {
+      })
     } else {
       this.$router.push('/404')
     }
@@ -320,7 +334,7 @@ export default {
   methods: {
     handleSearch() {
       if (this.query.role !== '' && this.query.name !== '') {  // query by user type and name
-        this.$router.push('/admin/accounts/t/'+ this.query.role + '/n/' + this.query.name + '/1');
+        this.$router.push('/admin/accounts/t/' + this.query.role + '/n/' + this.query.name + '/1');
       } else if (this.query.role !== '' && this.query.name === '') {  // query by user type
         this.$router.push('/admin/accounts/t/' + this.query.role + '/1');
       } else if (this.query.role === '' && this.query.name !== '') {  // query by user name
@@ -443,7 +457,7 @@ export default {
       this.$router.push('/admin/accounts/' + currentPage)
       this.reload()
       if (this.query.role !== '' && this.query.name !== '') {
-        this.$router.push('/admin/accounts/t/'+ this.query.role + '/n/' + this.query.name + '/' + currentPage);
+        this.$router.push('/admin/accounts/t/' + this.query.role + '/n/' + this.query.name + '/' + currentPage);
       } else if (this.query.role !== '' && this.query.name === '') {
         this.$router.push('/admin/accounts/t/' + this.query.role + '/' + currentPage);
       } else if (this.query.role === '' && this.query.name !== '') {
