@@ -93,7 +93,9 @@ export default {
                     duration: 6000,
                   });
                 } else {
+                  console.log(resp)
                   this.responseResult.success = false;
+                  this.responseResult.errMsg = resp.data.errMsg;
                   this.$message({
                     showClose: true,
                     message: 'Error: ' + this.responseResult.errMsg,
