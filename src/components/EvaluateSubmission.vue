@@ -118,7 +118,8 @@ export default {
       this.classSelection = query.classId;
       this.deliverableSelection = query.deliverableId;
       this.deliverableForm.deliverableDesc = query.deliverableDesc;
-      this.deliverableForm.deadLine = query.deadLine;
+      this.deliverableForm.deadLine = query.deadLine
+      this.deliverableForm.deadLine = (new Date(this.deliverableForm.deadLine)).toString()
       this.deliverableForm.percent = query.percent;
       console.log(this.deliverableForm);
 
@@ -194,6 +195,7 @@ export default {
         if (curDeli) {
           this.deliverableForm.deliverableDesc = curDeli.deliverableDesc
           this.deliverableForm.deadLine = curDeli.deadLine
+          this.deliverableForm.deadLine = (new Date(this.deliverableForm.deadLine)).toString()
           this.deliverableForm.percent = curDeli.percent
           this.curDeadline = curDeli.deadLine;
         }
@@ -211,7 +213,7 @@ export default {
         if (curSub) {
           this.submissionForm.submissionId = curSub.submissionId;
           this.submissionForm.submissionDesc = curSub.submissionDesc;
-          this.submissionForm.submitTime = curSub.submitTime;
+          this.submissionForm.submitTime = (new Date(curSub.submitTime)).toString();
           this.submissionForm.studentId = curSub.studentId;
           this.submissionForm.fileName = curSub.fileName;
           this.submissionForm.grade = curSub.grade;
@@ -273,8 +275,8 @@ export default {
     },
     downloadSubmissionFile() {
       const a = document.createElement('a')
-      const timestamp = Date.parse(this.submissionForm.submitTime)
-      a.download = fileName
+      a.download = this.submissionForm.fileName
+      const timestamp = (new Date(this.submissionForm.submitTime)).getTime()
       a.href = 'http://localhost:8080/getGetSubmissionFile/' + this.classSelection + '/'+ this.deliverableSelection + '/' + this.submissionForm.studentId  + '/'+ timestamp + '/' + this.submissionForm.fileName;
       a.click();
     },
