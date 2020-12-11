@@ -1879,7 +1879,7 @@ export default {
                         clearTimeout(this.timer);
                         this.$notify({
                           title: 'Success',
-                          message: 'Add a new class!',
+                          message: 'update the class!',
                           type: 'success'
                         });
                       } else {
