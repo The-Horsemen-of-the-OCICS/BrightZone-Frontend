@@ -14,6 +14,7 @@ describe('User Logout success', () => {
 
     it('Visits the login page',() => {
         cy.visit('http://localhost:8181/login')
+        cy.wait(500)
     })
 
     it('Inputs userId, password and click login button' , () => {
@@ -48,22 +49,26 @@ describe('User Logout success', () => {
             body: account
         }).then((response) => {
         })
+        cy.wait(500)
     })
 
     it('Should go to admin index page', () => {
         cy.url().should('include', '/admin/index')
+        cy.wait(500)
     })
 
     it('Click drop down menu besides user avatar', function () {
         cy.get('.el-icon-caret-bottom').click()
-        cy.wait(2000)
+        cy.wait(500)
     });
 
     it('Click logout button', function () {
         cy.get('.el-dropdown-menu__item--divided').click()
+        cy.wait(500)
     });
 
     it('should back to login page', function () {
         cy.url().should('include', '/login')
+        cy.wait(500)
     });
 })

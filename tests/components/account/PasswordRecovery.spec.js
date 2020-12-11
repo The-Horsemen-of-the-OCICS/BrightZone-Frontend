@@ -1,6 +1,7 @@
 describe('Password recovery fail because user doesn\'t have an accont in CMS', () => {
     it('Visit password recovery page', () => {
         cy.visit('http://localhost:8181/passwordRecovery')
+        cy.wait(500)
     })
 
     it('Input email address, verification code and new password', () => {
@@ -8,21 +9,24 @@ describe('Password recovery fail because user doesn\'t have an accont in CMS', (
         cy.get(':nth-child(2) > .el-form-item__content > .el-input > .el-input__inner').type('888')
         cy.get(':nth-child(3) > .el-form-item__content > .el-input > .el-input__inner').type('1234567')
         cy.get(':nth-child(4) > .el-form-item__content > .el-input > .el-input__inner').type('1234567')
+        cy.wait(500)
     })
 
     it('click recovery button', () => {
         cy.get('.passwordRecovery-btn > .el-button').click()
+        cy.wait(500)
     })
 
     it('should be told that email doesn\'t exist', () => {
         cy.url().should('include', '/passwordRecovery')
-        cy.wait(3000)
+        cy.wait(500)
     })
 })
 
 describe('Password recovery fail because user has not been authorized yet', () => {
     it('Visit password recovery page', () => {
         cy.visit('http://localhost:8181/passwordRecovery')
+        cy.wait(500)
     })
 
     it('Input email address, verification code and new password', () => {
@@ -30,21 +34,24 @@ describe('Password recovery fail because user has not been authorized yet', () =
         cy.get(':nth-child(2) > .el-form-item__content > .el-input > .el-input__inner').type('888')
         cy.get(':nth-child(3) > .el-form-item__content > .el-input > .el-input__inner').type('1234567')
         cy.get(':nth-child(4) > .el-form-item__content > .el-input > .el-input__inner').type('1234567')
+        cy.wait(500)
     })
 
     it('click recovery button', () => {
         cy.get('.passwordRecovery-btn > .el-button').click()
+        cy.wait(500)
     })
 
     it('should to told to wait for admin\'s authorization', () => {
         cy.url().should('include', '/passwordRecovery')
-        cy.wait(3000)
+        cy.wait(500)
     })
 })
 
 describe('Password recovery fail because verification code is wrong', () => {
     it('Visit password recovery page', () => {
         cy.visit('http://localhost:8181/passwordRecovery')
+        cy.wait(500)
     })
 
     it('Input email address, verification code and new password', () => {
@@ -52,15 +59,17 @@ describe('Password recovery fail because verification code is wrong', () => {
         cy.get(':nth-child(2) > .el-form-item__content > .el-input > .el-input__inner').type('123456')
         cy.get(':nth-child(3) > .el-form-item__content > .el-input > .el-input__inner').type('1234567')
         cy.get(':nth-child(4) > .el-form-item__content > .el-input > .el-input__inner').type('1234567')
+        cy.wait(500)
     })
 
     it('click recovery button', () => {
         cy.get('.passwordRecovery-btn > .el-button').click()
+        cy.wait(500)
     })
 
     it('should be told that verification code is wrong', () => {
         cy.url().should('include', '/passwordRecovery')
-        cy.wait(3000)
+        cy.wait(500)
     })
 })
 
@@ -80,6 +89,7 @@ describe('Password recovery success', () => {
     let oldVerificationCode = '';
     it('Visit password recovery page', () => {
         cy.visit('http://localhost:8181/passwordRecovery')
+        cy.wait(500)
     })
 
     it('Input email address, verification code and new password', () => {
@@ -87,6 +97,7 @@ describe('Password recovery success', () => {
         cy.get(':nth-child(2) > .el-form-item__content > .el-input > .el-input__inner').type('234567')
         cy.get(':nth-child(3) > .el-form-item__content > .el-input > .el-input__inner').type('1234567')
         cy.get(':nth-child(4) > .el-form-item__content > .el-input > .el-input__inner').type('1234567')
+        cy.wait(500)
     })
 
     it('click recovery button', () => {
@@ -112,11 +123,12 @@ describe('Password recovery success', () => {
             body: account
         }).then((response) => {})
         cy.get('.passwordRecovery-btn > .el-button').click()
+        cy.wait(500)
     })
 
     it('should be told that password recovery success', () => {
         cy.url().should('include', '/passwordRecovery')
-        cy.wait(3000)
+        cy.wait(500)
     })
 
     it('click yes and go to login page', () => {
@@ -127,5 +139,6 @@ describe('Password recovery success', () => {
             body: account
         }).then((response) => {})
         cy.get('.el-message-box__btns > .el-button--primary > span').click()
+        cy.wait(500)
     })
 })

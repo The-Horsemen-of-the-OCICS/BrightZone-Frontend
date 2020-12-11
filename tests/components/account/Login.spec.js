@@ -1,17 +1,19 @@
 describe('Login fail because user doesn\'t have an account in CMS', () => {
     it('Visits the login page', () => {
         cy.visit('http://localhost:8181/login')
+        cy.wait(500)
     })
 
     it('Inputs userId, password and click login button', () => {
         cy.get(':nth-child(1) > .el-form-item__content > .el-input > .el-input__inner').type('123')
         cy.get(':nth-child(2) > .el-form-item__content > .el-input > .el-input__inner').type('123456')
         cy.get('.login-btn > .el-button > span').click()
+        cy.wait(500)
     })
 
     it('Should be told to register an account', () => {
         cy.url().should('include', '/login')
-        cy.wait(3000)
+        cy.wait(500)
     })
 
 })
@@ -19,34 +21,39 @@ describe('Login fail because user doesn\'t have an account in CMS', () => {
 describe('Login fail because userId is not authorized yet', () => {
     it('Visits the login page', () => {
         cy.visit('http://localhost:8181/login')
+        cy.wait(500)
     })
 
     it('Inputs userId, password and click login button', () => {
         cy.get(':nth-child(1) > .el-form-item__content > .el-input > .el-input__inner').type('3000193')
         cy.get(':nth-child(2) > .el-form-item__content > .el-input > .el-input__inner').type('123456')
         cy.get('.login-btn > .el-button > span').click()
+        cy.wait(500)
     })
 
     it('Should to told to wait for authorization', () => {
         cy.url().should('include', '/login')
-        cy.wait(3000)
+        cy.wait(500)
     })
 })
 
 describe('Login fail because password is wrong', () => {
     it('Visits the login page', () => {
         cy.visit('http://localhost:8181/login')
+        cy.wait(500)
     })
 
     it('Inputs userId, password and click login button', () => {
         cy.get(':nth-child(1) > .el-form-item__content > .el-input > .el-input__inner').type('1000000')
         cy.get(':nth-child(2) > .el-form-item__content > .el-input > .el-input__inner').type('123456789')
         cy.get('.login-btn > .el-button > span').click()
+        cy.wait(500)
     })
 
     it('Should to told password is wrong', () => {
         cy.url().should('include', '/login')
-        cy.wait(3000)
+        cy.wait(500)
+        cy.wait(500)
     })
 })
 
@@ -65,6 +72,7 @@ describe('Login success', () => {
     };
     it('Visits the login page', () => {
         cy.visit('http://localhost:8181/login')
+        cy.wait(500)
     })
 
     it('Inputs userId, password and click login button', () => {
@@ -99,9 +107,11 @@ describe('Login success', () => {
             body: account
         }).then((response) => {
         })
+        cy.wait(500)
     })
 
     it('Should go to admin index page', () => {
         cy.url().should('include', '/admin/index')
+        cy.wait(500)
     })
 })
