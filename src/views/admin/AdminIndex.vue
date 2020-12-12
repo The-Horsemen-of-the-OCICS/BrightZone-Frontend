@@ -478,6 +478,7 @@ export default {
           .then(_ => {
             this.addTaskForm.adminId = this.$store.state.account.userId
             this.loading = true;
+            console.log(this.addTaskForm)
             this.timer = setTimeout(() => {
               // 动画关闭需要一定的时间
               setTimeout(() => {

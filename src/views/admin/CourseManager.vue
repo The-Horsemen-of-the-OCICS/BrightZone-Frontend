@@ -112,8 +112,8 @@
                 <el-input v-model="addCourseForm.courseName"></el-input>
               </el-form-item>
 
-              <el-form-item label="Course Credit : " prop="Credit" label-width="formLabelWidth" style="margin-top: 5%">
-                <el-select v-model="addCourseForm.credit" placeholder="Credit" class="handle-select mr10">
+              <el-form-item label="Course Credit : " prop="credit" label-width="formLabelWidth" style="margin-top: 5%">
+                <el-select v-model="addCourseForm.credit" placeholder="credit" class="handle-select mr10">
                   <el-option key="1" label="1" value="1"></el-option>
                   <el-option key="2" label="2" value="2"></el-option>
                   <el-option key="3" label="3" value="3"></el-option>
@@ -209,7 +209,7 @@ export default {
         courseName:
             [
               {required: true, message: 'Course name can not be none', trigger: 'blur'},
-              {validator: validateCourseName, trigger: ['blur']}
+              {validator: validateCourseName, trigger: ['blur', 'change']}
             ],
         courseSubject:
             [
@@ -219,7 +219,7 @@ export default {
             [
               {required: true, message: 'Course number can not be none', trigger: 'blur',},
               {type: 'number', message: 'Please input correct Number', trigger: ['blur', 'change']},
-              {validator: validateCourseNumber, trigger: ['blur']}
+              {validator: validateCourseNumber, trigger: ['blur', 'change']}
             ],
         credit:
             [

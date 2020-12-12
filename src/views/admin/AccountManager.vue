@@ -284,6 +284,7 @@ export default {
   },
   created() {
     // get params from url
+    console.log(this.$route.params.type)
     let type = this.$route.params.type;
     if (type !== undefined) {
       this.query.role = type;
@@ -334,7 +335,24 @@ export default {
   methods: {
     handleSearch() {
       if (this.query.role !== '' && this.query.name !== '') {  // query by user type and name
+        console.log(this.query.role)
+        console.log(this.query.name)
         this.$router.push('/admin/accounts/t/' + this.query.role + '/n/' + this.query.name + '/1');
+
+        // this.$router.push({
+        //   path: `/admin/accounts/t/${this.query.role}/n/${this.query.name}/1`,
+        //   meta: [`${this.query.role}`,`${this.query.name}`],
+        // })
+        // this.$router.push({
+        //   path: `/admin/courseDetails/${courseId}`,
+        //   meta: `${courseId}`,
+        // })
+        axios.get('http://localhost:8080/admin/account/getAllByTypeAndName/' + type + '/' + name + '/' + (this.query.pageIndex - 1) + '/10').then(resp => {
+          this.tableData = resp.data.content
+          this.pageSize = resp.data.size
+          this.pageTotal = resp.data.totalElements
+        }).catch(err => {
+        })
       } else if (this.query.role !== '' && this.query.name === '') {  // query by user type
         this.$router.push('/admin/accounts/t/' + this.query.role + '/1');
       } else if (this.query.role === '' && this.query.name !== '') {  // query by user name
@@ -342,7 +360,8 @@ export default {
       } else {  // raw query
         this.$router.push('/admin/accounts/1');
       }
-      this.reload();
+      this.reload()
+
     },
     // 删除操作
     handleDelete(index, row) {
