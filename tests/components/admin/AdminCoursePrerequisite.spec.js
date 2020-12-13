@@ -82,6 +82,7 @@ describe('add prerequisite course success', () => {
 
     it('add prerequisite course', function () {
         cy.get(':nth-child(3) > .el-card > .el-card__header > .clearfix > .el-button > span').click()
+        cy.wait(300)
         cy.get(':nth-child(2) > .el-form-item__content > .el-select > .el-input > .el-input__inner').click()
         cy.wait(400)
         cy.get('.el-scrollbar__view > :nth-child(3)').click()
@@ -89,7 +90,6 @@ describe('add prerequisite course success', () => {
         cy.get(':nth-child(3) > .el-form-item__content > .el-select > .el-input > .el-input__inner').click()
         cy.wait(800)
         cy.get('[style="min-width: 151.172px; position: fixed; top: 216px; left: 1104px; transform-origin: center top; z-index: 2015;"] > .el-scrollbar > .el-select-dropdown__wrap > .el-scrollbar__view > :nth-child(2)').click()
-        //cy.get('[style="min-width: 151.172px; transform-origin: center top; z-index: 2019; position: fixed; top: 216px; left: 1104px;"] > .el-scrollbar > .el-select-dropdown__wrap > .el-scrollbar__view > :nth-child(2)').click()
         cy.wait(600)
         cy.get('.demo-drawer__content > .el-card > .el-card__header > .clearfix > .el-button-group > .el-button--primary').click()
         cy.wait(400)
